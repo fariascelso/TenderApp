@@ -128,8 +128,197 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 */
-// Restante do seu código existente...
 
+// Função para gerar um ID numérico único
+async function generateNumericId() {
+    const counterRef = db.collection('counters').doc('orcamentoCounter');
+    let numericId;
+
+    // Usar uma transação para garantir atomicidade
+    await db.runTransaction(async (transaction) => {
+        const doc = await transaction.get(counterRef);
+        if (!doc.exists) {
+            // Se o contador não existir, crie com o valor inicial 1
+            transaction.set(counterRef, { count: 1 });
+            numericId = 1;
+        } else {
+            // Incrementar o contador
+            const currentCount = doc.data().count;
+            numericId = currentCount + 1;
+            transaction.update(counterRef, { count: numericId });
+        }
+    });
+
+    return numericId;
+}
+
+// Função para salvar o orçamento com um ID numérico
+export async function saveDataToFirestore() {
+    const issuingCompany = {
+        nomeEmpresa: document.getElementById('nameBusiness').value,
+        fantasyName: document.getElementById('fantasyName').value,
+        cnpj: document.getElementById('cpfCnpj').value,
+        endereco: document.getElementById('address').value,
+        numero: document.getElementById('numberAddress').value,
+        bairro: document.getElementById('neighborhood').value,
+        estado: document.getElementById('state').value,
+        cidade: document.getElementById('city').value,
+        cep: document.getElementById('zipcode').value,
+        telefone: document.getElementById('phone').value,
+        email: document.getElementById('email').value
+    };
+
+    const clientFormData = {
+        nameClient: document.getElementById('nameClient').value,
+        cpfCNPJClient: document.getElementById('cpfCNPJClient').value,
+        fantasyNameClient: document.getElementById('fantasyNameClient').value,
+        streetClient: document.getElementById('streetClient').value,
+        numberAddressClient: document.getElementById('numberAddressClient').value,
+        stateClient: document.getElementById('stateClient').value,
+        neighborhoodClient: document.getElementById('neighborhoodClient').value,
+        cityClient: document.getElementById('cityClient').value,
+        zipcodeClient: document.getElementById('zipcodeClient').value,
+        phoneClient: document.getElementById('phoneClient').value,
+        emailClient: document.getElementById('emailClient').value,
+    };
+
+    const serviceData = [];
+    const descriptions = document.querySelectorAll('.descriptionService');
+    const amounts = document.querySelectorAll('.amountService');
+
+    const equipmentData = [];
+    const codes = document.querySelectorAll('.codeEquipment');
+    const names = document.querySelectorAll('.nameEquipment');
+    const quantities = document.querySelectorAll('.quantityEquipment');
+    const unitPrices = document.querySelectorAll('.unitPriceEquipment');
+    const subtotals = document.querySelectorAll('.subtotalEquipment');
+
+    const observations = document.getElementById('observations').value;
+
+    for (let i = 0; i < codes.length; i++) {
+        equipmentData.push({
+            codeEquipment: codes[i].value,
+            nameEquipment: names[i].value,
+            quantityEquipment: quantities[i].value,
+            unitPriceEquipment: unitPrices[i].value,
+            subtotalEquipment: subtotals[i].value
+        });
+    }
+
+    for (let i = 0; i < descriptions.length; i++) {
+        serviceData.push({
+            descriptionService: descriptions[i].value,
+            amountService: amounts[i].value
+        });
+    }
+
+    const orcamento = {
+        empresa: issuingCompany,
+        cliente: clientFormData,
+        servicos: serviceData,
+        equipamentos: equipmentData,
+        observacoes: observations,
+        dataCriacao: new Date()
+    };
+
+    try {
+        // Gerar um ID numérico único
+        const numericId = await generateNumericId();
+
+        // Salvar o orçamento com o ID numérico
+        await db.collection("orcamentos").doc(numericId.toString()).set(orcamento);
+
+        alert(`Orçamento salvo com sucesso! ID do orçamento: ${numericId}`);
+    } catch (e) {
+        console.error("Erro ao adicionar documento: ", e);
+        alert("Erro ao salvar orçamento.");
+    }
+}
+
+window.saveDataToFirestore = saveDataToFirestore;
+
+/*
+// Função para salvar dados no Firestore
+export async function saveDataToFirestore() {
+    const issuingCompany = {
+        nomeEmpresa: document.getElementById('nameBusiness').value,
+        fantasyName: document.getElementById('fantasyName').value,
+        cnpj: document.getElementById('cpfCnpj').value,
+        endereco: document.getElementById('address').value,
+        numero: document.getElementById('numberAddress').value,
+        bairro: document.getElementById('neighborhood').value,
+        estado: document.getElementById('state').value,
+        cidade: document.getElementById('city').value,
+        cep: document.getElementById('zipcode').value,
+        telefone: document.getElementById('phone').value,
+        email: document.getElementById('email').value
+    };
+
+    const clientFormData = {
+        nameClient: document.getElementById('nameClient').value,
+        cpfCNPJClient: document.getElementById('cpfCNPJClient').value,
+        fantasyNameClient: document.getElementById('fantasyNameClient').value,
+        streetClient: document.getElementById('streetClient').value,
+        numberAddressClient: document.getElementById('numberAddressClient').value,
+        stateClient: document.getElementById('stateClient').value,
+        neighborhoodClient: document.getElementById('neighborhoodClient').value,
+        cityClient: document.getElementById('cityClient').value,
+        zipcodeClient: document.getElementById('zipcodeClient').value,
+        phoneClient: document.getElementById('phoneClient').value,
+        emailClient: document.getElementById('emailClient').value,
+    };
+
+    const serviceData = [];
+    const descriptions = document.querySelectorAll('.descriptionService');
+    const amounts = document.querySelectorAll('.amountService');
+
+    const equipmentData = [];
+    const codes = document.querySelectorAll('.codeEquipment');
+    const names = document.querySelectorAll('.nameEquipment');
+    const quantities = document.querySelectorAll('.quantityEquipment');
+    const unitPrices = document.querySelectorAll('.unitPriceEquipment');
+    const subtotals = document.querySelectorAll('.subtotalEquipment');
+
+    const observations = document.getElementById('observations').value;
+
+    for (let i = 0; i < codes.length; i++) {
+        equipmentData.push({
+            codeEquipment: codes[i].value,
+            nameEquipment: names[i].value,
+            quantityEquipment: quantities[i].value,
+            unitPriceEquipment: unitPrices[i].value,
+            subtotalEquipment: subtotals[i].value
+        });
+    }
+
+    for (let i = 0; i < descriptions.length; i++) {
+        serviceData.push({
+            descriptionService: descriptions[i].value,
+            amountService: amounts[i].value
+        });
+    }
+
+    const orcamento = {
+        empresa: issuingCompany,
+        cliente: clientFormData,
+        servicos: serviceData,
+        equipamentos: equipmentData,
+        observacoes: observations,
+        dataCriacao: new Date()
+    };
+
+    try {
+        const docRef = await db.collection("orcamentos").add(orcamento);
+        alert("Orçamento salvo com sucesso! ID do documento: " + docRef.id);
+    } catch (e) {
+        console.error("Erro ao adicionar documento: ", e);
+        alert("Erro ao salvar orçamento.");
+    }
+}
+
+window.saveDataToFirestore = saveDataToFirestore;
+*/
+/*
 // Função para salvar dados no Firestore
 export async function saveDataToFirestore() {
     const companyForm = document.getElementById('companyForm');
@@ -208,7 +397,9 @@ export async function saveDataToFirestore() {
     }
 }
 
+
 window.saveDataToFirestore = saveDataToFirestore;
+*/
 
 // Função para adicionar novo serviço
 document.getElementById('add-service-btn').addEventListener('click', function () {

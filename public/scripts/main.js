@@ -13,6 +13,312 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+document.addEventListener('DOMContentLoaded', function () {
+    const mainFab = document.getElementById('main-fab');
+    const fabOptions = document.getElementById('fab-options');
+
+    if (mainFab && fabOptions) {
+        mainFab.addEventListener('click', function () {
+            fabOptions.classList.toggle('show');
+        });
+    }
+
+    const fabOptionsButtons = document.querySelectorAll(".fab-option");
+    const modals = document.querySelectorAll(".modal");
+    const closeButtons = document.querySelectorAll(".close");
+
+    // Garante que todas as modais estejam escondidas
+    modals.forEach(modal => {
+        modal.style.display = "none";
+    });
+
+    // Adiciona evento de clique para abrir a modal correspondente
+    fabOptionsButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const targetModal = document.getElementById(button.dataset.target);
+            if (targetModal) {
+                targetModal.classList.add("show");
+                targetModal.style.display = "flex";
+            }
+        });
+    });
+
+    // Fecha a modal quando o botão de fechar é clicado
+    closeButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const modal = button.closest(".modal");
+            modal.classList.remove("show");
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 300); // Espera a transição de opacidade antes de esconder
+        });
+    });
+
+    // Fecha a modal se o usuário clicar fora da área de conteúdo
+    modals.forEach(modal => {
+        modal.addEventListener("click", (event) => {
+            if (event.target === modal) {
+                modal.classList.remove("show");
+                setTimeout(() => {
+                    modal.style.display = "none";
+                }, 300);
+            }
+        });
+    });
+});
+
+/*
+document.addEventListener('DOMContentLoaded', function () {
+    // Configuração do botão flutuante
+    const mainFab = document.getElementById('main-fab');
+    const fabOptions = document.getElementById('fab-options');
+
+    if (mainFab && fabOptions) {
+        mainFab.addEventListener('click', function () {
+            if (fabOptions.style.display === 'none' || fabOptions.style.display === '') {
+                fabOptions.style.display = 'flex'; // Exibe as opções
+            } else {
+                fabOptions.style.display = 'none'; // Oculta as opções
+            }
+        });
+    }
+
+    // Restante do seu código existente...
+    const fabOptionsButtons = document.querySelectorAll(".fab-option");
+    const modals = document.querySelectorAll(".modal");
+    const closeButtons = document.querySelectorAll(".close");
+
+    // Garante que todas as modais estejam escondidas
+    modals.forEach(modal => {
+        modal.style.display = "none";
+    });
+
+    // Adiciona evento de clique para abrir a modal correspondente
+    fabOptionsButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const targetModal = document.getElementById(button.dataset.target);
+            if (targetModal) {
+                targetModal.classList.add("show");
+                targetModal.style.display = "flex";
+            }
+        });
+    });
+
+    // Fecha a modal quando o botão de fechar é clicado
+    closeButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const modal = button.closest(".modal");
+            modal.classList.remove("show");
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 300); // Espera a transição de opacidade antes de esconder
+        });
+    });
+
+    // Fecha a modal se o usuário clicar fora da área de conteúdo
+    modals.forEach(modal => {
+        modal.addEventListener("click", (event) => {
+            if (event.target === modal) {
+                modal.classList.remove("show");
+                setTimeout(() => {
+                    modal.style.display = "none";
+                }, 300);
+            }
+        });
+    });
+});
+*/
+
+// Função para gerar um ID numérico único
+async function generateNumericId() {
+    const counterRef = db.collection('counters').doc('orcamentoCounter');
+    let numericId;
+
+    // Usar uma transação para garantir atomicidade
+    await db.runTransaction(async (transaction) => {
+        const doc = await transaction.get(counterRef);
+        if (!doc.exists) {
+            // Se o contador não existir, crie com o valor inicial 1
+            transaction.set(counterRef, { count: 1 });
+            numericId = 1;
+        } else {
+            // Incrementar o contador
+            const currentCount = doc.data().count;
+            numericId = currentCount + 1;
+            transaction.update(counterRef, { count: numericId });
+        }
+    });
+
+    return numericId;
+}
+
+// Função para salvar o orçamento com um ID numérico
+export async function saveDataToFirestore() {
+    const issuingCompany = {
+        nomeEmpresa: document.getElementById('nameBusiness').value,
+        fantasyName: document.getElementById('fantasyName').value,
+        cnpj: document.getElementById('cpfCnpj').value,
+        endereco: document.getElementById('address').value,
+        numero: document.getElementById('numberAddress').value,
+        bairro: document.getElementById('neighborhood').value,
+        estado: document.getElementById('state').value,
+        cidade: document.getElementById('city').value,
+        cep: document.getElementById('zipcode').value,
+        telefone: document.getElementById('phone').value,
+        email: document.getElementById('email').value
+    };
+
+    const clientFormData = {
+        nameClient: document.getElementById('nameClient').value,
+        cpfCNPJClient: document.getElementById('cpfCNPJClient').value,
+        fantasyNameClient: document.getElementById('fantasyNameClient').value,
+        streetClient: document.getElementById('streetClient').value,
+        numberAddressClient: document.getElementById('numberAddressClient').value,
+        stateClient: document.getElementById('stateClient').value,
+        neighborhoodClient: document.getElementById('neighborhoodClient').value,
+        cityClient: document.getElementById('cityClient').value,
+        zipcodeClient: document.getElementById('zipcodeClient').value,
+        phoneClient: document.getElementById('phoneClient').value,
+        emailClient: document.getElementById('emailClient').value,
+    };
+
+    const serviceData = [];
+    const descriptions = document.querySelectorAll('.descriptionService');
+    const amounts = document.querySelectorAll('.amountService');
+
+    const equipmentData = [];
+    const codes = document.querySelectorAll('.codeEquipment');
+    const names = document.querySelectorAll('.nameEquipment');
+    const quantities = document.querySelectorAll('.quantityEquipment');
+    const unitPrices = document.querySelectorAll('.unitPriceEquipment');
+    const subtotals = document.querySelectorAll('.subtotalEquipment');
+
+    const observations = document.getElementById('observations').value;
+
+    for (let i = 0; i < codes.length; i++) {
+        equipmentData.push({
+            codeEquipment: codes[i].value,
+            nameEquipment: names[i].value,
+            quantityEquipment: quantities[i].value,
+            unitPriceEquipment: unitPrices[i].value,
+            subtotalEquipment: subtotals[i].value
+        });
+    }
+
+    for (let i = 0; i < descriptions.length; i++) {
+        serviceData.push({
+            descriptionService: descriptions[i].value,
+            amountService: amounts[i].value
+        });
+    }
+
+    const orcamento = {
+        empresa: issuingCompany,
+        cliente: clientFormData,
+        servicos: serviceData,
+        equipamentos: equipmentData,
+        observacoes: observations,
+        dataCriacao: new Date()
+    };
+
+    try {
+        // Gerar um ID numérico único
+        const numericId = await generateNumericId();
+
+        // Salvar o orçamento com o ID numérico
+        await db.collection("orcamentos").doc(numericId.toString()).set(orcamento);
+
+        alert(`Orçamento salvo com sucesso! ID do orçamento: ${numericId}`);
+    } catch (e) {
+        console.error("Erro ao adicionar documento: ", e);
+        alert("Erro ao salvar orçamento.");
+    }
+}
+
+window.saveDataToFirestore = saveDataToFirestore;
+
+/*
+// Função para salvar dados no Firestore
+export async function saveDataToFirestore() {
+    const issuingCompany = {
+        nomeEmpresa: document.getElementById('nameBusiness').value,
+        fantasyName: document.getElementById('fantasyName').value,
+        cnpj: document.getElementById('cpfCnpj').value,
+        endereco: document.getElementById('address').value,
+        numero: document.getElementById('numberAddress').value,
+        bairro: document.getElementById('neighborhood').value,
+        estado: document.getElementById('state').value,
+        cidade: document.getElementById('city').value,
+        cep: document.getElementById('zipcode').value,
+        telefone: document.getElementById('phone').value,
+        email: document.getElementById('email').value
+    };
+
+    const clientFormData = {
+        nameClient: document.getElementById('nameClient').value,
+        cpfCNPJClient: document.getElementById('cpfCNPJClient').value,
+        fantasyNameClient: document.getElementById('fantasyNameClient').value,
+        streetClient: document.getElementById('streetClient').value,
+        numberAddressClient: document.getElementById('numberAddressClient').value,
+        stateClient: document.getElementById('stateClient').value,
+        neighborhoodClient: document.getElementById('neighborhoodClient').value,
+        cityClient: document.getElementById('cityClient').value,
+        zipcodeClient: document.getElementById('zipcodeClient').value,
+        phoneClient: document.getElementById('phoneClient').value,
+        emailClient: document.getElementById('emailClient').value,
+    };
+
+    const serviceData = [];
+    const descriptions = document.querySelectorAll('.descriptionService');
+    const amounts = document.querySelectorAll('.amountService');
+
+    const equipmentData = [];
+    const codes = document.querySelectorAll('.codeEquipment');
+    const names = document.querySelectorAll('.nameEquipment');
+    const quantities = document.querySelectorAll('.quantityEquipment');
+    const unitPrices = document.querySelectorAll('.unitPriceEquipment');
+    const subtotals = document.querySelectorAll('.subtotalEquipment');
+
+    const observations = document.getElementById('observations').value;
+
+    for (let i = 0; i < codes.length; i++) {
+        equipmentData.push({
+            codeEquipment: codes[i].value,
+            nameEquipment: names[i].value,
+            quantityEquipment: quantities[i].value,
+            unitPriceEquipment: unitPrices[i].value,
+            subtotalEquipment: subtotals[i].value
+        });
+    }
+
+    for (let i = 0; i < descriptions.length; i++) {
+        serviceData.push({
+            descriptionService: descriptions[i].value,
+            amountService: amounts[i].value
+        });
+    }
+
+    const orcamento = {
+        empresa: issuingCompany,
+        cliente: clientFormData,
+        servicos: serviceData,
+        equipamentos: equipmentData,
+        observacoes: observations,
+        dataCriacao: new Date()
+    };
+
+    try {
+        const docRef = await db.collection("orcamentos").add(orcamento);
+        alert("Orçamento salvo com sucesso! ID do documento: " + docRef.id);
+    } catch (e) {
+        console.error("Erro ao adicionar documento: ", e);
+        alert("Erro ao salvar orçamento.");
+    }
+}
+
+window.saveDataToFirestore = saveDataToFirestore;
+*/
+/*
 // Função para salvar dados no Firestore
 export async function saveDataToFirestore() {
     const companyForm = document.getElementById('companyForm');
@@ -91,7 +397,9 @@ export async function saveDataToFirestore() {
     }
 }
 
+
 window.saveDataToFirestore = saveDataToFirestore;
+*/
 
 // Função para adicionar novo serviço
 document.getElementById('add-service-btn').addEventListener('click', function () {
@@ -159,56 +467,6 @@ includeEquipmentsCheckbox.addEventListener('change', function () {
         materialsBtn.style.display = 'none'; // Oculta o botão
     }
 });
-
-export async function searchData() {
-    const searchTerm = document.getElementById('searchBar').value.trim();
-
-    if (!searchTerm) {
-        alert('Digite um termo para buscar.');
-        return;
-    }
-
-    try {
-        let querySnapshot = await db.collection("empresasEmitenteOrcamento")
-            .where("cnpj", "==", searchTerm)
-            .get();
-
-        // Se não encontrou pelo CNPJ, tentar pelo nome da empresa
-        if (querySnapshot.empty) {
-            querySnapshot = await db.collection("empresasEmitenteOrcamento")
-                .where("nomeEmpresa", "==", searchTerm)
-                .get();
-        }
-
-        if (querySnapshot.empty) {
-            alert("Nenhum resultado encontrado.");
-            return;
-        }
-
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-
-            // Preencher os campos do formulário com os dados encontrados
-            document.getElementById('nameBusiness').value = data.nomeEmpresa || "";
-            document.getElementById('fantasyName').value = data.fantasyName || "";
-            document.getElementById('cpfCnpj').value = data.cnpj || "";
-            document.getElementById('address').value = data.endereco || "";
-            document.getElementById('numberAddress').value = data.numero || "";
-            document.getElementById('neighborhood').value = data.bairro || "";
-            document.getElementById('state').value = data.estado || "";
-            document.getElementById('city').value = data.cidade || "";
-            document.getElementById('zipcode').value = data.cep || "";
-            document.getElementById('phone').value = data.telefone || "";
-            document.getElementById('email').value = data.email || "";
-        });
-
-        alert("Dados carregados com sucesso!");
-
-    } catch (error) {
-        console.error("Erro ao buscar dados: ", error);
-        alert("Erro ao buscar dados.");
-    }
-}
 
 // Função para carregar os clientes ao abrir a página
 export async function loadClients() {
@@ -360,5 +618,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 }, 300);
             }
         });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const editableText = document.getElementById('nome-empresa');
+
+    // Quando o campo perde o foco, salva o valor (se necessário)
+    editableText.addEventListener('blur', function () {
+        // Aqui você pode adicionar lógica para salvar o valor no banco de dados, se necessário
+        console.log('Nome atualizado:', editableText.value);
+    });
+
+    // Opcional: Permitir que o Enter salve e saia do modo de edição
+    editableText.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            editableText.blur(); // Remove o foco do campo
+        }
     });
 });

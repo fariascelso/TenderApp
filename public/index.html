@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <title>Master Climatizadores</title>
+    <title>OrçaFácil</title>
     <link rel="stylesheet" href="../style/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -28,19 +28,33 @@
 
 
     <div class="container">
-        <h1>Master Climatizadores</h1>
+        <h1>Criar Orçamento</h1>
         <div class="info">
-            <label for="nome-empresa">Encaminhado por:</label>
-            <span id="nome-empresa">José Roberto Freitas</span>
+            <input type="text" id="nome-empresa" value="Nome de quem está criando o orçamento" class="editable-text">
         </div>
 
         <div class="floating-menu">
-            <button id="main-fab"><i class="fas fa-plus"></i></button>
+            <button id="main-fab">
+                <i class="fas fa-plus"></i>
+                <span>Criar</span>
+            </button>
             <div id="fab-options">
-                <button class="fab-option" data-target="clientModal"><i class="fas fa-user-tie"></i></button>
-                <button class="fab-option" data-target="companyModal"><i class="fas fa-building"></i></button>
-                <button class="fab-option" data-target="equipmentModal"><i class="fas fa-boxes-stacked"></i></button>
-                <button class="fab-option" data-target="serviceModal"><i class="fas fa-tools"></i></button>
+                <button class="fab-option" data-target="clientModal">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Cliente</span>
+                </button>
+                <button class="fab-option" data-target="companyModal">
+                    <i class="fas fa-building"></i>
+                    <span>Empresa</span>
+                </button>
+                <button class="fab-option" data-target="equipmentModal">
+                    <i class="fas fa-boxes-stacked"></i>
+                    <span>Equipamento</span>
+                </button>
+                <button class="fab-option" data-target="serviceModal">
+                    <i class="fas fa-tools"></i>
+                    <span>Serviço</span>
+                </button>
             </div>
         </div>
 
@@ -105,14 +119,6 @@
             <select id="companySelect" onchange="fillCompanyData()">
                 <option value="">Carregando empresas...</option>
             </select>
-
-            <div class="search-container">
-                <input type="text" id="searchBar" placeholder="Digite para buscar..." />
-                <button id="search-btn" onclick="searchData()">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-
 
             <form id="companyForm">
                 <label for="nameBusiness">Nome da Empresa:</label>

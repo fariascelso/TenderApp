@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
         mainFab.addEventListener('click', function () {
             fabOptions.classList.toggle('show');
         });
+    } else {
+        console.error('Elementos main-fab ou fab-options não encontrados no DOM.');
     }
 
     const fabOptionsButtons = document.querySelectorAll(".fab-option");
@@ -402,71 +404,85 @@ window.saveDataToFirestore = saveDataToFirestore;
 */
 
 // Função para adicionar novo serviço
-document.getElementById('add-service-btn').addEventListener('click', function () {
-    const servicesContainer = document.getElementById('services-container');
+// Verifica se o elemento existe antes de adicionar o evento
+const addServiceBtn = document.getElementById('add-service-btn');
+if (addServiceBtn) {
+    addServiceBtn.addEventListener('click', function () {
+        const servicesContainer = document.getElementById('services-container');
 
-    const newServiceItem = document.createElement('div');
-    newServiceItem.classList.add('service-item');
+        const newServiceItem = document.createElement('div');
+        newServiceItem.classList.add('service-item');
 
-    newServiceItem.innerHTML = `
-        <label for="descriptionService">Descrição do Serviço:</label>
-        <input type="text" class="descriptionService" name="descriptionService" placeholder="Descrição do serviço">
-        <label for="amountService">Valor do Serviço:</label>
-        <input type="text" class="amountService" name="amountService" placeholder="Valor do serviço">
-    `;
+        newServiceItem.innerHTML = `
+            <label for="descriptionService">Descrição do Serviço:</label>
+            <input type="text" class="descriptionService" name="descriptionService" placeholder="Descrição do serviço">
+            <label for="amountService">Valor do Serviço:</label>
+            <input type="text" class="amountService" name="amountService" placeholder="Valor do serviço">
+        `;
 
-    servicesContainer.appendChild(newServiceItem);
-});
+        servicesContainer.appendChild(newServiceItem);
+    });
+}
 
-document.getElementById('equipments-container').addEventListener('input', function (event) {
-    const equipmentItem = event.target.closest('.equipment-item');
-    const quantity = equipmentItem.querySelector('.quantityEquipment').value;
-    const unitPrice = equipmentItem.querySelector('.unitPriceEquipment').value;
-    const subtotal = equipmentItem.querySelector('.subtotalEquipment');
+// Verifica se o elemento existe antes de adicionar o evento
+const equipmentsContainer = document.getElementById('equipments-container');
+if (equipmentsContainer) {
+    equipmentsContainer.addEventListener('input', function (event) {
+        const equipmentItem = event.target.closest('.equipment-item');
+        const quantity = equipmentItem.querySelector('.quantityEquipment').value;
+        const unitPrice = equipmentItem.querySelector('.unitPriceEquipment').value;
+        const subtotal = equipmentItem.querySelector('.subtotalEquipment');
 
-    // Cálculo do subtotal
-    const calculatedSubtotal = parseFloat(quantity) * parseFloat(unitPrice || 0);
-    subtotal.value = calculatedSubtotal ? `R$ ${calculatedSubtotal.toFixed(2)}` : '';
-});
+        // Cálculo do subtotal
+        const calculatedSubtotal = parseFloat(quantity) * parseFloat(unitPrice || 0);
+        subtotal.value = calculatedSubtotal ? `R$ ${calculatedSubtotal.toFixed(2)}` : '';
+    });
+}
 
-document.getElementById('add-equipment-btn').addEventListener('click', function () {
-    const equipmentsContainer = document.getElementById('equipments-container');
+// Verifica se o elemento existe antes de adicionar o evento
+const addEquipmentBtn = document.getElementById('add-equipment-btn');
+if (addEquipmentBtn) {
+    addEquipmentBtn.addEventListener('click', function () {
+        const equipmentsContainer = document.getElementById('equipments-container');
 
-    const newEquipmentItem = document.createElement('div');
-    newEquipmentItem.classList.add('equipment-item');
+        const newEquipmentItem = document.createElement('div');
+        newEquipmentItem.classList.add('equipment-item');
 
-    newEquipmentItem.innerHTML = `
-        <label for="codeEquipment">Código:</label>
-        <input type="text" class="codeEquipment" placeholder="Código do equipamento">
-        
-        <label for="nameEquipment">Nome:</label>
-        <input type="text" class="nameEquipment" placeholder="Nome do equipamento">
-        
-        <label for="quantityEquipment">Quantidade:</label>
-        <input type="number" class="quantityEquipment" placeholder="Quantidade" min="1">
-        
-        <label for="unitPriceEquipment">Preço Unitário:</label>
-        <input type="text" class="unitPriceEquipment" placeholder="Preço unitário">
-        
-        <label for="subtotalEquipment">Subtotal:</label>
-        <input type="text" class="subtotalEquipment" placeholder="Subtotal" readonly>
-    `;
+        newEquipmentItem.innerHTML = `
+            <label for="codeEquipment">Código:</label>
+            <input type="text" class="codeEquipment" placeholder="Código do equipamento">
+            
+            <label for="nameEquipment">Nome:</label>
+            <input type="text" class="nameEquipment" placeholder="Nome do equipamento">
+            
+            <label for="quantityEquipment">Quantidade:</label>
+            <input type="number" class="quantityEquipment" placeholder="Quantidade" min="1">
+            
+            <label for="unitPriceEquipment">Preço Unitário:</label>
+            <input type="text" class="unitPriceEquipment" placeholder="Preço unitário">
+            
+            <label for="subtotalEquipment">Subtotal:</label>
+            <input type="text" class="subtotalEquipment" placeholder="Subtotal" readonly>
+        `;
 
-    equipmentsContainer.appendChild(newEquipmentItem);
-});
+        equipmentsContainer.appendChild(newEquipmentItem);
+    });
+}
 
 // Obtendo referência à checkbox e ao botão
 const includeEquipmentsCheckbox = document.getElementById('includeEquipments');
 const materialsBtn = document.getElementById('materials-btn');
 
 // Evento para exibir ou ocultar o botão com base no estado da checkbox
-includeEquipmentsCheckbox.addEventListener('change', function () {
-    if (includeEquipmentsCheckbox.checked) {
-        materialsBtn.style.display = 'block'; // Exibe o botão
-    } else {
-        materialsBtn.style.display = 'none'; // Oculta o botão
-    }
-});
+if (includeEquipmentsCheckbox && materialsBtn) {
+    includeEquipmentsCheckbox.addEventListener('change', function () {
+        if (includeEquipmentsCheckbox.checked) {
+            materialsBtn.style.display = 'block'; // Exibe o botão
+        } else {
+            materialsBtn.style.display = 'none'; // Oculta o botão
+        }
+    });
+}
 
 // Função para carregar os clientes ao abrir a página
 export async function loadClients() {
@@ -637,3 +653,114 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+// Função para navegar para a página de listagem de orçamentos
+function navigateToListarOrcamentos() {
+    window.location.href = "listorders.html";
+}
+
+// Função para navegar para a página de criação de orçamento
+function navigateToCriarOrcamento() {
+    window.location.href = "index.html"; // Substitua pelo nome da sua página de criação
+}
+
+// Adicionar as funções ao escopo global (window) para que possam ser chamadas no HTML
+window.navigateToListarOrcamentos = navigateToListarOrcamentos;
+window.navigateToCriarOrcamento = navigateToCriarOrcamento;
+
+// Função para carregar e exibir os orçamentos na página listorders.html
+async function loadOrcamentos() {
+    const tbody = document.querySelector("#orcamentosTable tbody");
+
+    try {
+        // Buscar todos os documentos da coleção "orcamentos"
+        const querySnapshot = await db.collection("orcamentos").get();
+
+        // Limpar o conteúdo atual da tabela
+        tbody.innerHTML = "";
+
+        // Iterar sobre cada documento
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const row = `
+                <tr>
+                    <td>${doc.id}</td>
+                    <td>${data.empresa.nomeEmpresa}</td>
+                    <td>${data.cliente.nameClient}</td>
+                    <td>${new Date(data.dataCriacao).toLocaleDateString()}</td>
+                    <td>
+                        <button onclick="viewOrcamento('${doc.id}')">Ver Detalhes</button>
+                        <button onclick="deleteOrcamento('${doc.id}')">Excluir</button>
+                    </td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    } catch (error) {
+        console.error("Erro ao carregar orçamentos:", error);
+        alert("Erro ao carregar orçamentos.");
+    }
+}
+
+// Função para visualizar detalhes de um orçamento
+function viewOrcamento(id) {
+    window.location.href = `details.html?id=${id}`;
+}
+
+// Função para excluir um orçamento
+async function deleteOrcamento(id) {
+    if (confirm("Tem certeza que deseja excluir este orçamento?")) {
+        try {
+            await db.collection("orcamentos").doc(id).delete();
+            alert("Orçamento excluído com sucesso!");
+            loadOrcamentos(); // Recarregar a lista após exclusão
+        } catch (error) {
+            console.error("Erro ao excluir orçamento:", error);
+            alert("Erro ao excluir orçamento.");
+        }
+    }
+}
+
+// Carregar os orçamentos ao abrir a página listorders.html
+if (window.location.pathname.includes("listorders.html")) {
+    window.onload = loadOrcamentos;
+}
+
+// Função para carregar os detalhes do orçamento na página details.html
+async function loadOrcamentoDetails() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const orcamentoId = urlParams.get('id');
+    const detalhesDiv = document.getElementById("detalhesOrcamento");
+
+    try {
+        const doc = await db.collection("orcamentos").doc(orcamentoId).get();
+        if (doc.exists) {
+            const data = doc.data();
+            detalhesDiv.innerHTML = `
+                <p><strong>ID:</strong> ${doc.id}</p>
+                <p><strong>Empresa:</strong> ${data.empresa.nomeEmpresa}</p>
+                <p><strong>Cliente:</strong> ${data.cliente.nameClient}</p>
+                <p><strong>Data de Criação:</strong> ${new Date(data.dataCriacao).toLocaleDateString()}</p>
+                <h2>Serviços:</h2>
+                <ul>
+                    ${data.servicos.map(servico => `<li>${servico.descriptionService} - R$ ${servico.amountService}</li>`).join("")}
+                </ul>
+                <h2>Equipamentos:</h2>
+                <ul>
+                    ${data.equipamentos.map(equipamento => `<li>${equipamento.nameEquipment} - ${equipamento.quantityEquipment} x R$ ${equipamento.unitPriceEquipment}</li>`).join("")}
+                </ul>
+                <p><strong>Observações:</strong> ${data.observacoes}</p>
+            `;
+        } else {
+            detalhesDiv.innerHTML = "<p>Orçamento não encontrado.</p>";
+        }
+    } catch (error) {
+        console.error("Erro ao carregar detalhes do orçamento:", error);
+        detalhesDiv.innerHTML = "<p>Erro ao carregar detalhes.</p>";
+    }
+}
+
+// Carregar os detalhes ao abrir a página details.html
+if (window.location.pathname.includes("details.html")) {
+    window.onload = loadOrcamentoDetails;
+}

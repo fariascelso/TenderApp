@@ -637,3 +637,95 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+// Função para carregar e exibir os orçamentos
+async function loadOrcamentos() {
+    const tbody = document.querySelector("#orcamentosTable tbody");
+
+    try {
+        // Buscar todos os documentos da coleção "orcamentos"
+        const querySnapshot = await db.collection("orcamentos").get();
+
+        // Limpar o conteúdo atual da tabela
+        tbody.innerHTML = "";
+
+        // Iterar sobre cada documento
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const row = `
+                <tr>
+                    <td>${doc.id}</td>
+                    <td>${data.empresa.nomeEmpresa}</td>
+                    <td>${data.cliente.nameClient}</td>
+                    <td>${new Date(data.dataCriacao).toLocaleDateString()}</td>
+                    <td>
+                        <button onclick="viewOrcamento('${doc.id}')">Ver Detalhes</button>
+                        <button onclick="deleteOrcamento('${doc.id}')">Excluir</button>
+                    </td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    } catch (error) {
+        console.error("Erro ao carregar orçamentos:", error);
+        alert("Erro ao carregar orçamentos.");
+    }
+}
+
+// Função para visualizar detalhes de um orçamento
+function viewOrcamento(id) {
+    window.location.href = `detalhes-orcamento.html?id=${id}`;
+}
+
+// Função para excluir um orçamento
+async function deleteOrcamento(id) {
+    if (confirm("Tem certeza que deseja excluir este orçamento?")) {
+        try {
+            await db.collection("orcamentos").doc(id).delete();
+            alert("Orçamento excluído com sucesso!");
+            loadOrcamentos(); // Recarregar a lista após exclusão
+        } catch (error) {
+            console.error("Erro ao excluir orçamento:", error);
+            alert("Erro ao excluir orçamento.");
+        }
+    }
+}
+
+// Carregar os orçamentos ao abrir a página
+window.onload = loadOrcamentos;
+
+async function loadOrcamentoDetails() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const orcamentoId = urlParams.get('id');
+    const detalhesDiv = document.getElementById("detalhesOrcamento");
+
+    try {
+        const doc = await db.collection("orcamentos").doc(orcamentoId).get();
+        if (doc.exists) {
+            const data = doc.data();
+            detalhesDiv.innerHTML = `
+                <p><strong>ID:</strong> ${doc.id}</p>
+                <p><strong>Empresa:</strong> ${data.empresa.nomeEmpresa}</p>
+                <p><strong>Cliente:</strong> ${data.cliente.nameClient}</p>
+                <p><strong>Data de Criação:</strong> ${new Date(data.dataCriacao).toLocaleDateString()}</p>
+                <h2>Serviços:</h2>
+                <ul>
+                    ${data.servicos.map(servico => `<li>${servico.descriptionService} - R$ ${servico.amountService}</li>`).join("")}
+                </ul>
+                <h2>Equipamentos:</h2>
+                <ul>
+                    ${data.equipamentos.map(equipamento => `<li>${equipamento.nameEquipment} - ${equipamento.quantityEquipment} x R$ ${equipamento.unitPriceEquipment}</li>`).join("")}
+                </ul>
+                <p><strong>Observações:</strong> ${data.observacoes}</p>
+            `;
+        } else {
+            detalhesDiv.innerHTML = "<p>Orçamento não encontrado.</p>";
+        }
+    } catch (error) {
+        console.error("Erro ao carregar detalhes do orçamento:", error);
+        detalhesDiv.innerHTML = "<p>Erro ao carregar detalhes.</p>";
+    }
+}
+
+// Carregar os detalhes ao abrir a página
+window.onload = loadOrcamentoDetails;

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listar Orçamentos</title>
+    <link rel="stylesheet" href="../style/styles.css">
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- Firebase e Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="../scripts/EventHandler.js"></script>
+    <script type="module" src="../scripts/TableStyles.js"></script>
+    <script type="module">
+        import { generatorPDF } from '../scripts/GeneratorPDF.js';
+        window.generatorPDF = generatorPDF;
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Lista de Orçamentos</h1>
+        <table id="orcamentosTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Empresa</th>
+                    <th>Cliente</th>
+                    <th>Data de Criação</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dados serão carregados aqui -->
+            </tbody>
+        </table>
+    </div>
+    <script type="module" src="./scripts/main.js"></script>
+
+</body>
+
+</html>

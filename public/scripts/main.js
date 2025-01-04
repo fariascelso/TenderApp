@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
         mainFab.addEventListener('click', function () {
             fabOptions.classList.toggle('show');
         });
+    } else {
+        console.error('Elementos main-fab ou fab-options não encontrados no DOM.');
     }
 
     const fabOptionsButtons = document.querySelectorAll(".fab-option");
@@ -66,68 +68,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-
-/*
-document.addEventListener('DOMContentLoaded', function () {
-    // Configuração do botão flutuante
-    const mainFab = document.getElementById('main-fab');
-    const fabOptions = document.getElementById('fab-options');
-
-    if (mainFab && fabOptions) {
-        mainFab.addEventListener('click', function () {
-            if (fabOptions.style.display === 'none' || fabOptions.style.display === '') {
-                fabOptions.style.display = 'flex'; // Exibe as opções
-            } else {
-                fabOptions.style.display = 'none'; // Oculta as opções
-            }
-        });
-    }
-
-    // Restante do seu código existente...
-    const fabOptionsButtons = document.querySelectorAll(".fab-option");
-    const modals = document.querySelectorAll(".modal");
-    const closeButtons = document.querySelectorAll(".close");
-
-    // Garante que todas as modais estejam escondidas
-    modals.forEach(modal => {
-        modal.style.display = "none";
-    });
-
-    // Adiciona evento de clique para abrir a modal correspondente
-    fabOptionsButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            const targetModal = document.getElementById(button.dataset.target);
-            if (targetModal) {
-                targetModal.classList.add("show");
-                targetModal.style.display = "flex";
-            }
-        });
-    });
-
-    // Fecha a modal quando o botão de fechar é clicado
-    closeButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            const modal = button.closest(".modal");
-            modal.classList.remove("show");
-            setTimeout(() => {
-                modal.style.display = "none";
-            }, 300); // Espera a transição de opacidade antes de esconder
-        });
-    });
-
-    // Fecha a modal se o usuário clicar fora da área de conteúdo
-    modals.forEach(modal => {
-        modal.addEventListener("click", (event) => {
-            if (event.target === modal) {
-                modal.classList.remove("show");
-                setTimeout(() => {
-                    modal.style.display = "none";
-                }, 300);
-            }
-        });
-    });
-});
-*/
 
 // Função para gerar um ID numérico único
 async function generateNumericId() {
@@ -237,236 +177,86 @@ export async function saveDataToFirestore() {
 
 window.saveDataToFirestore = saveDataToFirestore;
 
-/*
-// Função para salvar dados no Firestore
-export async function saveDataToFirestore() {
-    const issuingCompany = {
-        nomeEmpresa: document.getElementById('nameBusiness').value,
-        fantasyName: document.getElementById('fantasyName').value,
-        cnpj: document.getElementById('cpfCnpj').value,
-        endereco: document.getElementById('address').value,
-        numero: document.getElementById('numberAddress').value,
-        bairro: document.getElementById('neighborhood').value,
-        estado: document.getElementById('state').value,
-        cidade: document.getElementById('city').value,
-        cep: document.getElementById('zipcode').value,
-        telefone: document.getElementById('phone').value,
-        email: document.getElementById('email').value
-    };
-
-    const clientFormData = {
-        nameClient: document.getElementById('nameClient').value,
-        cpfCNPJClient: document.getElementById('cpfCNPJClient').value,
-        fantasyNameClient: document.getElementById('fantasyNameClient').value,
-        streetClient: document.getElementById('streetClient').value,
-        numberAddressClient: document.getElementById('numberAddressClient').value,
-        stateClient: document.getElementById('stateClient').value,
-        neighborhoodClient: document.getElementById('neighborhoodClient').value,
-        cityClient: document.getElementById('cityClient').value,
-        zipcodeClient: document.getElementById('zipcodeClient').value,
-        phoneClient: document.getElementById('phoneClient').value,
-        emailClient: document.getElementById('emailClient').value,
-    };
-
-    const serviceData = [];
-    const descriptions = document.querySelectorAll('.descriptionService');
-    const amounts = document.querySelectorAll('.amountService');
-
-    const equipmentData = [];
-    const codes = document.querySelectorAll('.codeEquipment');
-    const names = document.querySelectorAll('.nameEquipment');
-    const quantities = document.querySelectorAll('.quantityEquipment');
-    const unitPrices = document.querySelectorAll('.unitPriceEquipment');
-    const subtotals = document.querySelectorAll('.subtotalEquipment');
-
-    const observations = document.getElementById('observations').value;
-
-    for (let i = 0; i < codes.length; i++) {
-        equipmentData.push({
-            codeEquipment: codes[i].value,
-            nameEquipment: names[i].value,
-            quantityEquipment: quantities[i].value,
-            unitPriceEquipment: unitPrices[i].value,
-            subtotalEquipment: subtotals[i].value
-        });
-    }
-
-    for (let i = 0; i < descriptions.length; i++) {
-        serviceData.push({
-            descriptionService: descriptions[i].value,
-            amountService: amounts[i].value
-        });
-    }
-
-    const orcamento = {
-        empresa: issuingCompany,
-        cliente: clientFormData,
-        servicos: serviceData,
-        equipamentos: equipmentData,
-        observacoes: observations,
-        dataCriacao: new Date()
-    };
-
-    try {
-        const docRef = await db.collection("orcamentos").add(orcamento);
-        alert("Orçamento salvo com sucesso! ID do documento: " + docRef.id);
-    } catch (e) {
-        console.error("Erro ao adicionar documento: ", e);
-        alert("Erro ao salvar orçamento.");
-    }
-}
-
-window.saveDataToFirestore = saveDataToFirestore;
-*/
-/*
-// Função para salvar dados no Firestore
-export async function saveDataToFirestore() {
-    const companyForm = document.getElementById('companyForm');
-    const clientForm = document.getElementById('clientForm');
-    const serviceForm = document.getElementById('serviceForm');
-    
-    const issuingCompany = {
-        nomeEmpresa: document.getElementById('nameBusiness').value,
-        fantasyName: document.getElementById('fantasyName').value,
-        cnpj: document.getElementById('cpfCnpj').value,
-        endereco: document.getElementById('address').value,
-        numero: document.getElementById('numberAddress').value,
-        bairro: document.getElementById('neighborhood').value,
-        estado: document.getElementById('state').value,
-        cidade: document.getElementById('city').value,
-        cep: document.getElementById('zipcode').value,
-        telefone: document.getElementById('phone').value,
-        email: document.getElementById('email').value
-    };
-
-    const clientFormData = {
-        nameClient: document.getElementById('nameClient').value,
-        cpfCNPJClient: document.getElementById('cpfCNPJClient').value,
-        fantasyNameClient: document.getElementById('fantasyNameClient').value,
-        streetClient: document.getElementById('streetClient').value,
-        numberAddressClient: document.getElementById('numberAddressClient').value,
-        stateClient: document.getElementById('stateClient').value,
-        neighborhoodClient: document.getElementById('neighborhoodClient').value,
-        cityClient: document.getElementById('cityClient').value,
-        zipcodeClient: document.getElementById('zipcodeClient').value,
-        phoneClient: document.getElementById('phoneClient').value,
-        emailClient: document.getElementById('emailClient').value,
-    };
-
-    const serviceData = [];
-    const descriptions = document.querySelectorAll('.descriptionService');
-    const amounts = document.querySelectorAll('.amountService');
-
-    // Dados dos equipamentos
-    const equipmentData = [];
-    const codes = document.querySelectorAll('.codeEquipment');
-    const names = document.querySelectorAll('.nameEquipment');
-    const quantities = document.querySelectorAll('.quantityEquipment');
-    const unitPrices = document.querySelectorAll('.unitPriceEquipment');
-    const subtotals = document.querySelectorAll('.subtotalEquipment');
-
-    const observations = document.getElementById('observations').value
-
-    for (let i = 0; i < codes.length; i++) {
-        equipmentData.push({
-            codeEquipment: codes[i].value,
-            nameEquipment: names[i].value,
-            quantityEquipment: quantities[i].value,
-            unitPriceEquipment: unitPrices[i].value,
-            subtotalEquipment: subtotals[i].value
-        });
-    }
-
-    for (let i = 0; i < descriptions.length; i++) {
-        serviceData.push({
-            descriptionService: descriptions[i].value,
-            amountService: amounts[i].value
-        });
-    }
-
-    try {
-        const docIssuingCompany = await db.collection("empresasEmitenteOrcamento").add(issuingCompany)
-        const docClient = await db.collection("clientes").add(clientFormData)
-        const docService = await db.collection("servicos").add({ services: serviceData })
-        const docEquipment = await db.collection("equipamentos").add({ equipments: equipmentData })
-        const observationsData = await db.collection("observations").add({ observations: observations })
-        alert("Dados salvos com sucesso! ID do documento: " + docIssuingCompany.id);
-    } catch (e) {
-        console.error("Erro ao adicionar documento: ", e);
-        alert("Erro ao salvar dados.");
-    }
-}
-
-
-window.saveDataToFirestore = saveDataToFirestore;
-*/
-
 // Função para adicionar novo serviço
-document.getElementById('add-service-btn').addEventListener('click', function () {
-    const servicesContainer = document.getElementById('services-container');
+// Verifica se o elemento existe antes de adicionar o evento
+const addServiceBtn = document.getElementById('add-service-btn');
+if (addServiceBtn) {
+    addServiceBtn.addEventListener('click', function () {
+        const servicesContainer = document.getElementById('services-container');
 
-    const newServiceItem = document.createElement('div');
-    newServiceItem.classList.add('service-item');
+        const newServiceItem = document.createElement('div');
+        newServiceItem.classList.add('service-item');
 
-    newServiceItem.innerHTML = `
-        <label for="descriptionService">Descrição do Serviço:</label>
-        <input type="text" class="descriptionService" name="descriptionService" placeholder="Descrição do serviço">
-        <label for="amountService">Valor do Serviço:</label>
-        <input type="text" class="amountService" name="amountService" placeholder="Valor do serviço">
-    `;
+        newServiceItem.innerHTML = `
+            <label for="descriptionService">Descrição do Serviço:</label>
+            <input type="text" class="descriptionService" name="descriptionService" placeholder="Descrição do serviço">
+            <label for="amountService">Valor do Serviço:</label>
+            <input type="text" class="amountService" name="amountService" placeholder="Valor do serviço">
+        `;
 
-    servicesContainer.appendChild(newServiceItem);
-});
+        servicesContainer.appendChild(newServiceItem);
+    });
+}
 
-document.getElementById('equipments-container').addEventListener('input', function (event) {
-    const equipmentItem = event.target.closest('.equipment-item');
-    const quantity = equipmentItem.querySelector('.quantityEquipment').value;
-    const unitPrice = equipmentItem.querySelector('.unitPriceEquipment').value;
-    const subtotal = equipmentItem.querySelector('.subtotalEquipment');
+// Verifica se o elemento existe antes de adicionar o evento
+const equipmentsContainer = document.getElementById('equipments-container');
+if (equipmentsContainer) {
+    equipmentsContainer.addEventListener('input', function (event) {
+        const equipmentItem = event.target.closest('.equipment-item');
+        const quantity = equipmentItem.querySelector('.quantityEquipment').value;
+        const unitPrice = equipmentItem.querySelector('.unitPriceEquipment').value;
+        const subtotal = equipmentItem.querySelector('.subtotalEquipment');
 
-    // Cálculo do subtotal
-    const calculatedSubtotal = parseFloat(quantity) * parseFloat(unitPrice || 0);
-    subtotal.value = calculatedSubtotal ? `R$ ${calculatedSubtotal.toFixed(2)}` : '';
-});
+        // Cálculo do subtotal
+        const calculatedSubtotal = parseFloat(quantity) * parseFloat(unitPrice || 0);
+        subtotal.value = calculatedSubtotal ? `R$ ${calculatedSubtotal.toFixed(2)}` : '';
+    });
+}
 
-document.getElementById('add-equipment-btn').addEventListener('click', function () {
-    const equipmentsContainer = document.getElementById('equipments-container');
+// Verifica se o elemento existe antes de adicionar o evento
+const addEquipmentBtn = document.getElementById('add-equipment-btn');
+if (addEquipmentBtn) {
+    addEquipmentBtn.addEventListener('click', function () {
+        const equipmentsContainer = document.getElementById('equipments-container');
 
-    const newEquipmentItem = document.createElement('div');
-    newEquipmentItem.classList.add('equipment-item');
+        const newEquipmentItem = document.createElement('div');
+        newEquipmentItem.classList.add('equipment-item');
 
-    newEquipmentItem.innerHTML = `
-        <label for="codeEquipment">Código:</label>
-        <input type="text" class="codeEquipment" placeholder="Código do equipamento">
-        
-        <label for="nameEquipment">Nome:</label>
-        <input type="text" class="nameEquipment" placeholder="Nome do equipamento">
-        
-        <label for="quantityEquipment">Quantidade:</label>
-        <input type="number" class="quantityEquipment" placeholder="Quantidade" min="1">
-        
-        <label for="unitPriceEquipment">Preço Unitário:</label>
-        <input type="text" class="unitPriceEquipment" placeholder="Preço unitário">
-        
-        <label for="subtotalEquipment">Subtotal:</label>
-        <input type="text" class="subtotalEquipment" placeholder="Subtotal" readonly>
-    `;
+        newEquipmentItem.innerHTML = `
+            <label for="codeEquipment">Código:</label>
+            <input type="text" class="codeEquipment" placeholder="Código do equipamento">
+            
+            <label for="nameEquipment">Nome:</label>
+            <input type="text" class="nameEquipment" placeholder="Nome do equipamento">
+            
+            <label for="quantityEquipment">Quantidade:</label>
+            <input type="number" class="quantityEquipment" placeholder="Quantidade" min="1">
+            
+            <label for="unitPriceEquipment">Preço Unitário:</label>
+            <input type="text" class="unitPriceEquipment" placeholder="Preço unitário">
+            
+            <label for="subtotalEquipment">Subtotal:</label>
+            <input type="text" class="subtotalEquipment" placeholder="Subtotal" readonly>
+        `;
 
-    equipmentsContainer.appendChild(newEquipmentItem);
-});
+        equipmentsContainer.appendChild(newEquipmentItem);
+    });
+}
 
 // Obtendo referência à checkbox e ao botão
 const includeEquipmentsCheckbox = document.getElementById('includeEquipments');
 const materialsBtn = document.getElementById('materials-btn');
 
 // Evento para exibir ou ocultar o botão com base no estado da checkbox
-includeEquipmentsCheckbox.addEventListener('change', function () {
-    if (includeEquipmentsCheckbox.checked) {
-        materialsBtn.style.display = 'block'; // Exibe o botão
-    } else {
-        materialsBtn.style.display = 'none'; // Oculta o botão
-    }
-});
+if (includeEquipmentsCheckbox && materialsBtn) {
+    includeEquipmentsCheckbox.addEventListener('change', function () {
+        if (includeEquipmentsCheckbox.checked) {
+            materialsBtn.style.display = 'block'; // Exibe o botão
+        } else {
+            materialsBtn.style.display = 'none'; // Oculta o botão
+        }
+    });
+}
 
 // Função para carregar os clientes ao abrir a página
 export async function loadClients() {
@@ -638,7 +428,21 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Função para carregar e exibir os orçamentos
+// Função para navegar para a página de listagem de orçamentos
+function navigateToListarOrcamentos() {
+    window.location.href = "listorders.html";
+}
+
+// Função para navegar para a página de criação de orçamento
+function navigateToCriarOrcamento() {
+    window.location.href = "index.html"; // Substitua pelo nome da sua página de criação
+}
+
+// Adicionar as funções ao escopo global (window) para que possam ser chamadas no HTML
+window.navigateToListarOrcamentos = navigateToListarOrcamentos;
+window.navigateToCriarOrcamento = navigateToCriarOrcamento;
+
+// Função para carregar e exibir os orçamentos na página listorders.html
 async function loadOrcamentos() {
     const tbody = document.querySelector("#orcamentosTable tbody");
 
@@ -674,7 +478,7 @@ async function loadOrcamentos() {
 
 // Função para visualizar detalhes de um orçamento
 function viewOrcamento(id) {
-    window.location.href = `detalhes-orcamento.html?id=${id}`;
+    window.location.href = `details.html?id=${id}`;
 }
 
 // Função para excluir um orçamento
@@ -691,9 +495,12 @@ async function deleteOrcamento(id) {
     }
 }
 
-// Carregar os orçamentos ao abrir a página
-window.onload = loadOrcamentos;
+// Carregar os orçamentos ao abrir a página listorders.html
+if (window.location.pathname.includes("listorders.html")) {
+    window.onload = loadOrcamentos;
+}
 
+// Função para carregar os detalhes do orçamento na página details.html
 async function loadOrcamentoDetails() {
     const urlParams = new URLSearchParams(window.location.search);
     const orcamentoId = urlParams.get('id');
@@ -727,5 +534,7 @@ async function loadOrcamentoDetails() {
     }
 }
 
-// Carregar os detalhes ao abrir a página
-window.onload = loadOrcamentoDetails;
+// Carregar os detalhes ao abrir a página details.html
+if (window.location.pathname.includes("details.html")) {
+    window.onload = loadOrcamentoDetails;
+}

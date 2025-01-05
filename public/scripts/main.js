@@ -411,22 +411,28 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    const editableText = document.getElementById('nome-empresa');
+const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        const editableText = document.getElementById('nome-empresa');
+        if (editableText) {
+            // Quando o campo perde o foco, salva o valor (se necessário)
+            editableText.addEventListener('blur', function () {
+                console.log('Nome atualizado:', editableText.value);
+            });
 
-    // Quando o campo perde o foco, salva o valor (se necessário)
-    editableText.addEventListener('blur', function () {
-        // Aqui você pode adicionar lógica para salvar o valor no banco de dados, se necessário
-        console.log('Nome atualizado:', editableText.value);
-    });
+            // Opcional: Permitir que o Enter salve e saia do modo de edição
+            editableText.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    editableText.blur(); // Remove o foco do campo
+                }
+            });
 
-    // Opcional: Permitir que o Enter salve e saia do modo de edição
-    editableText.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            editableText.blur(); // Remove o foco do campo
+            observer.disconnect(); // Para de observar após encontrar o elemento
         }
     });
 });
+
+observer.observe(document.body, { childList: true, subtree: true });
 
 // Função para navegar para a página de listagem de orçamentos
 function navigateToListarOrcamentos() {

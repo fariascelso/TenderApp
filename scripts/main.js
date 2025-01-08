@@ -487,6 +487,8 @@ function viewOrcamento(id) {
     window.location.href = `details.html?id=${id}`;
 }
 
+window.viewOrcamento = viewOrcamento
+
 // Função para excluir um orçamento
 async function deleteOrcamento(id) {
     if (confirm("Tem certeza que deseja excluir este orçamento?")) {

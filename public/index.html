@@ -8,7 +8,6 @@
     <title>OrçaFácil</title>
     <link rel="stylesheet" href="../style/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
 </head>
 
 <body>
@@ -24,11 +23,17 @@
     <!-- Carregar bibliotecas do Firebase sem módulos -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-    <script type="module" src="./scripts/main.js"></script>
-
 
     <div class="container">
-        <h1>Criar Orçamento</h1>
+        <h1>
+            <i class="fas fa-bars" id="menu-hamburger"></i>
+            Criar Orçamento
+        </h1>
+
+        <!-- Link para a página de listagem (inicialmente oculto) -->
+        <div id="menu-links" class="hidden">
+            <a href="listorders.html">Listar Orçamentos</a>
+        </div>  
 
         <div class="floating-menu">
             <button id="main-fab">
@@ -254,21 +259,12 @@
         </div>
 
         <div class="button-container">
-            <button onclick="saveDataToFirestore()">Salvar Dados</button>
-            <button onclick="generatorPDF()">Gerar Orçamento</button>
+            <button onclick="saveDataToFirestore()">Salvar Orçamento</button>
+            <button onclick="generatorPDF()">Gerar PDF</button>
         </div>
-
-        <div class="container">
-            <!-- Conteúdo existente da home -->
-        
-            <!-- Botões para acessar as telas de listagem e detalhes -->
-            <div class="button-container">
-                <button onclick="navigateToListarOrcamentos()">Listar Orçamentos</button>
-                <button onclick="navigateToCriarOrcamento()">Criar Novo Orçamento</button>
-            </div>
-        </div>
-
     </div>
+
+    <script type="module" src="./scripts/main.js"></script>
 </body>
 
 </html>

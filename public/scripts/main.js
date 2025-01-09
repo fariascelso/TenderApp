@@ -487,6 +487,8 @@ function viewOrcamento(id) {
     window.location.href = `details.html?id=${id}`;
 }
 
+window.viewOrcamento = viewOrcamento
+
 // Função para excluir um orçamento
 async function deleteOrcamento(id) {
     if (confirm("Tem certeza que deseja excluir este orçamento?")) {
@@ -544,3 +546,16 @@ async function loadOrcamentoDetails() {
 if (window.location.pathname.includes("details.html")) {
     window.onload = loadOrcamentoDetails;
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Adicionar evento ao menu hambúrguer
+    const menuHamburger = document.getElementById('menu-hamburger');
+    if (menuHamburger) {
+        menuHamburger.addEventListener('click', function() {
+            const menuLinks = document.getElementById('menu-links');
+            menuLinks.classList.toggle('show'); // Alternar a visibilidade do link
+        });
+    } else {
+        console.error('Elemento menu-hamburger não encontrado no DOM.');
+    }
+});

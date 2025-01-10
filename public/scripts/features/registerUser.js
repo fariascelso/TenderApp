@@ -10,14 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault()
 
         const name = document.getElementById('name').value.trim()
-        const username = document.getElementById('username').value.trim()
         const email = document.getElementById('email').value.trim()
         const password = document.getElementById('password').value.trim()
         const confirmPassword = document.getElementById('confirmPassword').value.trim()
 
         errorMessage.textContent = ''
 
-        if (!name || !username || !email || !password || !confirmPassword) {
+        if (!name || !email || !password || !confirmPassword) {
             errorMessage.textContent = 'Por favor, preencha todos os campos.'
             return
         }
@@ -46,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             await setDoc(doc(db, "users", user.uid), {
                 name: name,
-                username: username,
                 email: email,
                 createdAt: new Date()
             })
@@ -62,4 +60,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         return emailRegex.test(email)
     }
+
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const passwordInput = document.getElementById('password')
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password'
+        passwordInput.setAttribute('type', type)
+        this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>'
+    })
+
+    document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+        const confirmPasswordInput = document.getElementById('confirmPassword')
+        const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password'
+        confirmPasswordInput.setAttribute('type', type)
+        this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>'
+    })
 })

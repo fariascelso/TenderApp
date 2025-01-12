@@ -11,6 +11,8 @@
 </head>
 
 <body>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
     <script src="../scripts/EventHandler.js"></script>
@@ -19,10 +21,6 @@
         import { generatorPDF } from '../scripts/GeneratorPDF.js';
         window.generatorPDF = generatorPDF;
     </script>
-
-    <!-- Carregar bibliotecas do Firebase sem módulos -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 
     <div class="container">
         <h1>
@@ -65,12 +63,7 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>Cadastro de Cliente</h2>
-                <form id="clientForm">
-                    <!-- Campos do formulário de cliente -->
-                    <label for="clientName">Nome:</label>
-                    <input type="text" id="clientName" name="clientName">
-                    <button type="submit">Salvar</button>
-                </form>
+                <div id="clientModalContent"></div>
             </div>
         </div>
 
@@ -78,12 +71,7 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>Cadastro de Empresa</h2>
-                <form id="companyForm">
-                    <!-- Campos do formulário da empresa -->
-                    <label for="companyName">Nome da Empresa:</label>
-                    <input type="text" id="companyName" name="companyName">
-                    <button type="submit">Salvar</button>
-                </form>
+                <div id="companyModalContent"></div>
             </div>
         </div>
 
@@ -91,12 +79,7 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>Cadastro de Equipamento</h2>
-                <form id="equipment-item">
-                    <!-- Campos do formulário de equipamentos -->
-                    <label for="equipmentName">Nome do Equipamento:</label>
-                    <input type="text" id="equipmentName" name="equipmentName">
-                    <button type="submit">Salvar</button>
-                </form>
+                <div id="equipmentModalContent"></div>
             </div>
         </div>
 
@@ -104,12 +87,7 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>Cadastro de Serviço</h2>
-                <form id="service-item">
-                    <!-- Campos do formulário de serviço -->
-                    <label for="serviceName">Nome do Serviço:</label>
-                    <input type="text" id="serviceName" name="serviceName">
-                    <button type="submit">Salvar</button>
-                </form>
+                <div id="serviceModalContent"></div> 
             </div>
         </div>
 

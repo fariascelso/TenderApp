@@ -467,7 +467,7 @@ async function loadOrcamentos() {
                     <td>${doc.id}</td>
                     <td>${data.empresa.nomeEmpresa}</td>
                     <td>${data.cliente.nameClient}</td>
-                    <td>${new Date(data.dataCriacao).toLocaleDateString()}</td>
+                    <td>${data.dataCriacao.toDate().toLocaleDateString()}</td>
                     <td>
                         <button onclick="viewOrcamento('${doc.id}')">Ver Detalhes</button>
                         <button onclick="deleteOrcamento('${doc.id}')">Excluir</button>
@@ -522,7 +522,7 @@ async function loadOrcamentoDetails() {
                 <p><strong>ID:</strong> ${doc.id}</p>
                 <p><strong>Empresa:</strong> ${data.empresa.nomeEmpresa}</p>
                 <p><strong>Cliente:</strong> ${data.cliente.nameClient}</p>
-                <p><strong>Data de Criação:</strong> ${new Date(data.dataCriacao).toLocaleDateString()}</p>
+                <p><strong>Data de Criação:</strong> ${data.dataCriacao.toDate().toLocaleDateString()}</p>
                 <h2>Serviços:</h2>
                 <ul>
                     ${data.servicos.map(servico => `<li>${servico.descriptionService} - R$ ${servico.amountService}</li>`).join("")}

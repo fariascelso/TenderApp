@@ -361,6 +361,10 @@ select::-ms-expand {
     outline: none;
 }
 
+.modal-content .panel {
+    display: block; /* Garante que o elemento com a classe 'panel' seja visível dentro da modal */
+}
+
 /* Botão de fechar */
 .close {
     position: absolute;

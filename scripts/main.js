@@ -22,6 +22,7 @@ function injectModalContent(sourceId, targetId) {
         console.log(`Elementos encontrados: ${sourceId} e ${targetId}`);
         const clonedContent = sourceElement.cloneNode(true);
         console.log('Conteúdo clonado:', clonedContent.innerHTML);
+        clonedContent.classList.remove('panel');
         clonedContent.id = '';
         targetElement.innerHTML = '';
         targetElement.appendChild(clonedContent);

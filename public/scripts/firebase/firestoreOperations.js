@@ -413,7 +413,6 @@ export async function loadOrcamentoForEdit(id) {
         const orcamentoDoc = await getDoc(getUserDoc('orcamentos', id))
         if (orcamentoDoc.exists()) {
             const data = orcamentoDoc.data()
-            currentNumericId = data.numericId
 
             document.getElementById('nameBusiness').value = data.empresa.nomeEmpresa || ""
             document.getElementById('fantasyName').value = data.empresa.fantasyName || ""

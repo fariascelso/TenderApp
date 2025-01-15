@@ -13,6 +13,25 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+function injectModalContent(sourceId, targetId) {
+    const sourceElement = document.getElementById(sourceId);
+    const targetElement = document.getElementById(targetId);
+
+    console.log(`Tentando injetar conteúdo de ${sourceId} para ${targetId}`);
+    if (sourceElement && targetElement) {
+        console.log(`Elementos encontrados: ${sourceId} e ${targetId}`);
+        const clonedContent = sourceElement.cloneNode(true);
+        console.log('Conteúdo clonado:', clonedContent.innerHTML);
+        clonedContent.classList.remove('panel');
+        clonedContent.id = '';
+        targetElement.innerHTML = '';
+        targetElement.appendChild(clonedContent);
+        console.log('Conteúdo após injeção:', targetElement.innerHTML);
+    } else {
+        console.error(`Elemento ${sourceId} ou ${targetId} não encontrado.`);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     const mainFab = document.getElementById('main-fab');
     const fabOptions = document.getElementById('fab-options');
@@ -29,34 +48,49 @@ document.addEventListener('DOMContentLoaded', function () {
     const modals = document.querySelectorAll(".modal");
     const closeButtons = document.querySelectorAll(".close");
 
-    // Garante que todas as modais estejam escondidas
     modals.forEach(modal => {
         modal.style.display = "none";
     });
 
-    // Adiciona evento de clique para abrir a modal correspondente
     fabOptionsButtons.forEach(button => {
         button.addEventListener("click", () => {
             const targetModal = document.getElementById(button.dataset.target);
             if (targetModal) {
-                targetModal.classList.add("show");
-                targetModal.style.display = "flex";
+                let sourceId, targetId;
+                if (button.dataset.target === "clientModal") {
+                    sourceId = "client-data-panel";
+                    targetId = "clientModalContent";
+                } else if (button.dataset.target === "companyModal") {
+                    sourceId = "company-data-panel";
+                    targetId = "companyModalContent";
+                } else if (button.dataset.target === "equipmentModal") {
+                    sourceId = "equipments-panel";
+                    targetId = "equipmentModalContent";
+                } else if (button.dataset.target === "serviceModal") {
+                    sourceId = "services-container";
+                    targetId = "serviceModalContent";
+                }
+
+                injectModalContent(sourceId, targetId);
+
+                setTimeout(() => {
+                    targetModal.classList.add("show");
+                    targetModal.style.display = "flex";
+                }, 0);
             }
         });
     });
 
-    // Fecha a modal quando o botão de fechar é clicado
     closeButtons.forEach(button => {
         button.addEventListener("click", () => {
             const modal = button.closest(".modal");
             modal.classList.remove("show");
             setTimeout(() => {
                 modal.style.display = "none";
-            }, 300); // Espera a transição de opacidade antes de esconder
+            }, 300);
         });
     });
 
-    // Fecha a modal se o usuário clicar fora da área de conteúdo
     modals.forEach(modal => {
         modal.addEventListener("click", (event) => {
             if (event.target === modal) {
@@ -67,6 +101,17 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+    // Adicionar evento ao menu hambúrguer
+    const menuHamburger = document.getElementById('menu-hamburger');
+    if (menuHamburger) {
+        menuHamburger.addEventListener('click', function() {
+            const menuLinks = document.getElementById('menu-links');
+            menuLinks.classList.toggle('show');
+        });
+    } else {
+        console.error('Elemento menu-hamburger não encontrado no DOM.');
+    }
 });
 
 // Função para gerar um ID numérico único
@@ -366,51 +411,6 @@ window.onload = function () {
     loadCompanies();
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-    const fabOptions = document.querySelectorAll(".fab-option");
-    const modals = document.querySelectorAll(".modal");
-    const closeButtons = document.querySelectorAll(".close");
-
-    // Garante que todas as modais estejam escondidas
-    modals.forEach(modal => {
-        modal.style.display = "none";
-    });
-
-    // Adiciona evento de clique para abrir a modal correspondente
-    fabOptions.forEach(button => {
-        button.addEventListener("click", () => {
-            const targetModal = document.getElementById(button.dataset.target);
-            if (targetModal) {
-                targetModal.classList.add("show");
-                targetModal.style.display = "flex";
-            }
-        });
-    });
-
-    // Fecha a modal quando o botão de fechar é clicado
-    closeButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            const modal = button.closest(".modal");
-            modal.classList.remove("show");
-            setTimeout(() => {
-                modal.style.display = "none";
-            }, 300); // Espera a transição de opacidade antes de esconder
-        });
-    });
-
-    // Fecha a modal se o usuário clicar fora da área de conteúdo
-    modals.forEach(modal => {
-        modal.addEventListener("click", (event) => {
-            if (event.target === modal) {
-                modal.classList.remove("show");
-                setTimeout(() => {
-                    modal.style.display = "none";
-                }, 300);
-            }
-        });
-    });
-});
-
 const observer = new MutationObserver(function(mutations) {
     mutations.forEach(function(mutation) {
         const editableText = document.getElementById('nome-empresa');
@@ -546,16 +546,3 @@ async function loadOrcamentoDetails() {
 if (window.location.pathname.includes("details.html")) {
     window.onload = loadOrcamentoDetails;
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-    // Adicionar evento ao menu hambúrguer
-    const menuHamburger = document.getElementById('menu-hamburger');
-    if (menuHamburger) {
-        menuHamburger.addEventListener('click', function() {
-            const menuLinks = document.getElementById('menu-links');
-            menuLinks.classList.toggle('show'); // Alternar a visibilidade do link
-        });
-    } else {
-        console.error('Elemento menu-hamburger não encontrado no DOM.');
-    }
-});

@@ -7,18 +7,20 @@ body {
     padding: 0;
 }
 
-/* Estilização de títulos */
 h1 {
-    background: linear-gradient(90deg, #004d40, #00796b); /* Verde musgo para verde esmeralda escuro */
-    color: white;
-    text-align: center;
-    padding: 20px;
+    background: none; /* Remove o fundo gradiente */
+    color: #000; /* Cor preta para o texto */
+    text-align: left; /* Alinha o texto à esquerda */
+    padding: 20px 0; /* Ajusta o padding */
     margin: 0;
     font-size: 28px;
     font-weight: 700;
     letter-spacing: 1px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border-radius: 0; /* Remove o border-radius */
+    box-shadow: none; /* Remove a sombra */
+    display: flex;
+    align-items: center; /* Alinha o ícone e o texto verticalmente */
+    gap: 10px; /* Espaço entre o ícone e o texto */
 }
 
 /* Contêiner principal */
@@ -142,7 +144,7 @@ select::-ms-expand {
 }
 
 .button-container button {
-    background: linear-gradient(90deg, #ff8a00, #ffd200);
+    background: linear-gradient(90deg, #044255, #031e8a);
     color: white;
     border: none;
     padding: 14px 0; /* Padding vertical fixo, removemos o padding lateral */
@@ -168,7 +170,7 @@ select::-ms-expand {
 
 /* Estilo para acordeões */
 .accordion {
-    background: linear-gradient(90deg, #00bfa5, #a7ffeb);
+    background: linear-gradient(90deg, #05123b, #600232);
     color: white;
     padding: 12px;
     text-align: left;
@@ -534,11 +536,12 @@ button:hover {
     background-color: #0056b3;
 }
 
-/* Menu hambúrguer */
+/* Estilo do ícone do menu hambúrguer */
 #menu-hamburger {
     cursor: pointer;
-    margin-right: 15px;
     font-size: 24px;
+    color: #000; /* Cor preta para o ícone */
+    margin-right: 10px; /* Espaço entre o ícone e o texto */
 }
 
 #menu-links {

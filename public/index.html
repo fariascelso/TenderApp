@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <title>Master Climatizadores</title>
+    <link rel="stylesheet" href="../style/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
+    <script src="../scripts/EventHandler.js"></script>
+    <script type="module" src="../scripts/TableStyles.js"></script>
+    <script type="module">
+        import { generatorPDF } from '../scripts/GeneratorPDF.js';
+        window.generatorPDF = generatorPDF;
+    </script>
+
+    <!-- Carregar bibliotecas do Firebase sem módulos -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+
+    <div class="container">
+        <h1>Master Climatizadores</h1>
+        <div class="info">
+            <label for="nome-empresa">Encaminhado por:</label>
+            <span id="nome-empresa">José Roberto Freitas</span>
+        </div>
+
+        <button class="accordion" data-group="company-data-panel">Dados da Empresa</button>
+
+        <div class="panel" id="company-data-panel">
+            <form id="companyForm">
+                <label for="nameBusiness">Nome da Empresa:</label>
+                <input type="text" id="nameBusiness" value="">
+
+                <label for="fantasyName">Nome Fantasia:</label>
+                <input type="text" id="fantasyName" value="">
+
+                <label for="cpfCnpj">CNPJ:</label>
+                <input type="text" id="cpfCnpj" value="">
+
+                <label for="address">Endereço:</label>
+                <input type="text" id="address" value="">
+
+                <label for="numberAddress">Número:</label>
+                <input type="text" id="numberAddress" value="">
+
+                <label for="neighborhood">Bairro:</label>
+                <input type="text" id="neighborhood" value="">
+
+                <label for="state">Estado:</label>
+                <input type="text" id="state" value="">
+
+                <label for="city">Cidade:</label>
+                <input type="text" id="city" value="">
+
+                <label for="zipcode">CEP:</label>
+                <input type="text" id="zipcode" value="">
+
+                <label for="phone">Telefone para contato:</label>
+                <input type="text" id="phone" value="">
+
+                <label for="email">Email:</label>
+                <input type="text" id="email" value="">
+            </form>
+        </div>
+
+        <button class="accordion" data-group="client-data-panel">Dados do Cliente</button>
+
+        <div class="panel" id="client-data-panel">
+            <form id="clientForm">
+                <label for="nameClient">Nome do Cliente:</label>
+                <input type="text" id="nameClient" value="">
+
+                <label for="cpfCNPJClient">CNPJ do cliente:</label>
+                <input type="text" id="cpfCNPJClient" value="">
+
+                <label for="fantasyNameClient">Nome fantasia do cliente:</label>
+                <input type="text" id="fantasyNameClient" value="">
+
+                <label for="streetClient">Rua:</label>
+                <input type="text" id="streetClient" value="">
+
+                <label for="numberAddressClient">Número:</label>
+                <input type="text" id="numberAddressClient" value="">
+
+                <label for="neighborhoodClient">Bairro:</label>
+                <input type="text" id="neighborhoodClient" value="">
+
+                <label for="cityClient">Cidade:</label>
+                <input type="text" id="cityClient" value="">
+
+                <label for="zipcodeClient">CEP:</label>
+                <input type="text" id="zipcodeClient" value="">
+
+                <label for="stateClient">Estado:</label>
+                <input type="text" id="stateClient" value="">
+
+                <label for="phoneClient">Telefone para contato:</label>
+                <input type="text" id="phoneClient" value="">
+
+                <label for="emailClient">Email:</label>
+                <input type="text" id="emailClient" value="">
+            </form>
+        </div>
+
+        <button class="accordion" data-group="services-container">Serviços que serão realizados</button>
+        <div class="panel" id="services-container">
+
+            <!-- Botão de adicionar serviço integrado ao painel de serviços -->
+            <button id="add-service-btn">
+                <i class="fas fa-plus"></i> Adicionar Serviço
+            </button>
+            <div class="service-item">
+                <label for="descriptionService">Descrição do Serviço:</label>
+                <input type="text" class="descriptionService" name="descriptionService"
+                    placeholder="Descrição do serviço">
+
+                <label for="amountService">Valor do Serviço:</label>
+                <input type="text" class="amountService" name="amountService" placeholder="Valor do serviço">
+            </div>
+        </div>
+
+        <button class="accordion" data-group="equipments-panel">Materiais necessários</button>
+        <div class="panel" id="equipments-panel">
+            <button id="add-equipment-btn">
+                <i class="fas fa-plus"></i> Adicionar Equipamento
+            </button>
+            <div id="equipments-container">
+                <div class="equipment-item">
+                    <label for="codeEquipment">Código:</label>
+                    <input type="text" class="codeEquipment" placeholder="Código do equipamento">
+
+                    <label for="nameEquipment">Nome:</label>
+                    <input type="text" class="nameEquipment" placeholder="Nome do equipamento">
+
+                    <label for="quantityEquipment">Quantidade:</label>
+                    <input type="number" class="quantityEquipment" placeholder="Quantidade" min="1">
+
+                    <label for="unitPriceEquipment">Preço Unitário:</label>
+                    <input type="text" class="unitPriceEquipment" placeholder="Preço unitário">
+
+                    <label for="subtotalEquipment">Subtotal:</label>
+                    <input type="text" class="subtotalEquipment" placeholder="Subtotal" readonly>
+                </div>
+            </div>
+        </div>
+
+        <button class="accordion" data-group="observations-data-panel">Observações</button>
+
+        <div class="panel" id="observations-data-panel">
+            <label for="observations">Informações para serem destacadas no orçamento:</label>
+            <textarea id="observations" placeholder="Insira as informações aqui..."></textarea>
+        </div>
+
+        <div class="button-container">
+            <button onclick="saveDataToFirestore()">Salvar Dados</button>
+            <button onclick="generatorPDF()">Gerar Orçamento</button>
+        </div>
+    </div>
+
+    <script>
+
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCrqYU-lgB8XFiYVzUR5n7hyUW1hOqlZdg",
+            authDomain: "masterclimatizadores-f03bf.firebaseapp.com",
+            projectId: "masterclimatizadores-f03bf",
+            storageBucket: "masterclimatizadores-f03bf.firebasestorage.app",
+            messagingSenderId: "387752534660",
+            appId: "1:387752534660:web:e8a188e296d0900f1918d1",
+            measurementId: "G-2PQQZQ1KRX"
+        };
+
+        // Inicializar Firebase e Firestore
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Função para salvar dados no Firestore
+        async function saveDataToFirestore() {
+            const companyForm = document.getElementById('companyForm');
+            const clientForm = document.getElementById('clientForm');
+            const serviceForm = document.getElementById('serviceForm');
+        }
+
+        // Função para adicionar novo serviço
+        document.getElementById('add-service-btn').addEventListener('click', function () {
+            const servicesContainer = document.getElementById('services-container');
+
+            const newServiceItem = document.createElement('div');
+            newServiceItem.classList.add('service-item');
+
+            newServiceItem.innerHTML = `
+                <label for="descriptionService">Descrição do Serviço:</label>
+                <input type="text" class="descriptionService" name="descriptionService" placeholder="Descrição do serviço">
+                <label for="amountService">Valor do Serviço:</label>
+                <input type="text" class="amountService" name="amountService" placeholder="Valor do serviço">
+            `;
+
+            servicesContainer.appendChild(newServiceItem);
+        });
+
+        document.getElementById('equipments-container').addEventListener('input', function (event) {
+            const equipmentItem = event.target.closest('.equipment-item');
+            const quantity = equipmentItem.querySelector('.quantityEquipment').value;
+            const unitPrice = equipmentItem.querySelector('.unitPriceEquipment').value;
+            const subtotal = equipmentItem.querySelector('.subtotalEquipment');
+
+            // Cálculo do subtotal
+            const calculatedSubtotal = parseFloat(quantity) * parseFloat(unitPrice || 0);
+            subtotal.value = calculatedSubtotal ? `R$ ${calculatedSubtotal.toFixed(2)}` : '';
+        });
+
+
+        document.getElementById('add-equipment-btn').addEventListener('click', function () {
+            const equipmentsContainer = document.getElementById('equipments-container');
+
+            const newEquipmentItem = document.createElement('div');
+            newEquipmentItem.classList.add('equipment-item');
+
+            newEquipmentItem.innerHTML = `
+                <label for="codeEquipment">Código:</label>
+                <input type="text" class="codeEquipment" placeholder="Código do equipamento">
+                
+                <label for="nameEquipment">Nome:</label>
+                <input type="text" class="nameEquipment" placeholder="Nome do equipamento">
+                
+                <label for="quantityEquipment">Quantidade:</label>
+                <input type="number" class="quantityEquipment" placeholder="Quantidade" min="1">
+                
+                <label for="unitPriceEquipment">Preço Unitário:</label>
+                <input type="text" class="unitPriceEquipment" placeholder="Preço unitário">
+                
+                <label for="subtotalEquipment">Subtotal:</label>
+                <input type="text" class="subtotalEquipment" placeholder="Subtotal" readonly>
+            `
+
+            equipmentsContainer.appendChild(newEquipmentItem);
+        });
+
+
+        // Função para salvar dados no Firestore
+        async function saveDataToFirestore() {
+            const companyForm = document.getElementById('companyForm');
+            const clientForm = document.getElementById('clientForm');
+            const serviceForm = document.getElementById('serviceForm');
+
+            const issuingCompany = {
+                nomeEmpresa: companyForm.nameBusiness.value,
+                fantasyName: companyForm.fantasyName.value,
+                cnpj: companyForm.cpfCnpj.value,
+                endereco: companyForm.address.value,
+                numero: companyForm.numberAddress.value,
+                bairro: companyForm.neighborhood.value,
+                estado: companyForm.state.value,
+                cidade: companyForm.city.value,
+                cep: companyForm.zipcode.value,
+                telefone: companyForm.phone.value,
+                email: companyForm.email.value
+            };
+
+            const clientFormData = {
+                nameClient: clientForm.nameClient.value,
+                cpfCNPJClient: clientForm.cpfCNPJClient.value,
+                fantasyNameClient: clientForm.fantasyNameClient.value,
+                streetClient: clientForm.streetClient.value,
+                numberAddressClient: clientForm.numberAddressClient.value,
+                stateClient: clientForm.stateClient.value,
+                neighborhoodClient: clientForm.neighborhoodClient.value,
+                cityClient: clientForm.cityClient.value,
+                zipcodeClient: clientForm.zipcodeClient.value,
+                phoneClient: clientForm.phoneClient.value,
+                emailClient: clientForm.emailClient.value,
+            };
+
+            const serviceData = [];
+            const descriptions = document.querySelectorAll('.descriptionService');
+            const amounts = document.querySelectorAll('.amountService');
+
+            // Dados dos equipamentos
+            const equipmentData = [];
+            const codes = document.querySelectorAll('.codeEquipment');
+            const names = document.querySelectorAll('.nameEquipment');
+            const quantities = document.querySelectorAll('.quantityEquipment');
+            const unitPrices = document.querySelectorAll('.unitPriceEquipment');
+            const subtotals = document.querySelectorAll('.subtotalEquipment');
+
+            const observations = document.getElementById('observations').value
+
+            for (let i = 0; i < codes.length; i++) {
+                equipmentData.push({
+                    codeEquipment: codes[i].value,
+                    nameEquipment: names[i].value,
+                    quantityEquipment: quantities[i].value,
+                    unitPriceEquipment: unitPrices[i].value,
+                    subtotalEquipment: subtotals[i].value
+                });
+            }
+
+
+            for (let i = 0; i < descriptions.length; i++) {
+                serviceData.push({
+                    descriptionService: descriptions[i].value,
+                    amountService: amounts[i].value
+                });
+            }
+
+            try {
+                const docIssuingCompany = await db.collection("empresasEmitenteOrcamento").add(issuingCompany)
+                const docClient = await db.collection("clientes").add(clientFormData)
+                const docService = await db.collection("servicos").add({ services: serviceData })
+                const docEquipment = await db.collection("equipamentos").add({ equipments: equipmentData })
+                const observationsData = await db.collection("observations").add({ observations: observations })
+                alert("Dados salvos com sucesso! ID do documento: " + docIssuingCompany.id);
+            } catch (e) {
+                console.error("Erro ao adicionar documento: ", e);
+                alert("Erro ao salvar dados.");
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -47,6 +47,9 @@ export async function generatorPDF() {
 
     const observations = document.getElementById('observations').value
 
+    // Verifique o estado do checkbox
+    const includeEquipments = document.getElementById('includeEquipments').checked;
+
     const imageUrl = '../logo.png';
     const image = await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -160,7 +163,7 @@ export async function generatorPDF() {
             service.descriptionService,
             service.amountService
         ]),
-        headStyles: { fillColor: [66, 66, 66], halign: 'center', lineWidth: 0.5, },
+        headStyles: { fillColor: [0, 0, 6], halign: 'center', lineWidth: 0.5, },
         columnStyles: {
             1: { cellWidth: 100, halign: 'center' },
             2: { cellWidth: 30, halign: 'center' },
@@ -168,52 +171,125 @@ export async function generatorPDF() {
         margin: { left: 5, right: 5 }
     });
 
+    let totalEquipments = 0; 
+
+    if (includeEquipments) {
+
+        doc.autoTable({
+            startY: lastTable = updateLastTablePosition(),
+            head: [
+                [{ content: 'EQUIPAMENTOS NECESSÁRIOS', colSpan: 2 }]
+            ],
+            headStyles: HeaderStyles.CellPadding,
+            margin: margin,
+        })
+
+        const equipments = [];
+        const codes = document.querySelectorAll('.codeEquipment');
+        const names = document.querySelectorAll('.nameEquipment');
+        const quantities = document.querySelectorAll('.quantityEquipment');
+        const unitPrices = document.querySelectorAll('.unitPriceEquipment');
+        const subtotals = document.querySelectorAll('.subtotalEquipment');
+
+        for (let i = 0; i < codes.length; i++) {
+            equipments.push({
+                code: codes[i].value,
+                name: names[i].value,
+                quantity: quantities[i].value,
+                unitPrice: unitPrices[i].value,
+                subtotal: subtotals[i].value
+            });
+        }
+
+        // Adicione a tabela de equipamentos ao PDF
+        doc.autoTable({
+            startY: lastTable = updateLastTablePosition(),
+            head: [['Código', 'Nome', 'Quantidade', 'Preço unitário', 'Subtotal']],
+            body: equipments.map(equipment => [
+                equipment.code,
+                equipment.name,
+                equipment.quantity,
+                formatCurrency(parseCurrency(equipment.unitPrice)),
+                equipment.subtotal
+            ]),
+            headStyles: { fillColor: [0, 0, 0], halign: 'center', lineWidth: 0.5 },
+            columnStyles: {
+                0: { cellWidth: 20, halign: 'center' },
+                1: { cellWidth: 70, halign: 'center' },
+                2: { cellWidth: 30, halign: 'center' },
+                3: { cellWidth: 40, halign: 'center' },
+                4: { cellWidth: 40, halign: 'center' },
+            },
+            margin: { left: 5, right: 5 }
+        });
+
+        // Total de equipamentos
+        totalEquipments = equipments.reduce((sum, equipment) => {
+            const quantity = parseFloat(equipment.quantity) || 0;
+            const unitPrice = parseCurrency(equipment.unitPrice); // Converte o preço unitário
+            const subtotal = quantity * unitPrice; // Calcula o subtotal
+            return sum + subtotal;
+        }, 0);
+
+    }
+
     doc.autoTable({
         startY: lastTable = updateLastTablePosition(),
         head: [
-            [{ content: 'EQUIPAMENTOS NECESSÁRIOS', colSpan: 2 }]
+            [{ content: 'VALOR TOTAL DO ORÇAMENTO', colSpan: 2 }]
         ],
         headStyles: HeaderStyles.CellPadding,
         margin: margin,
     })
 
-    const equipments = [];
-    const codes = document.querySelectorAll('.codeEquipment');
-    const names = document.querySelectorAll('.nameEquipment');
-    const quantities = document.querySelectorAll('.quantityEquipment');
-    const unitPrices = document.querySelectorAll('.unitPriceEquipment');
-    const subtotals = document.querySelectorAll('.subtotalEquipment');
-
-    for (let i = 0; i < codes.length; i++) {
-        equipments.push({
-            code: codes[i].value,
-            name: names[i].value,
-            quantity: quantities[i].value,
-            unitPrice: unitPrices[i].value,
-            subtotal: subtotals[i].value
-        });
+    // Função para tratar e converter valores monetários
+    function parseCurrency(value) {
+        if (!value) return 0;
+        return parseFloat(
+            value.replace('R$', '') // Remove o símbolo de moeda
+                .replace(/\./g, '') // Remove separadores de milhar
+                .replace(',', '.') // Substitui vírgula por ponto para formato numérico
+                .trim() // Remove espaços extras
+        ) || 0; // Retorna 0 se o resultado for NaN
     }
 
-    // Adicione a tabela de equipamentos ao PDF
+    // Total de serviços
+    const totalServices = services.reduce((sum, service) => {
+        const value = parseCurrency(service.amountService);
+        return sum + value;
+    }, 0);
+
+
+    // Total geral
+    /*
+    
+    console.log("Serviços:", services);
+    console.log("Total de serviços:", totalServices);
+    
+    console.log("Equipamentos:", equipments);
+    console.log("Total de equipamentos:", totalEquipments);
+    
+    console.log("Total geral:", totalBudget);
+    */
+
+    let totalBudget;
+
+    if (includeEquipments) {
+        totalBudget = totalServices + totalEquipments;
+    } else {
+        totalBudget = totalServices
+    }
+
+    // Adiciona a linha do valor total à tabela
     doc.autoTable({
         startY: lastTable = updateLastTablePosition(),
-        head: [['Código', 'Nome', 'Quantidade', 'Preço unitário', 'Subtotal']],
-        body: equipments.map(equipment => [
-            equipment.code,
-            equipment.name,
-            equipment.quantity,
-            equipment.unitPrice,
-            equipment.subtotal
-        ]),
-        headStyles: { fillColor: [0, 0, 0], halign: 'center', lineWidth: 0.5 },
-        columnStyles: {
-            0: { cellWidth: 20, halign: 'center' },
-            1: { cellWidth: 70, halign: 'center' },
-            2: { cellWidth: 30, halign: 'center' },
-            3: { cellWidth: 40, halign: 'center' },
-            4: { cellWidth: 40, halign: 'center' },
-        },
-        margin: { left: 5, right: 5 }
+        columnStyles: ColumnStyles.Left,
+        body: [
+            [
+                { content: formatCurrency(totalBudget), styles: { halign: 'left', fontStyle: 'bold', fontSize: 15 } }
+            ]
+        ],
+        margin: { left: 5, right: 5 },
     });
 
     doc.autoTable({
@@ -239,7 +315,7 @@ export async function generatorPDF() {
         startY: lastTable = updateLastTablePosition() - 1,
         body: [
             [
-                `Orçamento válido até ${validityDate}\n\n${ observations}`,
+                `Orçamento válido até ${validityDate}\n\n${observations}`,
             ]
         ],
         columnStyles: ColumnStyles.Left,
@@ -255,6 +331,22 @@ export async function generatorPDF() {
         margin: margin,
     })
 
+    doc.autoTable({
+        startY: lastTable = updateLastTablePosition() - 1,
+        body: [
+            [
+                { content: ``, styles: { fontSize: 2, halign: 'center', cellPadding: 10 } },
+                { content: ``, styles: { fontSize: 2, halign: 'center', cellPadding: 10 } }
+            ]
+        ],
+        columnStyles: ColumnStyles.Center,
+        margin: margin
+    })
+
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+    }
+
     function formatCurrentDate(date) {
         const day = String(date.getDate()).padStart(2, '0')
         const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -265,7 +357,6 @@ export async function generatorPDF() {
 
     const now = new Date()
     const formattedDate = formatCurrentDate(now)
-
 
     doc.save(`Orçamento_${nameOrder}_${formattedDate}.pdf`)
 }

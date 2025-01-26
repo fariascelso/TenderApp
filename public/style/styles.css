@@ -199,3 +199,22 @@ textarea:focus {
     outline: none;
 }
 
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espaço entre o checkbox e o texto */
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+.checkbox-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #007bff; /* Cor do checkbox (pode ajustar conforme o tema) */
+    cursor: pointer;
+}
+
+.checkbox-container label {
+    cursor: pointer;
+}

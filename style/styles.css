@@ -121,7 +121,7 @@ input[type="text"]:focus {
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-#add-service-btn, #add-equipment-btn {
+#add-service-btn, #add-equipment-btn, #search-btn {
     background: none;
     border: 2px solid #00796b; /* Borda verde esmeralda */
     color: #00796b;
@@ -217,4 +217,82 @@ textarea:focus {
 
 .checkbox-container label {
     cursor: pointer;
+}
+
+select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #cce4f6;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #333;
+    background-color: #f0faff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    appearance: none; /* Remove a aparência padrão do navegador */
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23007bff" d="M2 0L0 2h4zM2 5L0 3h4z"/></svg>'); /* Ícone de seta */
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 12px;
+    margin-bottom: 18px; /* Adicionado espaçamento abaixo */
+}
+
+select:hover {
+    border-color: #00aaff;
+    background-color: #e0f7ff;
+}
+
+select:focus {
+    border-color: #00796b;
+    box-shadow: 0 0 6px rgba(0, 170, 255, 0.3);
+}
+
+/* Estilo das opções dentro do select */
+select option {
+    background-color: #ffffff;
+    color: #333;
+    font-size: 16px;
+    padding: 10px;
+}
+
+/* Para remover a aparência padrão da seta no Firefox */
+select::-moz-focus-inner {
+    border: 0;
+}
+
+select::-ms-expand {
+    display: none;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espaço entre o select e o botão */
+    width: 100%;
+}
+
+.search-container select {
+    flex: 1; /* Faz o select ocupar o espaço disponível */
+}
+
+#search-btn {
+    background: linear-gradient(90deg, #ff8a00, #ffd200);
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(255, 136, 0, 0.3);
+    height: 48px;
+}
+
+#search-btn:hover {
+    background: linear-gradient(90deg, #ff7a00, #ffc300);
+    transform: scale(1.05);
+    box-shadow: 0 6px 14px rgba(255, 136, 0, 0.4);
 }

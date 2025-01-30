@@ -37,8 +37,9 @@
         <div class="panel" id="company-data-panel">
 
             <input type="text" id="searchBar" placeholder="Digite para buscar..." />
-            <button onclick="searchData()">Buscar</button>
-
+            <button id="add-service-btn" onclick="searchData()">
+                <i class="fas fa-search"></i> Buscar
+            </button>
 
             <form id="companyForm">
                 <label for="nameBusiness">Nome da Empresa:</label>
@@ -347,6 +348,50 @@
                 materialsBtn.style.display = 'none'; // Oculta o botão
             }
         });
+
+        async function searchData() {
+            const searchTerm = document.getElementById('searchBar').value.trim();
+
+            if (!searchTerm) {
+                alert('Digite um termo para buscar.');
+                return;
+            }
+
+            try {
+                // Buscar empresa pelo nome ou CNPJ
+                const querySnapshot = await db.collection("empresasEmitenteOrcamento")
+                    .where("cnpj", "==", searchTerm)
+                    .get();
+
+                if (querySnapshot.empty) {
+                    alert("Nenhum resultado encontrado.");
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+
+                    // Preencher os campos do formulário com os dados encontrados
+                    document.getElementById('nameBusiness').value = data.nomeEmpresa || "";
+                    document.getElementById('fantasyName').value = data.fantasyName || "";
+                    document.getElementById('cpfCnpj').value = data.cnpj || "";
+                    document.getElementById('address').value = data.endereco || "";
+                    document.getElementById('numberAddress').value = data.numero || "";
+                    document.getElementById('neighborhood').value = data.bairro || "";
+                    document.getElementById('state').value = data.estado || "";
+                    document.getElementById('city').value = data.cidade || "";
+                    document.getElementById('zipcode').value = data.cep || "";
+                    document.getElementById('phone').value = data.telefone || "";
+                    document.getElementById('email').value = data.email || "";
+                });
+
+                alert("Dados carregados com sucesso!");
+
+            } catch (error) {
+                console.error("Erro ao buscar dados: ", error);
+                alert("Erro ao buscar dados.");
+            }
+        }
 
     </script>
 </body>

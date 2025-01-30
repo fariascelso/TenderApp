@@ -36,11 +36,15 @@
 
         <div class="panel" id="company-data-panel">
 
+            <div class="search-container">
+
             <input type="text" id="searchBar" placeholder="Digite para buscar..." />
-            <button id="add-service-btn" onclick="searchData()">
-                <i class="fas fa-search"></i> Buscar
+            <button id="search-btn" onclick="searchData()">
+                <i class="fas fa-search"></i>
             </button>
 
+        </div>
+            
             <form id="companyForm">
                 <label for="nameBusiness">Nome da Empresa:</label>
                 <input type="text" id="nameBusiness" value="">
@@ -80,6 +84,12 @@
         <button class="accordion" data-group="client-data-panel">Dados do Cliente</button>
 
         <div class="panel" id="client-data-panel">
+
+            <label for="clientSelect">Selecione um Cliente:</label>
+            <select id="clientSelect" onchange="fillClientData()">
+                <option value="">Carregando clientes...</option>
+            </select>
+
             <form id="clientForm">
                 <label for="nameClient">Nome do Cliente:</label>
                 <input type="text" id="nameClient" value="">
@@ -358,10 +368,16 @@
             }
 
             try {
-                // Buscar empresa pelo nome ou CNPJ
-                const querySnapshot = await db.collection("empresasEmitenteOrcamento")
+                let querySnapshot = await db.collection("empresasEmitenteOrcamento")
                     .where("cnpj", "==", searchTerm)
                     .get();
+
+                // Se não encontrou pelo CNPJ, tentar pelo nome da empresa
+                if (querySnapshot.empty) {
+                    querySnapshot = await db.collection("empresasEmitenteOrcamento")
+                        .where("nomeEmpresa", "==", searchTerm)
+                        .get();
+                }
 
                 if (querySnapshot.empty) {
                     alert("Nenhum resultado encontrado.");
@@ -392,6 +408,59 @@
                 alert("Erro ao buscar dados.");
             }
         }
+
+        // Função para carregar os clientes ao abrir a página
+        async function loadClients() {
+            const clientSelect = document.getElementById('clientSelect');
+
+            try {
+                // Buscar todos os clientes no Firestore
+                const querySnapshot = await db.collection("clientes").get();
+
+                // Limpar opções existentes
+                clientSelect.innerHTML = '<option value="">Selecione um cliente</option>';
+
+                // Adicionar cada cliente como uma opção no select
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const option = document.createElement('option');
+                    option.value = JSON.stringify(data); // Armazena os dados do cliente na opção
+                    option.textContent = data.nameClient; // Exibir apenas o nome da empresa
+                    clientSelect.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error("Erro ao carregar clientes:", error);
+                clientSelect.innerHTML = '<option value="">Erro ao carregar</option>';
+            }
+        }
+
+        // Função para preencher os campos quando um cliente for selecionado
+        function fillClientData() {
+            const clientSelect = document.getElementById('clientSelect');
+            const selectedData = clientSelect.value;
+
+            if (!selectedData) return;
+
+            const data = JSON.parse(selectedData); // Converter string para objeto
+
+            // Preencher os campos do formulário com os dados do cliente
+            document.getElementById('nameClient').value = data.nameClient || "";
+            document.getElementById('cpfCNPJClient').value = data.cpfCNPJClient || "";
+            document.getElementById('fantasyNameClient').value = data.fantasyNameClient || "";
+            document.getElementById('streetClient').value = data.streetClient || "";
+            document.getElementById('numberAddressClient').value = data.numberAddressClient || "";
+            document.getElementById('neighborhoodClient').value = data.neighborhoodClient || "";
+            document.getElementById('cityClient').value = data.cityClient || "";
+            document.getElementById('zipcodeClient').value = data.zipcodeClient || "";
+            document.getElementById('stateClient').value = data.stateClient || "";
+            document.getElementById('phoneClient').value = data.phoneClient || "";
+            document.getElementById('emailClient').value = data.emailClient || "";
+        }
+
+        // Chamar a função ao carregar a página
+        window.onload = loadClients;
+
 
     </script>
 </body>

@@ -35,6 +35,11 @@
         <button class="accordion" data-group="company-data-panel">Dados da Empresa</button>
 
         <div class="panel" id="company-data-panel">
+
+            <input type="text" id="searchBar" placeholder="Digite para buscar..." />
+            <button onclick="searchData()">Buscar</button>
+
+
             <form id="companyForm">
                 <label for="nameBusiness">Nome da Empresa:</label>
                 <input type="text" id="nameBusiness" value="">

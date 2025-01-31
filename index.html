@@ -32,6 +32,18 @@
             <span id="nome-empresa">José Roberto Freitas</span>
         </div>
 
+        <!-- Botão flutuante -->
+<div class="floating-menu">
+    <button id="main-fab"><i class="fas fa-plus"></i></button>
+    <div id="fab-options">
+        <button class="fab-option"><i class="fas fa-user"></i></button>
+        <button class="fab-option"><i class="fas fa-cogs"></i></button>
+        <button class="fab-option"><i class="fas fa-file-pdf"></i></button>
+        <button class="fab-option"><i class="fas fa-search"></i></button>
+    </div>
+</div>
+
+
         <button class="accordion" data-group="company-data-panel">Dados da Empresa</button>
 
         <div class="panel" id="company-data-panel">
@@ -188,6 +200,16 @@
     </div>
 
     <script>
+
+document.getElementById("main-fab").addEventListener("click", function () {
+    const fabOptions = document.getElementById("fab-options");
+    if (fabOptions.style.display === "flex") {
+        fabOptions.style.display = "none";
+    } else {
+        fabOptions.style.display = "flex";
+    }
+});
+
 
         // Configuração do Firebase
         const firebaseConfig = {

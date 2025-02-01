@@ -32,17 +32,68 @@
             <span id="nome-empresa">José Roberto Freitas</span>
         </div>
 
-        <!-- Botão flutuante -->
-<div class="floating-menu">
-    <button id="main-fab"><i class="fas fa-plus"></i></button>
-    <div id="fab-options">
-        <button class="fab-option"><i class="fas fa-user"></i></button>
-        <button class="fab-option"><i class="fas fa-cogs"></i></button>
-        <button class="fab-option"><i class="fas fa-file-pdf"></i></button>
-        <button class="fab-option"><i class="fas fa-search"></i></button>
+        <div class="floating-menu">
+            <button id="main-fab"><i class="fas fa-plus"></i></button>
+            <div id="fab-options">
+                <button class="fab-option" data-target="clientModal"><i class="fas fa-user-tie"></i></button>
+                <button class="fab-option" data-target="companyModal"><i class="fas fa-building"></i></button>
+                <button class="fab-option" data-target="equipmentModal"><i class="fas fa-boxes-stacked"></i></button>
+                <button class="fab-option" data-target="serviceModal"><i class="fas fa-tools"></i></button>
+            </div>
+        </div> 
+
+        <!-- Modais -->
+<div id="clientModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Cadastro de Cliente</h2>
+        <form id="clientForm">
+            <!-- Campos do formulário de cliente -->
+            <label for="clientName">Nome:</label>
+            <input type="text" id="clientName" name="clientName">
+            <button type="submit">Salvar</button>
+        </form>
     </div>
 </div>
 
+<div id="companyModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Cadastro de Empresa</h2>
+        <form id="companyForm">
+            <!-- Campos do formulário da empresa -->
+            <label for="companyName">Nome da Empresa:</label>
+            <input type="text" id="companyName" name="companyName">
+            <button type="submit">Salvar</button>
+        </form>
+    </div>
+</div>
+
+<div id="equipmentModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Cadastro de Equipamento</h2>
+        <form id="equipment-item">
+            <!-- Campos do formulário de equipamentos -->
+            <label for="equipmentName">Nome do Equipamento:</label>
+            <input type="text" id="equipmentName" name="equipmentName">
+            <button type="submit">Salvar</button>
+        </form>
+    </div>
+</div>
+
+<div id="serviceModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Cadastro de Serviço</h2>
+        <form id="service-item">
+            <!-- Campos do formulário de serviço -->
+            <label for="serviceName">Nome do Serviço:</label>
+            <input type="text" id="serviceName" name="serviceName">
+            <button type="submit">Salvar</button>
+        </form>
+    </div>
+</div>
 
         <button class="accordion" data-group="company-data-panel">Dados da Empresa</button>
 
@@ -50,13 +101,13 @@
 
             <div class="search-container">
 
-            <input type="text" id="searchBar" placeholder="Digite para buscar..." />
-            <button id="search-btn" onclick="searchData()">
-                <i class="fas fa-search"></i>
-            </button>
+                <input type="text" id="searchBar" placeholder="Digite para buscar..." />
+                <button id="search-btn" onclick="searchData()">
+                    <i class="fas fa-search"></i>
+                </button>
 
-        </div>
-            
+            </div>
+
             <form id="companyForm">
                 <label for="nameBusiness">Nome da Empresa:</label>
                 <input type="text" id="nameBusiness" value="">
@@ -201,14 +252,14 @@
 
     <script>
 
-document.getElementById("main-fab").addEventListener("click", function () {
-    const fabOptions = document.getElementById("fab-options");
-    if (fabOptions.style.display === "flex") {
-        fabOptions.style.display = "none";
-    } else {
-        fabOptions.style.display = "flex";
-    }
-});
+        document.getElementById("main-fab").addEventListener("click", function () {
+            const fabOptions = document.getElementById("fab-options");
+            if (fabOptions.style.display === "flex") {
+                fabOptions.style.display = "none";
+            } else {
+                fabOptions.style.display = "flex";
+            }
+        });
 
 
         // Configuração do Firebase
@@ -483,6 +534,51 @@ document.getElementById("main-fab").addEventListener("click", function () {
         // Chamar a função ao carregar a página
         window.onload = loadClients;
 
+
+        document.addEventListener("DOMContentLoaded", () => {
+    const fabOptions = document.querySelectorAll(".fab-option");
+    const modals = document.querySelectorAll(".modal");
+    const closeButtons = document.querySelectorAll(".close");
+
+    // Garante que todas as modais estejam escondidas
+    modals.forEach(modal => {
+        modal.style.display = "none";
+    });
+
+    // Adiciona evento de clique para abrir a modal correspondente
+    fabOptions.forEach(button => {
+        button.addEventListener("click", () => {
+            const targetModal = document.getElementById(button.dataset.target);
+            if (targetModal) {
+                targetModal.classList.add("show");
+                targetModal.style.display = "flex";
+            }
+        });
+    });
+
+    // Fecha a modal quando o botão de fechar é clicado
+    closeButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const modal = button.closest(".modal");
+            modal.classList.remove("show");
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 300); // Espera a transição de opacidade antes de esconder
+        });
+    });
+
+    // Fecha a modal se o usuário clicar fora da área de conteúdo
+    modals.forEach(modal => {
+        modal.addEventListener("click", (event) => {
+            if (event.target === modal) {
+                modal.classList.remove("show");
+                setTimeout(() => {
+                    modal.style.display = "none";
+                }, 300);
+            }
+        });
+    });
+});
 
     </script>
 </body>

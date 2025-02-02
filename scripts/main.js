@@ -503,6 +503,8 @@ async function deleteOrcamento(id) {
     }
 }
 
+window.deleteOrcamento = deleteOrcamento
+
 // Carregar os orçamentos ao abrir a página listorders.html
 if (window.location.pathname.includes("listorders.html")) {
     window.onload = loadOrcamentos;

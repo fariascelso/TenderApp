@@ -19,7 +19,6 @@ h1 {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra para destaque */
 }
 
-
 .container {
     width: 90%;
     max-width: 1200px;
@@ -314,9 +313,56 @@ select::-ms-expand {
     padding: 20px;
     border-radius: 8px;
     width: 400px;
+    max-width: 500px; /* Ajustar para acomodar conteúdo maior se necessário */
+    max-height: 80vh; /* Limitar a altura máxima para não ultrapassar a tela */
+    overflow-y: auto; /* Permitir rolagem vertical se o conteúdo for muito grande */
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-    text-align: center;
     position: relative;
+    text-align: left; /* Alinhar texto à esquerda para formulários */
+}
+
+#clientModalContent,
+#companyModalContent,
+#equipmentModalContent,
+#serviceModalContent {
+    display: block; /* Garante que o conteúdo seja exibido como bloco */
+    width: 100%; /* Ocupa a largura total do contêiner pai */
+    box-sizing: border-box; /* Inclui padding e borda na largura */
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #555;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="number"],
+.modal-content textarea,
+.modal-content select {
+    width: calc(100% - 28px); /* Mantém consistência com o estilo principal */
+    padding: 14px;
+    border: 1px solid #cce4f6;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    font-size: 16px;
+    color: #333;
+    background-color: #f0faff;
+    box-sizing: border-box; /* Garante que o padding não quebre o layout */
+}
+
+.modal-content input[type="text"]:focus,
+.modal-content input[type="number"]:focus,
+.modal-content textarea:focus,
+.modal-content select:focus {
+    border-color: #00aaff;
+    box-shadow: 0 0 6px rgba(0, 170, 255, 0.3);
+    outline: none;
+}
+
+.modal-content .panel {
+    display: block; /* Garante que o elemento com a classe 'panel' seja visível dentro da modal */
 }
 
 /* Botão de fechar */
@@ -420,24 +466,9 @@ select::-ms-expand {
     font-weight: 500; /* Peso da fonte */
 }
 
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
-
-.container {
-    width: 90%;
-    margin: 20px auto;
-    background: #fff;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
 h1 {
     text-align: center;
-    color: #333;
+    color: white;
 }
 
 table {

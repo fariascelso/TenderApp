@@ -544,7 +544,7 @@ async function loadOrcamentoDetails() {
     }
 }
 
-// Carregar os detalhes ao abrir a página details.html
+// Carregar os detalhes ao abrir a página details.html  
 if (window.location.pathname.includes("details.html")) {
     window.onload = loadOrcamentoDetails;
 }

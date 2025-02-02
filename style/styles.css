@@ -319,6 +319,30 @@ select::-ms-expand {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
     position: relative;
     text-align: left; /* Alinhar texto à esquerda para formulários */
+    scrollbar-width: thin; /* Firefox: barra de rolagem fina */
+    scrollbar-color: #00796b #e0f2f1; /* Firefox: cor do thumb e track */
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 10px; /* Largura da barra de rolagem vertical */
+    height: 10px; /* Altura da barra de rolagem horizontal (se aplicável) */
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #e0f2f1; /* Cor de fundo da pista (track) da barra */
+    border-radius: 10px; /* Bordas arredondadas */
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: #00796b; /* Cor do "polegar" (thumb), usando o verde esmeralda do tema */
+    border-radius: 10px; /* Bordas arredondadas */
+    border: 2px solid #e0f2f1; /* Adiciona uma borda para contraste */
+    transition: background 0.3s ease;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #005a4f; /* Cor mais escura ao passar o mouse */
 }
 
 #clientModalContent,
@@ -363,6 +387,23 @@ select::-ms-expand {
 
 .modal-content .panel {
     display: block; /* Garante que o elemento com a classe 'panel' seja visível dentro da modal */
+}
+
+/* Estilização da barra de rolagem para navegadores baseados no WebKit (Chrome, Edge, Safari) */
+.modal-content::-webkit-scrollbar {
+    width: 10px; /* Largura da barra de rolagem vertical */
+    height: 10px; /* Altura da barra de rolagem horizontal (se aplicável) */
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #e0f2f1; /* Cor de fundo da pista (track) da barra */
+    border-radius: 10px; /* Bordas arredondadas */
+}
+
+/* Estilização para Firefox */
+.modal-content {
+    scrollbar-width: thin; /* Define uma barra de rolagem mais fina */
+    scrollbar-color: #00796b #e0f2f1; /* Cor do thumb e do track */
 }
 
 /* Botão de fechar */

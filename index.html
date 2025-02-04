@@ -512,6 +512,29 @@
             }
         }
 
+        // Função para preencher os campos quando uma empresa for selecionada
+        function fillCompanyData() {
+            const companySelect = document.getElementById('companySelect');
+            const selectedData = companySelect.value;
+
+            if (!selectedData) return;
+
+            const data = JSON.parse(selectedData); // Converter string para objeto
+
+            // Preencher os campos do formulário com os dados da empresa
+            document.getElementById('nameBusiness').value = data.nomeEmpresa || "";
+            document.getElementById('fantasyName').value = data.fantasyName || "";
+            document.getElementById('cpfCnpj').value = data.cnpj || "";
+            document.getElementById('address').value = data.endereco || "";
+            document.getElementById('numberAddress').value = data.numero || "";
+            document.getElementById('neighborhood').value = data.bairro || "";
+            document.getElementById('state').value = data.estado || "";
+            document.getElementById('city').value = data.cidade || "";
+            document.getElementById('zipcode').value = data.cep || "";
+            document.getElementById('phone').value = data.telefone || "";
+            document.getElementById('email').value = data.email || "";
+        }
+
         // Função para carregar as empresas ao abrir a página
         async function loadCompanies() {
             const companySelect = document.getElementById('companySelect');

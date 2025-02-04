@@ -40,73 +40,77 @@
                 <button class="fab-option" data-target="equipmentModal"><i class="fas fa-boxes-stacked"></i></button>
                 <button class="fab-option" data-target="serviceModal"><i class="fas fa-tools"></i></button>
             </div>
-        </div> 
+        </div>
 
         <!-- Modais -->
-<div id="clientModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Cadastro de Cliente</h2>
-        <form id="clientForm">
-            <!-- Campos do formulário de cliente -->
-            <label for="clientName">Nome:</label>
-            <input type="text" id="clientName" name="clientName">
-            <button type="submit">Salvar</button>
-        </form>
-    </div>
-</div>
+        <div id="clientModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Cadastro de Cliente</h2>
+                <form id="clientForm">
+                    <!-- Campos do formulário de cliente -->
+                    <label for="clientName">Nome:</label>
+                    <input type="text" id="clientName" name="clientName">
+                    <button type="submit">Salvar</button>
+                </form>
+            </div>
+        </div>
 
-<div id="companyModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Cadastro de Empresa</h2>
-        <form id="companyForm">
-            <!-- Campos do formulário da empresa -->
-            <label for="companyName">Nome da Empresa:</label>
-            <input type="text" id="companyName" name="companyName">
-            <button type="submit">Salvar</button>
-        </form>
-    </div>
-</div>
+        <div id="companyModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Cadastro de Empresa</h2>
+                <form id="companyForm">
+                    <!-- Campos do formulário da empresa -->
+                    <label for="companyName">Nome da Empresa:</label>
+                    <input type="text" id="companyName" name="companyName">
+                    <button type="submit">Salvar</button>
+                </form>
+            </div>
+        </div>
 
-<div id="equipmentModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Cadastro de Equipamento</h2>
-        <form id="equipment-item">
-            <!-- Campos do formulário de equipamentos -->
-            <label for="equipmentName">Nome do Equipamento:</label>
-            <input type="text" id="equipmentName" name="equipmentName">
-            <button type="submit">Salvar</button>
-        </form>
-    </div>
-</div>
+        <div id="equipmentModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Cadastro de Equipamento</h2>
+                <form id="equipment-item">
+                    <!-- Campos do formulário de equipamentos -->
+                    <label for="equipmentName">Nome do Equipamento:</label>
+                    <input type="text" id="equipmentName" name="equipmentName">
+                    <button type="submit">Salvar</button>
+                </form>
+            </div>
+        </div>
 
-<div id="serviceModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Cadastro de Serviço</h2>
-        <form id="service-item">
-            <!-- Campos do formulário de serviço -->
-            <label for="serviceName">Nome do Serviço:</label>
-            <input type="text" id="serviceName" name="serviceName">
-            <button type="submit">Salvar</button>
-        </form>
-    </div>
-</div>
+        <div id="serviceModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Cadastro de Serviço</h2>
+                <form id="service-item">
+                    <!-- Campos do formulário de serviço -->
+                    <label for="serviceName">Nome do Serviço:</label>
+                    <input type="text" id="serviceName" name="serviceName">
+                    <button type="submit">Salvar</button>
+                </form>
+            </div>
+        </div>
 
         <button class="accordion" data-group="company-data-panel">Dados da Empresa</button>
 
         <div class="panel" id="company-data-panel">
 
-            <div class="search-container">
+            <label for="companySelect">Selecione uma Empresa:</label>
+            <select id="companySelect" onchange="fillCompanyData()">
+                <option value="">Carregando empresas...</option>
+            </select>
 
+            <div class="search-container">
                 <input type="text" id="searchBar" placeholder="Digite para buscar..." />
                 <button id="search-btn" onclick="searchData()">
                     <i class="fas fa-search"></i>
                 </button>
-
             </div>
+
 
             <form id="companyForm">
                 <label for="nameBusiness">Nome da Empresa:</label>
@@ -508,6 +512,32 @@
             }
         }
 
+        // Função para carregar as empresas ao abrir a página
+        async function loadCompanies() {
+            const companySelect = document.getElementById('companySelect');
+
+            try {
+                // Buscar todas as empresas no Firestore
+                const querySnapshot = await db.collection("empresasEmitenteOrcamento").get();
+
+                // Limpar opções existentes
+                companySelect.innerHTML = '<option value="">Selecione uma empresa</option>';
+
+                // Adicionar cada empresa como uma opção no select
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const option = document.createElement('option');
+                    option.value = JSON.stringify(data); // Armazena os dados da empresa na opção
+                    option.textContent = data.nomeEmpresa; // Exibir apenas o nome da empresa
+                    companySelect.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error("Erro ao carregar empresas:", error);
+                companySelect.innerHTML = '<option value="">Erro ao carregar</option>';
+            }
+        }
+
         // Função para preencher os campos quando um cliente for selecionado
         function fillClientData() {
             const clientSelect = document.getElementById('clientSelect');
@@ -532,53 +562,56 @@
         }
 
         // Chamar a função ao carregar a página
-        window.onload = loadClients;
+        window.onload = function () {
+            loadClients();
+            loadCompanies();
+        };
 
 
         document.addEventListener("DOMContentLoaded", () => {
-    const fabOptions = document.querySelectorAll(".fab-option");
-    const modals = document.querySelectorAll(".modal");
-    const closeButtons = document.querySelectorAll(".close");
+            const fabOptions = document.querySelectorAll(".fab-option");
+            const modals = document.querySelectorAll(".modal");
+            const closeButtons = document.querySelectorAll(".close");
 
-    // Garante que todas as modais estejam escondidas
-    modals.forEach(modal => {
-        modal.style.display = "none";
-    });
-
-    // Adiciona evento de clique para abrir a modal correspondente
-    fabOptions.forEach(button => {
-        button.addEventListener("click", () => {
-            const targetModal = document.getElementById(button.dataset.target);
-            if (targetModal) {
-                targetModal.classList.add("show");
-                targetModal.style.display = "flex";
-            }
-        });
-    });
-
-    // Fecha a modal quando o botão de fechar é clicado
-    closeButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            const modal = button.closest(".modal");
-            modal.classList.remove("show");
-            setTimeout(() => {
+            // Garante que todas as modais estejam escondidas
+            modals.forEach(modal => {
                 modal.style.display = "none";
-            }, 300); // Espera a transição de opacidade antes de esconder
-        });
-    });
+            });
 
-    // Fecha a modal se o usuário clicar fora da área de conteúdo
-    modals.forEach(modal => {
-        modal.addEventListener("click", (event) => {
-            if (event.target === modal) {
-                modal.classList.remove("show");
-                setTimeout(() => {
-                    modal.style.display = "none";
-                }, 300);
-            }
+            // Adiciona evento de clique para abrir a modal correspondente
+            fabOptions.forEach(button => {
+                button.addEventListener("click", () => {
+                    const targetModal = document.getElementById(button.dataset.target);
+                    if (targetModal) {
+                        targetModal.classList.add("show");
+                        targetModal.style.display = "flex";
+                    }
+                });
+            });
+
+            // Fecha a modal quando o botão de fechar é clicado
+            closeButtons.forEach(button => {
+                button.addEventListener("click", () => {
+                    const modal = button.closest(".modal");
+                    modal.classList.remove("show");
+                    setTimeout(() => {
+                        modal.style.display = "none";
+                    }, 300); // Espera a transição de opacidade antes de esconder
+                });
+            });
+
+            // Fecha a modal se o usuário clicar fora da área de conteúdo
+            modals.forEach(modal => {
+                modal.addEventListener("click", (event) => {
+                    if (event.target === modal) {
+                        modal.classList.remove("show");
+                        setTimeout(() => {
+                            modal.style.display = "none";
+                        }, 300);
+                    }
+                });
+            });
         });
-    });
-});
 
     </script>
 </body>

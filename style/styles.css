@@ -1,11 +1,13 @@
+/* Reset básico e estilos gerais */
 body {
     font-family: 'Roboto', sans-serif;
-    background: #f5f7fa; /* fundo mais claro */
+    background: #f5f7fa; /* Fundo claro */
     color: #333;
     margin: 0;
     padding: 0;
 }
 
+/* Estilização de títulos */
 h1 {
     background: linear-gradient(90deg, #004d40, #00796b); /* Verde musgo para verde esmeralda escuro */
     color: white;
@@ -15,10 +17,11 @@ h1 {
     font-size: 28px;
     font-weight: 700;
     letter-spacing: 1px;
-    border-radius: 8px; /* Para suavizar as bordas */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra para destaque */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
+/* Contêiner principal */
 .container {
     width: 90%;
     max-width: 1200px;
@@ -32,6 +35,7 @@ h1 {
     gap: 20px;
 }
 
+/* Estilo para labels */
 label {
     display: block;
     margin-bottom: 5px;
@@ -39,8 +43,12 @@ label {
     color: #555;
 }
 
-input[type="text"] {
-    width: calc(100% - 28px); /* Ajuste para evitar corte nos lados */
+/* Estilo base para inputs de texto */
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+    width: calc(100% - 28px);
     padding: 14px;
     border: 1px solid #cce4f6;
     border-radius: 10px;
@@ -49,20 +57,88 @@ input[type="text"] {
     color: #333;
     background-color: #f0faff;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
 }
 
-input[type="text"]:focus {
+/* Estilo para inputs ao receber foco */
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
     border-color: #00aaff;
     box-shadow: 0 0 6px rgba(0, 170, 255, 0.3);
     outline: none;
 }
 
+/* Estilo específico para inputs numéricos */
+input[type="number"] {
+    appearance: none;
+}
+
+input[type="number"]:hover {
+    border-color: #00aaff;
+    background-color: #e0f7ff;
+}
+
+input[type="number"]:focus {
+    border-color: #00796b;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+/* Estilo específico para textareas */
+textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Estilo para selects */
+select {
+    appearance: none;
+    cursor: pointer;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23007bff" d="M2 0L0 2h4zM2 5L0 3h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+select:hover {
+    border-color: #00aaff;
+    background-color: #e0f7ff;
+}
+
+select:focus {
+    border-color: #00796b;
+}
+
+select option {
+    background-color: #ffffff;
+    color: #333;
+    font-size: 16px;
+    padding: 10px;
+}
+
+select::-moz-focus-inner {
+    border: 0;
+}
+
+select::-ms-expand {
+    display: none;
+}
+
+/* Contêiner de botões */
 .button-container {
     text-align: center;
 }
 
 .button-container button {
-    background: linear-gradient(90deg, #ff8a00, #ffd200); /* Gradiente de laranja para amarelo */
+    background: linear-gradient(90deg, #ff8a00, #ffd200);
     color: white;
     border: none;
     padding: 14px 32px;
@@ -75,13 +151,14 @@ input[type="text"]:focus {
 }
 
 .button-container button:hover {
-    background: linear-gradient(90deg, #ff7a00, #ffc300); /* Um pouco mais escuro no hover */
+    background: linear-gradient(90deg, #ff7a00, #ffc300);
     transform: scale(1.05);
     box-shadow: 0 6px 14px rgba(255, 136, 0, 0.4);
 }
 
+/* Estilo para acordeões */
 .accordion {
-    background: linear-gradient(90deg, #00bfa5, #a7ffeb); /* Verde esmeralda para verde-limão claro */
+    background: linear-gradient(90deg, #00bfa5, #a7ffeb);
     color: white;
     padding: 12px;
     text-align: left;
@@ -95,12 +172,14 @@ input[type="text"]:focus {
     width: 100%;
 }
 
-.accordion.active, .accordion:hover {
-    background: linear-gradient(90deg, #009688, #8be1d1); /* Tons mais escuros no hover */
+.accordion.active,
+.accordion:hover {
+    background: linear-gradient(90deg, #009688, #8be1d1);
     transform: scale(1.02);
     box-shadow: 0 6px 14px rgba(0, 191, 165, 0.4);
 }
 
+/* Painéis de conteúdo dos acordeões */
 .panel {
     padding: 20px;
     display: none;
@@ -110,9 +189,12 @@ input[type="text"]:focus {
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-#add-service-btn, #add-equipment-btn, #search-btn {
+/* Botões de ação (adicionar serviço, equipamento, etc.) */
+#add-service-btn,
+#add-equipment-btn,
+#search-btn {
     background: none;
-    border: 2px solid #00796b; /* Borda verde esmeralda */
+    border: 2px solid #00796b;
     color: #00796b;
     padding: 10px 20px;
     font-size: 16px;
@@ -125,73 +207,25 @@ input[type="text"]:focus {
     margin-bottom: 20px;
 }
 
-#add-service-btn, #add-equipment-btn i {
-    margin-right: 8px; /* Espaço entre o ícone e o texto */
-    font-size: 16px; /* Ajusta o tamanho do ícone */
-    vertical-align: middle; /* Alinha o ícone ao centro */
+#add-service-btn i,
+#add-equipment-btn i {
+    margin-right: 8px;
+    font-size: 16px;
+    vertical-align: middle;
 }
 
-#add-service-btn:hover, #add-equipment-btn:hover {
+#add-service-btn:hover,
+#add-equipment-btn:hover {
     background-color: #00796b;
     color: #ffffff;
     transform: scale(1.03);
 }
 
-input[type="number"] {
-    width: calc(100% - 28px);
-    padding: 14px;
-    border: 1px solid #cce4f6;
-    border-radius: 10px;
-    margin-bottom: 18px;
-    font-size: 16px;
-    color: #333;
-    background-color: #f0faff;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    appearance: none; /* Remove as setas padrão */
-}
-
-input[type="number"]:hover {
-    border-color: #00aaff;
-    background-color: #e0f7ff;
-}
-
-input[type="number"]:focus {
-    border-color: #00796b;
-    box-shadow: 0 0 6px rgba(0, 170, 255, 0.3);
-    outline: none;
-}
-
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    appearance: none;
-    margin: 0;
-}
-
-textarea {
-    width: calc(100% - 28px); /* Ajuste para evitar corte nos lados */
-    padding: 14px;
-    border: 1px solid #cce4f6;
-    border-radius: 10px;
-    font-size: 16px;
-    color: #333;
-    background-color: #f0faff;
-    resize: vertical; /* Permite redimensionar verticalmente */
-    min-height: 120px; /* Altura mínima do textarea */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    margin-bottom: 18px;
-}
-
-textarea:focus {
-    border-color: #00aaff;
-    box-shadow: 0 0 6px rgba(0, 170, 255, 0.3);
-    outline: none;
-}
-
+/* Estilo para checkboxes */
 .checkbox-container {
     display: flex;
     align-items: center;
-    gap: 8px; /* Espaço entre o checkbox e o texto */
+    gap: 8px;
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
     margin: 10px 0;
@@ -200,7 +234,7 @@ textarea:focus {
 .checkbox-container input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    accent-color: #007bff; /* Cor do checkbox (pode ajustar conforme o tema) */
+    accent-color: #007bff;
     cursor: pointer;
 }
 
@@ -208,87 +242,21 @@ textarea:focus {
     cursor: pointer;
 }
 
-select {
-    width: 100%;
-    padding: 14px;
-    border: 1px solid #cce4f6;
-    border-radius: 10px;
-    font-size: 16px;
-    color: #333;
-    background-color: #f0faff;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    appearance: none; /* Remove a aparência padrão do navegador */
-    cursor: pointer;
-    outline: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23007bff" d="M2 0L0 2h4zM2 5L0 3h4z"/></svg>'); /* Ícone de seta */
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    background-size: 12px;
-    margin-bottom: 18px; /* Adicionado espaçamento abaixo */
-}
-
-select:hover {
-    border-color: #00aaff;
-    background-color: #e0f7ff;
-}
-
-select:focus {
-    border-color: #00796b;
-    box-shadow: 0 0 6px rgba(0, 170, 255, 0.3);
-}
-
-/* Estilo das opções dentro do select */
-select option {
-    background-color: #ffffff;
-    color: #333;
-    font-size: 16px;
-    padding: 10px;
-}
-
-/* Para remover a aparência padrão da seta no Firefox */
-select::-moz-focus-inner {
-    border: 0;
-}
-
-select::-ms-expand {
-    display: none;
-}
-
+/* Contêiner de busca */
 .search-container {
     display: flex;
     align-items: center;
-    gap: 10px; /* Espaço entre o select e o botão */
+    gap: 10px;
     width: 100%;
 }
 
 .search-container select {
-    flex: 1; /* Faz o select ocupar o espaço disponível */
-}
-
-#search-btn {
-    background: linear-gradient(90deg, #ff8a00, #ffd200);
-    color: white;
-    border: none;
-    padding: 14px 20px;
-    font-size: 16px;
-    font-weight: 500;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 10px rgba(255, 136, 0, 0.3);
-    height: 48px;
-}
-
-#search-btn:hover {
-    background: linear-gradient(90deg, #ff7a00, #ffc300);
-    transform: scale(1.05);
-    box-shadow: 0 6px 14px rgba(255, 136, 0, 0.4);
+    flex: 1;
 }
 
 /* Estilização das modais */
 .modal {
-    display: none; /* Mantém as modais escondidas */
+    display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -302,7 +270,6 @@ select::-ms-expand {
     transition: opacity 0.3s ease-in-out;
 }
 
-/* Quando ativa, torna visível */
 .modal.show {
     display: flex;
     opacity: 1;
@@ -313,45 +280,45 @@ select::-ms-expand {
     padding: 20px;
     border-radius: 8px;
     width: 400px;
-    max-width: 500px; /* Ajustar para acomodar conteúdo maior se necessário */
-    max-height: 80vh; /* Limitar a altura máxima para não ultrapassar a tela */
-    overflow-y: auto; /* Permitir rolagem vertical se o conteúdo for muito grande */
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
     position: relative;
-    text-align: left; /* Alinhar texto à esquerda para formulários */
-    scrollbar-width: thin; /* Firefox: barra de rolagem fina */
-    scrollbar-color: #00796b #e0f2f1; /* Firefox: cor do thumb e track */
+    text-align: left;
+    scrollbar-width: thin;
+    scrollbar-color: #00796b rgba(224, 242, 241, 0.2);
 }
 
 .modal-content::-webkit-scrollbar {
-    width: 10px; /* Largura da barra de rolagem vertical */
-    height: 10px; /* Altura da barra de rolagem horizontal (se aplicável) */
+    width: 10px;
+    height: 10px;
 }
 
 .modal-content::-webkit-scrollbar-track {
-    background: #e0f2f1; /* Cor de fundo da pista (track) da barra */
-    border-radius: 10px; /* Bordas arredondadas */
+    background: rgba(224, 242, 241, 0.2);
+    border-radius: 10px;
 }
 
 .modal-content::-webkit-scrollbar-thumb {
-    background: #00796b; /* Cor do "polegar" (thumb), usando o verde esmeralda do tema */
-    border-radius: 10px; /* Bordas arredondadas */
-    border: 2px solid #e0f2f1; /* Adiciona uma borda para contraste */
+    background: #00796b;
+    border-radius: 10px;
+    border: 2px solid transparent;
     transition: background 0.3s ease;
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
 .modal-content::-webkit-scrollbar-thumb:hover {
-    background: #005a4f; /* Cor mais escura ao passar o mouse */
+    background: #005a4f;
 }
 
 #clientModalContent,
 #companyModalContent,
 #equipmentModalContent,
 #serviceModalContent {
-    display: block; /* Garante que o conteúdo seja exibido como bloco */
-    width: 100%; /* Ocupa a largura total do contêiner pai */
-    box-sizing: border-box; /* Inclui padding e borda na largura */
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .modal-content label {
@@ -365,7 +332,7 @@ select::-ms-expand {
 .modal-content input[type="number"],
 .modal-content textarea,
 .modal-content select {
-    width: calc(100% - 28px); /* Mantém consistência com o estilo principal */
+    width: calc(100% - 28px);
     padding: 14px;
     border: 1px solid #cce4f6;
     border-radius: 10px;
@@ -373,7 +340,7 @@ select::-ms-expand {
     font-size: 16px;
     color: #333;
     background-color: #f0faff;
-    box-sizing: border-box; /* Garante que o padding não quebre o layout */
+    box-sizing: border-box;
 }
 
 .modal-content input[type="text"]:focus,
@@ -386,27 +353,9 @@ select::-ms-expand {
 }
 
 .modal-content .panel {
-    display: block; /* Garante que o elemento com a classe 'panel' seja visível dentro da modal */
+    display: block;
 }
 
-/* Estilização da barra de rolagem para navegadores baseados no WebKit (Chrome, Edge, Safari) */
-.modal-content::-webkit-scrollbar {
-    width: 10px; /* Largura da barra de rolagem vertical */
-    height: 10px; /* Altura da barra de rolagem horizontal (se aplicável) */
-}
-
-.modal-content::-webkit-scrollbar-track {
-    background: #e0f2f1; /* Cor de fundo da pista (track) da barra */
-    border-radius: 10px; /* Bordas arredondadas */
-}
-
-/* Estilização para Firefox */
-.modal-content {
-    scrollbar-width: thin; /* Define uma barra de rolagem mais fina */
-    scrollbar-color: #00796b #e0f2f1; /* Cor do thumb e do track */
-}
-
-/* Botão de fechar */
 .close {
     position: absolute;
     top: 10px;
@@ -415,14 +364,13 @@ select::-ms-expand {
     cursor: pointer;
 }
 
-.floating-menu {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: center;
+.close:focus {
+    outline: 2px solid #00aaff;
+    outline-offset: 2px;
+    border-radius: 50%;
 }
+
+/* Floating Action Buttons (FAB) */
 .floating-menu {
     position: fixed;
     bottom: 20px;
@@ -436,17 +384,17 @@ select::-ms-expand {
     background-color: #00796b;
     color: white;
     border: none;
-    width: auto; /* Ajuste para acomodar o texto */
+    width: auto;
     height: 50px;
-    border-radius: 25px; /* Bordas arredondadas */
+    border-radius: 25px;
     font-size: 18px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: transform 0.3s ease;
     display: flex;
     align-items: center;
-    padding: 0 20px; /* Espaçamento interno */
-    gap: 10px; /* Espaço entre ícone e texto */
+    padding: 0 20px;
+    gap: 10px;
 }
 
 #main-fab:hover {
@@ -455,8 +403,8 @@ select::-ms-expand {
 }
 
 #main-fab span {
-    font-size: 14px; /* Tamanho do texto */
-    font-weight: 500; /* Peso da fonte */
+    font-size: 14px;
+    font-weight: 500;
 }
 
 #fab-options {
@@ -479,17 +427,17 @@ select::-ms-expand {
     background-color: #007bff;
     color: white;
     border: none;
-    width: auto; /* Ajuste para acomodar o texto */
+    width: auto;
     height: 50px;
-    border-radius: 25px; /* Bordas arredondadas */
+    border-radius: 25px;
     font-size: 18px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: background-color 0.3s;
     display: flex;
     align-items: center;
-    padding: 0 20px; /* Espaçamento interno */
-    gap: 10px; /* Espaço entre ícone e texto */
+    padding: 0 20px;
+    gap: 10px;
 }
 
 .fab-option:nth-child(1) { background-color: #00aaff; } /* Cliente */
@@ -503,22 +451,19 @@ select::-ms-expand {
 }
 
 .fab-option span {
-    font-size: 14px; /* Tamanho do texto */
-    font-weight: 500; /* Peso da fonte */
+    font-size: 14px;
+    font-weight: 500;
 }
 
-h1 {
-    text-align: center;
-    color: white;
-}
-
+/* Estilo de tabelas */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
 
-table th, table td {
+table th,
+table td {
     padding: 10px;
     text-align: left;
     border-bottom: 1px solid #ddd;
@@ -542,26 +487,25 @@ button:hover {
     background-color: #0056b3;
 }
 
-/* Estilo para o ícone do menu hambúrguer */
+/* Menu hambúrguer */
 #menu-hamburger {
     cursor: pointer;
     margin-right: 15px;
     font-size: 24px;
 }
 
-/* Estilo para o contêiner do link (inicialmente oculto) */
 #menu-links {
     margin-top: 10px;
     padding: 10px;
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: none; /* Inicialmente oculto */
+    display: none;
 }
 
 #menu-links a {
     text-decoration: none;
-    color: #00796b; /* Cor do link */
+    color: #00796b;
     font-size: 16px;
     font-weight: 500;
     display: block;
@@ -571,10 +515,9 @@ button:hover {
 }
 
 #menu-links a:hover {
-    background-color: #e0f2f1; /* Cor de fundo ao passar o mouse */
+    background-color: #e0f2f1;
 }
 
-/* Classe para exibir o link */
 #menu-links.show {
     display: block;
 }

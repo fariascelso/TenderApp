@@ -356,6 +356,25 @@ select::-ms-expand {
     display: block;
 }
 
+.modal-save-btn {
+    background: #00796b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: block;
+    margin: 20px auto 0;
+}
+
+.modal-save-btn:hover {
+    background: #005a4f;
+    transform: scale(1.05);
+}
+
 .close {
     position: absolute;
     top: 10px;

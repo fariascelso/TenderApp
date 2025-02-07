@@ -22,10 +22,57 @@ function injectModalContent(sourceId, targetId) {
         console.log(`Elementos encontrados: ${sourceId} e ${targetId}`);
         const clonedContent = sourceElement.cloneNode(true);
         console.log('Conteúdo clonado:', clonedContent.innerHTML);
+
+        // Remover a classe 'panel' do elemento clonado para evitar display: none
         clonedContent.classList.remove('panel');
         clonedContent.id = '';
+
+        // Remover elementos específicos dependendo do targetId
+        if (targetId === 'clientModalContent') {
+            // Remover o select "Selecione um Cliente" e seu label
+            const clientSelectLabel = clonedContent.querySelector('label[for="clientSelect"]');
+            const clientSelect = clonedContent.querySelector('#clientSelect');
+            if (clientSelectLabel) clientSelectLabel.remove();
+            if (clientSelect) clientSelect.remove();
+        } else if (targetId === 'companyModalContent') {
+            // Remover o select "Selecione uma Empresa" e seu label
+            const companySelectLabel = clonedContent.querySelector('label[for="companySelect"]');
+            const companySelect = clonedContent.querySelector('#companySelect');
+            if (companySelectLabel) companySelectLabel.remove();
+            if (companySelect) companySelect.remove();
+        } else if (targetId === 'equipmentModalContent') {
+            // Remover o botão "Adicionar Equipamento"
+            const addEquipmentBtn = clonedContent.querySelector('#add-equipment-btn');
+            if (addEquipmentBtn) addEquipmentBtn.remove();
+
+            // Remover o campo "Quantidade" e seu label
+            const quantityLabel = clonedContent.querySelector('label[for="quantityEquipment"]');
+            const quantityInput = clonedContent.querySelector('.quantityEquipment');
+            if (quantityLabel) quantityLabel.remove();
+            if (quantityInput) quantityInput.remove();
+
+            // Remover o campo "Subtotal" e seu label
+            const subtotalLabel = clonedContent.querySelector('label[for="subtotalEquipment"]');
+            const subtotalInput = clonedContent.querySelector('.subtotalEquipment');
+            if (subtotalLabel) subtotalLabel.remove();
+            if (subtotalInput) subtotalInput.remove();
+        } else if (targetId === 'serviceModalContent') {
+            // Remover o botão "Adicionar Serviço"
+            const addServiceBtn = clonedContent.querySelector('#add-service-btn');
+            if (addServiceBtn) addServiceBtn.remove();
+        }
+
+        // Limpar o conteúdo existente no target e adicionar o clonado
         targetElement.innerHTML = '';
         targetElement.appendChild(clonedContent);
+
+        // Adicionar botão "Salvar" dinamicamente
+        const saveButton = document.createElement('button');
+        saveButton.textContent = 'Salvar';
+        saveButton.className = 'modal-save-btn';
+        saveButton.addEventListener('click', () => saveModalData(targetId));
+        targetElement.appendChild(saveButton);
+
         console.log('Conteúdo após injeção:', targetElement.innerHTML);
     } else {
         console.error(`Elemento ${sourceId} ou ${targetId} não encontrado.`);
@@ -547,4 +594,84 @@ async function loadOrcamentoDetails() {
 // Carregar os detalhes ao abrir a página details.html
 if (window.location.pathname.includes("details.html")) {
     window.onload = loadOrcamentoDetails;
+}
+
+// Função para salvar os dados da modal no Firebase
+async function saveModalData(targetId) {
+    try {
+        if (targetId === 'clientModalContent') {
+            await saveClientToFirestore();
+        } else if (targetId === 'companyModalContent') {
+            await saveCompanyToFirestore();
+        } else if (targetId === 'equipmentModalContent') {
+            await saveEquipmentToFirestore();
+        } else if (targetId === 'serviceModalContent') {
+            await saveServiceToFirestore();
+        }
+        alert('Dados salvos com sucesso!');
+        // Fechar a modal após salvar
+        const modal = document.getElementById(targetId).closest('.modal');
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    } catch (error) {
+        console.error('Erro ao salvar dados:', error);
+        alert('Erro ao salvar dados. Veja o console para mais detalhes.');
+    }
+}
+
+// Função para salvar Cliente no Firebase
+async function saveClientToFirestore() {
+    const clientData = {
+        nameClient: document.querySelector('#clientModalContent #nameClient').value,
+        cpfCNPJClient: document.querySelector('#clientModalContent #cpfCNPJClient').value,
+        fantasyNameClient: document.querySelector('#clientModalContent #fantasyNameClient').value,
+        streetClient: document.querySelector('#clientModalContent #streetClient').value,
+        numberAddressClient: document.querySelector('#clientModalContent #numberAddressClient').value,
+        neighborhoodClient: document.querySelector('#clientModalContent #neighborhoodClient').value,
+        cityClient: document.querySelector('#clientModalContent #cityClient').value,
+        zipcodeClient: document.querySelector('#clientModalContent #zipcodeClient').value,
+        stateClient: document.querySelector('#clientModalContent #stateClient').value,
+        phoneClient: document.querySelector('#clientModalContent #phoneClient').value,
+        emailClient: document.querySelector('#clientModalContent #emailClient').value
+    };
+    await db.collection('clientes').add(clientData);
+}
+
+// Função para salvar Empresa no Firebase
+async function saveCompanyToFirestore() {
+    const companyData = {
+        nomeEmpresa: document.querySelector('#companyModalContent #nameBusiness').value,
+        fantasyName: document.querySelector('#companyModalContent #fantasyName').value,
+        cnpj: document.querySelector('#companyModalContent #cpfCnpj').value,
+        endereco: document.querySelector('#companyModalContent #address').value,
+        numero: document.querySelector('#companyModalContent #numberAddress').value,
+        bairro: document.querySelector('#companyModalContent #neighborhood').value,
+        estado: document.querySelector('#companyModalContent #state').value,
+        cidade: document.querySelector('#companyModalContent #city').value,
+        cep: document.querySelector('#companyModalContent #zipcode').value,
+        telefone: document.querySelector('#companyModalContent #phone').value,
+        email: document.querySelector('#companyModalContent #email').value
+    };
+    await db.collection('empresasEmitenteOrcamento').add(companyData);
+}
+
+// Função para salvar Equipamento no Firebase
+async function saveEquipmentToFirestore() {
+    const equipmentData = {
+        codeEquipment: document.querySelector('#equipmentModalContent .codeEquipment').value,
+        nameEquipment: document.querySelector('#equipmentModalContent .nameEquipment').value,
+        unitPriceEquipment: document.querySelector('#equipmentModalContent .unitPriceEquipment').value
+    };
+    await db.collection('equipamentos').add(equipmentData);
+}
+
+// Função para salvar Serviço no Firebase
+async function saveServiceToFirestore() {
+    const serviceData = {
+        descriptionService: document.querySelector('#serviceModalContent .descriptionService').value,
+        amountService: document.querySelector('#serviceModalContent .amountService').value
+    };
+    await db.collection('servicos').add(serviceData);
 }

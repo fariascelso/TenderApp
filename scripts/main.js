@@ -13,6 +13,68 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+document.addEventListener('DOMContentLoaded', function () {
+    // Configuração do botão flutuante
+    const mainFab = document.getElementById('main-fab');
+    const fabOptions = document.getElementById('fab-options');
+
+    if (mainFab && fabOptions) {
+        mainFab.addEventListener('click', function () {
+            if (fabOptions.style.display === 'none' || fabOptions.style.display === '') {
+                fabOptions.style.display = 'flex'; // Exibe as opções
+            } else {
+                fabOptions.style.display = 'none'; // Oculta as opções
+            }
+        });
+    }
+
+    // Restante do seu código existente...
+    const fabOptionsButtons = document.querySelectorAll(".fab-option");
+    const modals = document.querySelectorAll(".modal");
+    const closeButtons = document.querySelectorAll(".close");
+
+    // Garante que todas as modais estejam escondidas
+    modals.forEach(modal => {
+        modal.style.display = "none";
+    });
+
+    // Adiciona evento de clique para abrir a modal correspondente
+    fabOptionsButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const targetModal = document.getElementById(button.dataset.target);
+            if (targetModal) {
+                targetModal.classList.add("show");
+                targetModal.style.display = "flex";
+            }
+        });
+    });
+
+    // Fecha a modal quando o botão de fechar é clicado
+    closeButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const modal = button.closest(".modal");
+            modal.classList.remove("show");
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 300); // Espera a transição de opacidade antes de esconder
+        });
+    });
+
+    // Fecha a modal se o usuário clicar fora da área de conteúdo
+    modals.forEach(modal => {
+        modal.addEventListener("click", (event) => {
+            if (event.target === modal) {
+                modal.classList.remove("show");
+                setTimeout(() => {
+                    modal.style.display = "none";
+                }, 300);
+            }
+        });
+    });
+});
+
+// Restante do seu código existente...
+
 // Função para salvar dados no Firestore
 export async function saveDataToFirestore() {
     const companyForm = document.getElementById('companyForm');

@@ -395,3 +395,18 @@ select::-ms-expand {
     font-size: 24px;
     cursor: pointer;
 }
+
+#fab-options {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+#fab-options.show {
+    opacity: 1;
+    transform: translateY(0);
+}

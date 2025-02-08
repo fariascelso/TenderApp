@@ -1,4 +1,3 @@
-// Configuração do Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyCrqYU-lgB8XFiYVzUR5n7hyUW1hOqlZdg",
     authDomain: "masterclimatizadores-f03bf.firebaseapp.com",
@@ -9,7 +8,6 @@ const firebaseConfig = {
     measurementId: "G-2PQQZQ1KRX"
 };
 
-// Inicializar Firebase e Firestore
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -23,50 +21,40 @@ function injectModalContent(sourceId, targetId) {
         const clonedContent = sourceElement.cloneNode(true);
         console.log('Conteúdo clonado:', clonedContent.innerHTML);
 
-        // Remover a classe 'panel' do elemento clonado para evitar display: none
         clonedContent.classList.remove('panel');
         clonedContent.id = '';
 
-        // Remover elementos específicos dependendo do targetId
         if (targetId === 'clientModalContent') {
-            // Remover o select "Selecione um Cliente" e seu label
             const clientSelectLabel = clonedContent.querySelector('label[for="clientSelect"]');
             const clientSelect = clonedContent.querySelector('#clientSelect');
             if (clientSelectLabel) clientSelectLabel.remove();
             if (clientSelect) clientSelect.remove();
         } else if (targetId === 'companyModalContent') {
-            // Remover o select "Selecione uma Empresa" e seu label
             const companySelectLabel = clonedContent.querySelector('label[for="companySelect"]');
             const companySelect = clonedContent.querySelector('#companySelect');
             if (companySelectLabel) companySelectLabel.remove();
             if (companySelect) companySelect.remove();
         } else if (targetId === 'equipmentModalContent') {
-            // Remover o botão "Adicionar Equipamento"
             const addEquipmentBtn = clonedContent.querySelector('#add-equipment-btn');
             if (addEquipmentBtn) addEquipmentBtn.remove();
-
-            // Remover o campo "Quantidade" e seu label
             const quantityLabel = clonedContent.querySelector('label[for="quantityEquipment"]');
             const quantityInput = clonedContent.querySelector('.quantityEquipment');
             if (quantityLabel) quantityLabel.remove();
             if (quantityInput) quantityInput.remove();
-
-            // Remover o campo "Subtotal" e seu label
             const subtotalLabel = clonedContent.querySelector('label[for="subtotalEquipment"]');
             const subtotalInput = clonedContent.querySelector('.subtotalEquipment');
             if (subtotalLabel) subtotalLabel.remove();
             if (subtotalInput) subtotalInput.remove();
         } else if (targetId === 'serviceModalContent') {
-            // Remover o botão "Adicionar Serviço"
             const addServiceBtn = clonedContent.querySelector('#add-service-btn');
             if (addServiceBtn) addServiceBtn.remove();
         }
 
-        // Limpar o conteúdo existente no target e adicionar o clonado
         targetElement.innerHTML = '';
         targetElement.appendChild(clonedContent);
 
-        // Adicionar botão "Salvar" dinamicamente
+        applyInputMasks(targetElement);
+
         const saveButton = document.createElement('button');
         saveButton.textContent = 'Salvar';
         saveButton.className = 'modal-save-btn';
@@ -149,7 +137,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Adicionar evento ao menu hambúrguer
     const menuHamburger = document.getElementById('menu-hamburger');
     if (menuHamburger) {
         menuHamburger.addEventListener('click', function() {
@@ -159,22 +146,20 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
         console.error('Elemento menu-hamburger não encontrado no DOM.');
     }
+
+    applyInputMasks(document);
 });
 
-// Função para gerar um ID numérico único
 async function generateNumericId() {
     const counterRef = db.collection('counters').doc('orcamentoCounter');
     let numericId;
 
-    // Usar uma transação para garantir atomicidade
     await db.runTransaction(async (transaction) => {
         const doc = await transaction.get(counterRef);
         if (!doc.exists) {
-            // Se o contador não existir, crie com o valor inicial 1
             transaction.set(counterRef, { count: 1 });
             numericId = 1;
         } else {
-            // Incrementar o contador
             const currentCount = doc.data().count;
             numericId = currentCount + 1;
             transaction.update(counterRef, { count: numericId });
@@ -184,7 +169,6 @@ async function generateNumericId() {
     return numericId;
 }
 
-// Função para salvar o orçamento com um ID numérico
 export async function saveDataToFirestore() {
     const issuingCompany = {
         nomeEmpresa: document.getElementById('nameBusiness').value,
@@ -254,10 +238,8 @@ export async function saveDataToFirestore() {
     };
 
     try {
-        // Gerar um ID numérico único
         const numericId = await generateNumericId();
 
-        // Salvar o orçamento com o ID numérico
         await db.collection("orcamentos").doc(numericId.toString()).set(orcamento);
 
         alert(`Orçamento salvo com sucesso! ID do orçamento: ${numericId}`);
@@ -269,8 +251,6 @@ export async function saveDataToFirestore() {
 
 window.saveDataToFirestore = saveDataToFirestore;
 
-// Função para adicionar novo serviço
-// Verifica se o elemento existe antes de adicionar o evento
 const addServiceBtn = document.getElementById('add-service-btn');
 if (addServiceBtn) {
     addServiceBtn.addEventListener('click', function () {
@@ -290,7 +270,6 @@ if (addServiceBtn) {
     });
 }
 
-// Verifica se o elemento existe antes de adicionar o evento
 const equipmentsContainer = document.getElementById('equipments-container');
 if (equipmentsContainer) {
     equipmentsContainer.addEventListener('input', function (event) {
@@ -299,13 +278,11 @@ if (equipmentsContainer) {
         const unitPrice = equipmentItem.querySelector('.unitPriceEquipment').value;
         const subtotal = equipmentItem.querySelector('.subtotalEquipment');
 
-        // Cálculo do subtotal
         const calculatedSubtotal = parseFloat(quantity) * parseFloat(unitPrice || 0);
         subtotal.value = calculatedSubtotal ? `R$ ${calculatedSubtotal.toFixed(2)}` : '';
     });
 }
 
-// Verifica se o elemento existe antes de adicionar o evento
 const addEquipmentBtn = document.getElementById('add-equipment-btn');
 if (addEquipmentBtn) {
     addEquipmentBtn.addEventListener('click', function () {
@@ -335,38 +312,32 @@ if (addEquipmentBtn) {
     });
 }
 
-// Obtendo referência à checkbox e ao botão
 const includeEquipmentsCheckbox = document.getElementById('includeEquipments');
 const materialsBtn = document.getElementById('materials-btn');
 
-// Evento para exibir ou ocultar o botão com base no estado da checkbox
 if (includeEquipmentsCheckbox && materialsBtn) {
     includeEquipmentsCheckbox.addEventListener('change', function () {
         if (includeEquipmentsCheckbox.checked) {
-            materialsBtn.style.display = 'block'; // Exibe o botão
+            materialsBtn.style.display = 'block'
         } else {
-            materialsBtn.style.display = 'none'; // Oculta o botão
+            materialsBtn.style.display = 'none'
         }
     });
 }
 
-// Função para carregar os clientes ao abrir a página
 export async function loadClients() {
     const clientSelect = document.getElementById('clientSelect');
 
     try {
-        // Buscar todos os clientes no Firestore
         const querySnapshot = await db.collection("clientes").get();
 
-        // Limpar opções existentes
         clientSelect.innerHTML = '<option value="">Selecione um cliente</option>';
 
-        // Adicionar cada cliente como uma opção no select
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             const option = document.createElement('option');
-            option.value = JSON.stringify(data); // Armazena os dados do cliente na opção
-            option.textContent = data.nameClient; // Exibir apenas o nome da empresa
+            option.value = JSON.stringify(data);
+            option.textContent = data.nameClient;
             clientSelect.appendChild(option);
         });
 
@@ -376,16 +347,14 @@ export async function loadClients() {
     }
 }
 
-// Função para preencher os campos quando uma empresa for selecionada
 export function fillCompanyData() {
     const companySelect = document.getElementById('companySelect');
     const selectedData = companySelect.value;
 
     if (!selectedData) return;
 
-    const data = JSON.parse(selectedData); // Converter string para objeto
+    const data = JSON.parse(selectedData)
 
-    // Preencher os campos do formulário com os dados da empresa
     document.getElementById('nameBusiness').value = data.nomeEmpresa || "";
     document.getElementById('fantasyName').value = data.fantasyName || "";
     document.getElementById('cpfCnpj').value = data.cnpj || "";
@@ -401,42 +370,36 @@ export function fillCompanyData() {
 
 window.fillCompanyData = fillCompanyData;
 
-// Função para carregar as empresas ao abrir a página
 export async function loadCompanies() {
     const companySelect = document.getElementById('companySelect');
 
     try {
-        // Buscar todas as empresas no Firestore
         const querySnapshot = await db.collection("empresasEmitenteOrcamento").get();
 
-        // Limpar opções existentes
         companySelect.innerHTML = '<option value="">Selecione uma empresa</option>';
 
-        // Adicionar cada empresa como uma opção no select
         querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const option = document.createElement('option');
-            option.value = JSON.stringify(data); // Armazena os dados da empresa na opção
-            option.textContent = data.nomeEmpresa; // Exibir apenas o nome da empresa
-            companySelect.appendChild(option);
+            const data = doc.data()
+            const option = document.createElement('option')
+            option.value = JSON.stringify(data)
+            option.textContent = data.nomeEmpresa
+            companySelect.appendChild(option)
         });
 
     } catch (error) {
         console.error("Erro ao carregar empresas:", error);
-        companySelect.innerHTML = '<option value="">Erro ao carregar</option>';
+        companySelect.innerHTML = '<option value="">Erro ao carregar</option>'
     }
 }
 
-// Função para preencher os campos quando um cliente for selecionado
 export function fillClientData() {
-    const clientSelect = document.getElementById('clientSelect');
-    const selectedData = clientSelect.value;
+    const clientSelect = document.getElementById('clientSelect')
+    const selectedData = clientSelect.value
 
-    if (!selectedData) return;
+    if (!selectedData) return
 
-    const data = JSON.parse(selectedData); // Converter string para objeto
+    const data = JSON.parse(selectedData)
 
-    // Preencher os campos do formulário com os dados do cliente
     document.getElementById('nameClient').value = data.nameClient || "";
     document.getElementById('cpfCNPJClient').value = data.cpfCNPJClient || "";
     document.getElementById('fantasyNameClient').value = data.fantasyNameClient || "";
@@ -452,7 +415,6 @@ export function fillClientData() {
 
 window.fillClientData = fillClientData;
 
-// Chamar a função ao carregar a página
 window.onload = function () {
     loadClients();
     loadCompanies();
@@ -462,51 +424,42 @@ const observer = new MutationObserver(function(mutations) {
     mutations.forEach(function(mutation) {
         const editableText = document.getElementById('nome-empresa');
         if (editableText) {
-            // Quando o campo perde o foco, salva o valor (se necessário)
             editableText.addEventListener('blur', function () {
                 console.log('Nome atualizado:', editableText.value);
             });
 
-            // Opcional: Permitir que o Enter salve e saia do modo de edição
             editableText.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
-                    editableText.blur(); // Remove o foco do campo
+                    editableText.blur()
                 }
             });
 
-            observer.disconnect(); // Para de observar após encontrar o elemento
+            observer.disconnect()
         }
     });
 });
 
-observer.observe(document.body, { childList: true, subtree: true });
+observer.observe(document.body, { childList: true, subtree: true })
 
-// Função para navegar para a página de listagem de orçamentos
 function navigateToListarOrcamentos() {
-    window.location.href = "listorders.html";
+    window.location.href = "listorders.html"
 }
 
-// Função para navegar para a página de criação de orçamento
 function navigateToCriarOrcamento() {
-    window.location.href = "index.html"; // Substitua pelo nome da sua página de criação
+    window.location.href = "index.html"
 }
 
-// Adicionar as funções ao escopo global (window) para que possam ser chamadas no HTML
 window.navigateToListarOrcamentos = navigateToListarOrcamentos;
 window.navigateToCriarOrcamento = navigateToCriarOrcamento;
 
-// Função para carregar e exibir os orçamentos na página listorders.html
 async function loadOrcamentos() {
     const tbody = document.querySelector("#orcamentosTable tbody");
 
     try {
-        // Buscar todos os documentos da coleção "orcamentos"
         const querySnapshot = await db.collection("orcamentos").get();
 
-        // Limpar o conteúdo atual da tabela
         tbody.innerHTML = "";
-
-        // Iterar sobre cada documento
+      
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             const row = `
@@ -521,28 +474,26 @@ async function loadOrcamentos() {
                     </td>
                 </tr>
             `;
-            tbody.innerHTML += row;
+            tbody.innerHTML += row
         });
     } catch (error) {
-        console.error("Erro ao carregar orçamentos:", error);
-        alert("Erro ao carregar orçamentos.");
+        console.error("Erro ao carregar orçamentos:", error)
+        alert("Erro ao carregar orçamentos.")
     }
 }
 
-// Função para visualizar detalhes de um orçamento
 function viewOrcamento(id) {
     window.location.href = `details.html?id=${id}`;
 }
 
 window.viewOrcamento = viewOrcamento
 
-// Função para excluir um orçamento
 async function deleteOrcamento(id) {
     if (confirm("Tem certeza que deseja excluir este orçamento?")) {
         try {
             await db.collection("orcamentos").doc(id).delete();
             alert("Orçamento excluído com sucesso!");
-            loadOrcamentos(); // Recarregar a lista após exclusão
+            loadOrcamentos()
         } catch (error) {
             console.error("Erro ao excluir orçamento:", error);
             alert("Erro ao excluir orçamento.");
@@ -552,12 +503,10 @@ async function deleteOrcamento(id) {
 
 window.deleteOrcamento = deleteOrcamento
 
-// Carregar os orçamentos ao abrir a página listorders.html
 if (window.location.pathname.includes("listorders.html")) {
     window.onload = loadOrcamentos;
 }
 
-// Função para carregar os detalhes do orçamento na página details.html
 async function loadOrcamentoDetails() {
     const urlParams = new URLSearchParams(window.location.search);
     const orcamentoId = urlParams.get('id');
@@ -591,37 +540,33 @@ async function loadOrcamentoDetails() {
     }
 }
 
-// Carregar os detalhes ao abrir a página details.html
 if (window.location.pathname.includes("details.html")) {
-    window.onload = loadOrcamentoDetails;
+    window.onload = loadOrcamentoDetails
 }
 
-// Função para salvar os dados da modal no Firebase
 async function saveModalData(targetId) {
     try {
         if (targetId === 'clientModalContent') {
-            await saveClientToFirestore();
+            await saveClientToFirestore()
         } else if (targetId === 'companyModalContent') {
-            await saveCompanyToFirestore();
+            await saveCompanyToFirestore()
         } else if (targetId === 'equipmentModalContent') {
-            await saveEquipmentToFirestore();
+            await saveEquipmentToFirestore()
         } else if (targetId === 'serviceModalContent') {
-            await saveServiceToFirestore();
+            await saveServiceToFirestore()
         }
-        alert('Dados salvos com sucesso!');
-        // Fechar a modal após salvar
+        alert('Dados salvos com sucesso!')
         const modal = document.getElementById(targetId).closest('.modal');
-        modal.classList.remove('show');
+        modal.classList.remove('show')
         setTimeout(() => {
-            modal.style.display = 'none';
+            modal.style.display = 'none'
         }, 300);
     } catch (error) {
-        console.error('Erro ao salvar dados:', error);
-        alert('Erro ao salvar dados. Veja o console para mais detalhes.');
+        console.error('Erro ao salvar dados:', error)
+        alert('Erro ao salvar dados. Veja o console para mais detalhes.')
     }
 }
 
-// Função para salvar Cliente no Firebase
 async function saveClientToFirestore() {
     const clientData = {
         nameClient: document.querySelector('#clientModalContent #nameClient').value,
@@ -639,7 +584,6 @@ async function saveClientToFirestore() {
     await db.collection('clientes').add(clientData);
 }
 
-// Função para salvar Empresa no Firebase
 async function saveCompanyToFirestore() {
     const companyData = {
         nomeEmpresa: document.querySelector('#companyModalContent #nameBusiness').value,
@@ -657,21 +601,60 @@ async function saveCompanyToFirestore() {
     await db.collection('empresasEmitenteOrcamento').add(companyData);
 }
 
-// Função para salvar Equipamento no Firebase
 async function saveEquipmentToFirestore() {
     const equipmentData = {
         codeEquipment: document.querySelector('#equipmentModalContent .codeEquipment').value,
         nameEquipment: document.querySelector('#equipmentModalContent .nameEquipment').value,
         unitPriceEquipment: document.querySelector('#equipmentModalContent .unitPriceEquipment').value
-    };
+    }
     await db.collection('equipamentos').add(equipmentData);
 }
 
-// Função para salvar Serviço no Firebase
 async function saveServiceToFirestore() {
     const serviceData = {
         descriptionService: document.querySelector('#serviceModalContent .descriptionService').value,
         amountService: document.querySelector('#serviceModalContent .amountService').value
-    };
+    }
     await db.collection('servicos').add(serviceData);
+}
+
+function applyInputMasks(container) {
+    const phoneInputs = container.querySelectorAll('#phone, #phoneClient');
+    phoneInputs.forEach(input => {
+        IMask(input, {
+            mask: '(00) 00000-0000'
+        })
+    })
+
+    const moneyInputs = container.querySelectorAll('.amountService, .unitPriceEquipment');
+    moneyInputs.forEach(input => {
+        IMask(input, {
+            mask: 'R$ num',
+            blocks: {
+                num: {
+                    mask: Number,
+                    thousandsSeparator: '.',
+                    radix: ',',
+                    mapToRadix: ['.'],
+                    scale: 2,
+                    signed: false,
+                    normalizeZeros: false
+                }
+            }
+        })
+    })
+
+    const cnpjInputs = container.querySelectorAll('#cpfCnpj, #cpfCNPJClient');
+    cnpjInputs.forEach(input => {
+        IMask(input, {
+            mask: '00.000.000/0000-00'
+        })
+    })
+
+    const cepInputs = container.querySelectorAll('#zipcode, #zipcodeClient');
+    cepInputs.forEach(input => {
+        IMask(input, {
+            mask: '00000-000'
+        })
+    })
 }

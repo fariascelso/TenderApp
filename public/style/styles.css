@@ -540,3 +540,52 @@ button:hover {
 #menu-links.show {
     display: block;
 }
+
+.edit-btn {
+    background-color: #ffdd02; /* Azul para edição */
+    color: white;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-right: 5px; /* Espaço entre botões */
+}
+
+.edit-btn:hover {
+    background-color: #9fb929; /* Tom mais escuro ao passar o mouse */
+}
+
+.delete-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px; /* Ajuste o padding para o ícone ficar bem centralizado */
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px; /* Tamanho do ícone */
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+.view-btn {
+    background-color: #007bff; /* Azul, como o botão original "Ver Detalhes" */
+    color: white;
+    border: none;
+    padding: 8px; /* Ajuste para o ícone ficar centralizado */
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px; /* Tamanho do ícone */
+    margin-right: 5px; /* Espaço entre botões */
+}
+
+.view-btn:hover {
+    background-color: #0056b3; /* Tom mais escuro ao passar o mouse */
+}
+
+.view-btn i {
+    font-size: 16px; /* Ajuste o tamanho do ícone, se necessário */
+    vertical-align: middle; /* Centraliza verticalmente o ícone */
+}

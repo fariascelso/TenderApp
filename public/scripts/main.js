@@ -417,7 +417,185 @@ window.fillClientData = fillClientData
 window.onload = function () {
     loadClients()
     loadCompanies()
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const orcamentoId = urlParams.get('id');
+
+    if (orcamentoId) {
+        loadOrcamentoForEdit(orcamentoId);
+    }
 }
+
+async function loadOrcamentoForEdit(id) {
+    try {
+        const doc = await db.collection("orcamentos").doc(id).get();
+        if (doc.exists) {
+            const data = doc.data();
+
+            // Preencher dados da empresa
+            document.getElementById('nameBusiness').value = data.empresa.nomeEmpresa || "";
+            document.getElementById('fantasyName').value = data.empresa.fantasyName || "";
+            document.getElementById('cpfCnpj').value = data.empresa.cnpj || "";
+            document.getElementById('address').value = data.empresa.endereco || "";
+            document.getElementById('numberAddress').value = data.empresa.numero || "";
+            document.getElementById('neighborhood').value = data.empresa.bairro || "";
+            document.getElementById('state').value = data.empresa.estado || "";
+            document.getElementById('city').value = data.empresa.cidade || "";
+            document.getElementById('zipcode').value = data.empresa.cep || "";
+            document.getElementById('phone').value = data.empresa.telefone || "";
+            document.getElementById('email').value = data.empresa.email || "";
+
+            // Preencher dados do cliente
+            document.getElementById('nameClient').value = data.cliente.nameClient || "";
+            document.getElementById('cpfCNPJClient').value = data.cliente.cpfCNPJClient || "";
+            document.getElementById('fantasyNameClient').value = data.cliente.fantasyNameClient || "";
+            document.getElementById('streetClient').value = data.cliente.streetClient || "";
+            document.getElementById('numberAddressClient').value = data.cliente.numberAddressClient || "";
+            document.getElementById('neighborhoodClient').value = data.cliente.neighborhoodClient || "";
+            document.getElementById('cityClient').value = data.cliente.cityClient || "";
+            document.getElementById('zipcodeClient').value = data.cliente.zipcodeClient || "";
+            document.getElementById('stateClient').value = data.cliente.stateClient || "";
+            document.getElementById('phoneClient').value = data.cliente.phoneClient || "";
+            document.getElementById('emailClient').value = data.cliente.emailClient || "";
+
+            // Preencher serviços
+            const servicesContainer = document.getElementById('services-container');
+            servicesContainer.innerHTML = ""; // Limpar serviços existentes
+            data.servicos.forEach(servico => {
+                const newServiceItem = document.createElement('div');
+                newServiceItem.classList.add('service-item');
+                newServiceItem.innerHTML = `
+                    <label for="descriptionService">Descrição do Serviço:</label>
+                    <input type="text" class="descriptionService" name="descriptionService" value="${servico.descriptionService}">
+                    <label for="amountService">Valor do Serviço:</label>
+                    <input type="text" class="amountService" name="amountService" value="${servico.amountService}">
+                `;
+                servicesContainer.appendChild(newServiceItem);
+            });
+
+            // Preencher equipamentos (se existirem)
+            const includeEquipmentsCheckbox = document.getElementById('includeEquipments');
+            const equipmentsContainer = document.getElementById('equipments-container');
+            if (data.equipamentos.length > 0) {
+                includeEquipmentsCheckbox.checked = true;
+                document.getElementById('materials-btn').style.display = 'block';
+                equipmentsContainer.innerHTML = ""; // Limpar equipamentos existentes
+                data.equipamentos.forEach(equipamento => {
+                    const newEquipmentItem = document.createElement('div');
+                    newEquipmentItem.classList.add('equipment-item');
+                    newEquipmentItem.innerHTML = `
+                        <label for="codeEquipment">Código:</label>
+                        <input type="text" class="codeEquipment" value="${equipamento.codeEquipment}">
+                        <label for="nameEquipment">Nome:</label>
+                        <input type="text" class="nameEquipment" value="${equipamento.nameEquipment}">
+                        <label for="quantityEquipment">Quantidade:</label>
+                        <input type="number" class="quantityEquipment" value="${equipamento.quantityEquipment}" min="1">
+                        <label for="unitPriceEquipment">Preço Unitário:</label>
+                        <input type="text" class="unitPriceEquipment" value="${equipamento.unitPriceEquipment}">
+                        <label for="subtotalEquipment">Subtotal:</label>
+                        <input type="text" class="subtotalEquipment" value="${equipamento.subtotalEquipment}" readonly>
+                    `;
+                    equipmentsContainer.appendChild(newEquipmentItem);
+                });
+            }
+
+            // Preencher observações
+            document.getElementById('observations').value = data.observacoes || "";
+
+            // Alterar o texto do botão "Salvar" para indicar edição
+            const saveButton = document.querySelector('.button-container button:first-child');
+            saveButton.textContent = "Salvar Alterações";
+            saveButton.onclick = () => updateDataToFirestore(id);
+        }
+    } catch (error) {
+        console.error("Erro ao carregar orçamento para edição:", error);
+        alert("Erro ao carregar orçamento para edição.");
+    }
+}
+
+async function updateDataToFirestore(id) {
+    const issuingCompany = {
+        nomeEmpresa: document.getElementById('nameBusiness').value,
+        fantasyName: document.getElementById('fantasyName').value,
+        cnpj: document.getElementById('cpfCnpj').value,
+        endereco: document.getElementById('address').value,
+        numero: document.getElementById('numberAddress').value,
+        bairro: document.getElementById('neighborhood').value,
+        estado: document.getElementById('state').value,
+        cidade: document.getElementById('city').value,
+        cep: document.getElementById('zipcode').value,
+        telefone: document.getElementById('phone').value,
+        email: document.getElementById('email').value
+    };
+
+    const clientFormData = {
+        nameClient: document.getElementById('nameClient').value,
+        cpfCNPJClient: document.getElementById('cpfCNPJClient').value,
+        fantasyNameClient: document.getElementById('fantasyNameClient').value,
+        streetClient: document.getElementById('streetClient').value,
+        numberAddressClient: document.getElementById('numberAddressClient').value,
+        stateClient: document.getElementById('stateClient').value,
+        neighborhoodClient: document.getElementById('neighborhoodClient').value,
+        cityClient: document.getElementById('cityClient').value,
+        zipcodeClient: document.getElementById('zipcodeClient').value,
+        phoneClient: document.getElementById('phoneClient').value,
+        emailClient: document.getElementById('emailClient').value,
+    };
+
+    const serviceData = [];
+    const descriptions = document.querySelectorAll('.descriptionService');
+    const amounts = document.querySelectorAll('.amountService');
+    for (let i = 0; i < descriptions.length; i++) {
+        serviceData.push({
+            descriptionService: descriptions[i].value,
+            amountService: amounts[i].value
+        });
+    }
+
+    const equipmentData = [];
+    const codes = document.querySelectorAll('.codeEquipment');
+    const names = document.querySelectorAll('.nameEquipment');
+    const quantities = document.querySelectorAll('.quantityEquipment');
+    const unitPrices = document.querySelectorAll('.unitPriceEquipment');
+    const subtotals = document.querySelectorAll('.subtotalEquipment');
+    for (let i = 0; i < codes.length; i++) {
+        equipmentData.push({
+            codeEquipment: codes[i].value,
+            nameEquipment: names[i].value,
+            quantityEquipment: quantities[i].value,
+            unitPriceEquipment: unitPrices[i].value,
+            subtotalEquipment: subtotals[i].value
+        });
+    }
+
+    const observations = document.getElementById('observations').value;
+
+    const orcamento = {
+        empresa: issuingCompany,
+        cliente: clientFormData,
+        servicos: serviceData,
+        equipamentos: equipmentData,
+        observacoes: observations,
+        dataCriacao: new Date() // Ou mantenha a data original, se desejar
+    };
+
+    try {
+        await db.collection("orcamentos").doc(id).update(orcamento);
+        alert(`Orçamento atualizado com sucesso! ID: ${id}`);
+        window.location.href = "listorders.html"; // Redireciona para a lista após salvar
+    } catch (e) {
+        console.error("Erro ao atualizar documento: ", e);
+        alert("Erro ao atualizar orçamento.");
+    }
+}
+
+window.updateDataToFirestore = updateDataToFirestore;
+
+function editOrcamento(id) {
+    window.location.href = `index.html?id=${id}`;
+}
+
+window.editOrcamento = editOrcamento;
 
 const observer = new MutationObserver(function(mutations) {
     mutations.forEach(function(mutation) {
@@ -462,17 +640,24 @@ async function loadOrcamentos() {
         querySnapshot.forEach((doc) => {
             const data = doc.data()
             const row = `
-                <tr>
-                    <td>${doc.id}</td>
-                    <td>${data.empresa.nomeEmpresa}</td>
-                    <td>${data.cliente.nameClient}</td>
-                    <td>${data.dataCriacao.toDate().toLocaleDateString()}</td>
-                    <td>
-                        <button onclick="viewOrcamento('${doc.id}')">Ver Detalhes</button>
-                        <button onclick="deleteOrcamento('${doc.id}')">Excluir</button>
-                    </td>
-                </tr>
-            `
+            <tr>
+                <td>${doc.id}</td>
+                <td>${data.empresa.nomeEmpresa}</td>
+                <td>${data.cliente.nameClient}</td>
+                <td>${data.dataCriacao.toDate().toLocaleDateString()}</td>
+                <td>
+                    <button class="view-btn" onclick="viewOrcamento('${doc.id}')">
+                    <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="edit-btn" onclick="editOrcamento('${doc.id}')">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="delete-btn" onclick="deleteOrcamento('${doc.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `
             tbody.innerHTML += row
         })
     } catch (error) {

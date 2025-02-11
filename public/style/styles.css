@@ -589,3 +589,41 @@ button:hover {
     font-size: 16px; /* Ajuste o tamanho do ícone, se necessário */
     vertical-align: middle; /* Centraliza verticalmente o ícone */
 }
+
+@media (max-width: 768px) {
+    .floating-menu {
+        bottom: 10px; /* Reduz a distância do fundo */
+        left: 10px; /* Reduz a distância da esquerda */
+    }
+
+    #main-fab {
+        height: 40px; /* Reduz o tamanho do FAB */
+        padding: 0 15px;
+        font-size: 16px;
+    }
+
+    #main-fab span {
+        font-size: 12px; /* Reduz o tamanho do texto */
+    }
+
+    .fab-option {
+        height: 40px; /* Reduz o tamanho das opções */
+        padding: 0 15px;
+        font-size: 16px;
+    }
+
+    .fab-option span {
+        font-size: 12px; /* Reduz o tamanho do texto nas opções */
+    }
+
+    .modal-content {
+        width: 90%; /* Ajusta o tamanho do modal para telas menores */
+        max-width: 400px;
+        padding: 15px;
+    }
+
+    .modal {
+        justify-content: center;
+        align-items: center;
+    }
+}

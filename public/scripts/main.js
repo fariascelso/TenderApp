@@ -67,87 +67,151 @@ function injectModalContent(sourceId, targetId) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const mainFab = document.getElementById('main-fab')
-    const fabOptions = document.getElementById('fab-options')
+    const mainFab = document.getElementById('main-fab');
+    const fabOptions = document.getElementById('fab-options');
 
     if (mainFab && fabOptions) {
+        // Evento de clique
         mainFab.addEventListener('click', function () {
-            fabOptions.classList.toggle('show')
-        })
+            fabOptions.classList.toggle('show');
+        });
+
+        // Evento de toque para dispositivos móveis
+        mainFab.addEventListener('touchstart', function (e) {
+            e.preventDefault(); // Evita comportamento padrão
+            fabOptions.classList.toggle('show');
+        });
     } else {
-        console.error('Elementos main-fab ou fab-options não encontrados no DOM.')
+        console.error('Elementos main-fab ou fab-options não encontrados no DOM.');
     }
 
-    const fabOptionsButtons = document.querySelectorAll(".fab-option")
-    const modals = document.querySelectorAll(".modal")
-    const closeButtons = document.querySelectorAll(".close")
+    const fabOptionsButtons = document.querySelectorAll(".fab-option");
+    const modals = document.querySelectorAll(".modal");
+    const closeButtons = document.querySelectorAll(".close");
 
     modals.forEach(modal => {
-        modal.style.display = "none"
-    })
+        modal.style.display = "none";
+    });
 
     fabOptionsButtons.forEach(button => {
+        // Evento de clique
         button.addEventListener("click", () => {
-            const targetModal = document.getElementById(button.dataset.target)
+            const targetModal = document.getElementById(button.dataset.target);
             if (targetModal) {
-                let sourceId, targetId
+                let sourceId, targetId;
                 if (button.dataset.target === "clientModal") {
-                    sourceId = "client-data-panel"
-                    targetId = "clientModalContent"
+                    sourceId = "client-data-panel";
+                    targetId = "clientModalContent";
                 } else if (button.dataset.target === "companyModal") {
-                    sourceId = "company-data-panel"
-                    targetId = "companyModalContent"
+                    sourceId = "company-data-panel";
+                    targetId = "companyModalContent";
                 } else if (button.dataset.target === "equipmentModal") {
-                    sourceId = "equipments-panel"
-                    targetId = "equipmentModalContent"
+                    sourceId = "equipments-panel";
+                    targetId = "equipmentModalContent";
                 } else if (button.dataset.target === "serviceModal") {
-                    sourceId = "services-container"
-                    targetId = "serviceModalContent"
+                    sourceId = "services-container";
+                    targetId = "serviceModalContent";
                 }
 
-                injectModalContent(sourceId, targetId)
+                injectModalContent(sourceId, targetId);
 
                 setTimeout(() => {
-                    targetModal.classList.add("show")
-                    targetModal.style.display = "flex"
-                }, 0)
+                    targetModal.classList.add("show");
+                    targetModal.style.display = "flex";
+                }, 0);
             }
-        })
-    })
+        });
 
+        // Evento de toque
+        button.addEventListener("touchstart", (e) => {
+            e.preventDefault();
+            const targetModal = document.getElementById(button.dataset.target);
+            if (targetModal) {
+                let sourceId, targetId;
+                if (button.dataset.target === "clientModal") {
+                    sourceId = "client-data-panel";
+                    targetId = "clientModalContent";
+                } else if (button.dataset.target === "companyModal") {
+                    sourceId = "company-data-panel";
+                    targetId = "companyModalContent";
+                } else if (button.dataset.target === "equipmentModal") {
+                    sourceId = "equipments-panel";
+                    targetId = "equipmentModalContent";
+                } else if (button.dataset.target === "serviceModal") {
+                    sourceId = "services-container";
+                    targetId = "serviceModalContent";
+                }
+
+                injectModalContent(sourceId, targetId);
+
+                setTimeout(() => {
+                    targetModal.classList.add("show");
+                    targetModal.style.display = "flex";
+                }, 0);
+            }
+        });
+    });
+
+    // Adicione eventos de toque para os botões de fechar
     closeButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            const modal = button.closest(".modal")
-            modal.classList.remove("show")
+        button.addEventListener("touchstart", (e) => {
+            e.preventDefault();
+            const modal = button.closest(".modal");
+            modal.classList.remove("show");
             setTimeout(() => {
-                modal.style.display = "none"
-            }, 300)
-        })
-    })
+                modal.style.display = "none";
+            }, 300);
+        });
 
+        button.addEventListener("click", () => {
+            const modal = button.closest(".modal");
+            modal.classList.remove("show");
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 300);
+        });
+    });
+
+    // Adicione eventos de toque para fechar o modal ao clicar fora
     modals.forEach(modal => {
+        modal.addEventListener("touchstart", (event) => {
+            if (event.target === modal) {
+                modal.classList.remove("show");
+                setTimeout(() => {
+                    modal.style.display = "none";
+                }, 300);
+            }
+        });
+
         modal.addEventListener("click", (event) => {
             if (event.target === modal) {
-                modal.classList.remove("show")
+                modal.classList.remove("show");
                 setTimeout(() => {
-                    modal.style.display = "none"
-                }, 300)
+                    modal.style.display = "none";
+                }, 300);
             }
-        })
-    })
+        });
+    });
 
-    const menuHamburger = document.getElementById('menu-hamburger')
+    const menuHamburger = document.getElementById('menu-hamburger');
     if (menuHamburger) {
         menuHamburger.addEventListener('click', function() {
-            const menuLinks = document.getElementById('menu-links')
-            menuLinks.classList.toggle('show')
-        })
+            const menuLinks = document.getElementById('menu-links');
+            menuLinks.classList.toggle('show');
+        });
+
+        // Evento de toque para o menu hambúrguer
+        menuHamburger.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            const menuLinks = document.getElementById('menu-links');
+            menuLinks.classList.toggle('show');
+        });
     } else {
-        console.error('Elemento menu-hamburger não encontrado no DOM.')
+        console.error('Elemento menu-hamburger não encontrado no DOM.');
     }
 
-    applyInputMasks(document)
-})
+    applyInputMasks(document);
+});
 
 async function generateNumericId() {
     const counterRef = db.collection('counters').doc('orcamentoCounter')

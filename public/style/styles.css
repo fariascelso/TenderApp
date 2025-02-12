@@ -268,6 +268,7 @@ select::-ms-expand {
     align-items: center;
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
+    overflow: auto;
 }
 
 .modal.show {
@@ -279,7 +280,7 @@ select::-ms-expand {
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
-    width: 400px;
+    width: 90%;
     max-width: 500px;
     max-height: 80vh;
     overflow-y: auto;
@@ -332,7 +333,7 @@ select::-ms-expand {
 .modal-content input[type="number"],
 .modal-content textarea,
 .modal-content select {
-    width: calc(100% - 28px);
+    width: 100%;
     padding: 14px;
     border: 1px solid #cce4f6;
     border-radius: 10px;
@@ -448,6 +449,7 @@ select::-ms-expand {
     border: none;
     width: auto;
     height: 50px;
+    min-width: 50px;
     border-radius: 25px;
     font-size: 18px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
@@ -457,6 +459,7 @@ select::-ms-expand {
     align-items: center;
     padding: 0 20px;
     gap: 10px;
+    touch-action: manipulation;
 }
 
 .fab-option:nth-child(1) { background-color: #00aaff; } /* Cliente */
@@ -620,6 +623,7 @@ button:hover {
         width: 90%; /* Ajusta o tamanho do modal para telas menores */
         max-width: 400px;
         padding: 15px;
+        box-sizing: border-box
     }
 
     .modal {

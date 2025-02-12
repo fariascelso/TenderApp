@@ -121,35 +121,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }, 0);
             }
         });
-
-        // Evento de toque
-        button.addEventListener("touchstart", (e) => {
-            e.preventDefault();
-            const targetModal = document.getElementById(button.dataset.target);
-            if (targetModal) {
-                let sourceId, targetId;
-                if (button.dataset.target === "clientModal") {
-                    sourceId = "client-data-panel";
-                    targetId = "clientModalContent";
-                } else if (button.dataset.target === "companyModal") {
-                    sourceId = "company-data-panel";
-                    targetId = "companyModalContent";
-                } else if (button.dataset.target === "equipmentModal") {
-                    sourceId = "equipments-panel";
-                    targetId = "equipmentModalContent";
-                } else if (button.dataset.target === "serviceModal") {
-                    sourceId = "services-container";
-                    targetId = "serviceModalContent";
-                }
-
-                injectModalContent(sourceId, targetId);
-
-                setTimeout(() => {
-                    targetModal.classList.add("show");
-                    targetModal.style.display = "flex";
-                }, 0);
-            }
-        });
     });
 
     // Adicione eventos de toque para os botões de fechar
@@ -174,15 +145,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Adicione eventos de toque para fechar o modal ao clicar fora
     modals.forEach(modal => {
-        modal.addEventListener("touchstart", (event) => {
-            if (event.target === modal) {
-                modal.classList.remove("show");
-                setTimeout(() => {
-                    modal.style.display = "none";
-                }, 300);
-            }
-        });
-
         modal.addEventListener("click", (event) => {
             if (event.target === modal) {
                 modal.classList.remove("show");
@@ -867,6 +829,11 @@ async function saveServiceToFirestore() {
 }
 
 function applyInputMasks(container) {
+    if (typeof IMask === 'undefined') {
+        console.error('IMask não está carregado. Verifique se o script foi incluído corretamente.');
+        return;
+    }
+    
     const phoneInputs = container.querySelectorAll('#phone, #phoneClient')
     phoneInputs.forEach(input => {
         IMask(input, {

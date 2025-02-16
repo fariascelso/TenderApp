@@ -429,3 +429,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    const editableText = document.getElementById('nome-empresa');
+
+    // Quando o campo perde o foco, salva o valor (se necessário)
+    editableText.addEventListener('blur', function () {
+        // Aqui você pode adicionar lógica para salvar o valor no banco de dados, se necessário
+        console.log('Nome atualizado:', editableText.value);
+    });
+
+    // Opcional: Permitir que o Enter salve e saia do modo de edição
+    editableText.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            editableText.blur(); // Remove o foco do campo
+        }
+    });
+});

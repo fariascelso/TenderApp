@@ -346,18 +346,40 @@ select::-ms-expand {
     flex-direction: column-reverse;
     align-items: center;
 }
+.floating-menu {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+}
 
 #main-fab {
     background-color: #00796b;
     color: white;
     border: none;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    font-size: 24px;
+    width: auto; /* Ajuste para acomodar o texto */
+    height: 50px;
+    border-radius: 25px; /* Bordas arredondadas */
+    font-size: 18px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    padding: 0 20px; /* Espaçamento interno */
+    gap: 10px; /* Espaço entre ícone e texto */
+}
+
+#main-fab:hover {
+    background-color: #005a4f;
+    transform: scale(1.1);
+}
+
+#main-fab span {
+    font-size: 14px; /* Tamanho do texto */
+    font-weight: 500; /* Peso da fonte */
 }
 
 #fab-options {
@@ -380,13 +402,17 @@ select::-ms-expand {
     background-color: #007bff;
     color: white;
     border: none;
-    width: 50px;
+    width: auto; /* Ajuste para acomodar o texto */
     height: 50px;
-    border-radius: 50%;
+    border-radius: 25px; /* Bordas arredondadas */
     font-size: 18px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    padding: 0 20px; /* Espaçamento interno */
+    gap: 10px; /* Espaço entre ícone e texto */
 }
 
 .fab-option:nth-child(1) { background-color: #00aaff; } /* Cliente */
@@ -399,3 +425,7 @@ select::-ms-expand {
     filter: brightness(1.2);
 }
 
+.fab-option span {
+    font-size: 14px; /* Tamanho do texto */
+    font-weight: 500; /* Peso da fonte */
+}

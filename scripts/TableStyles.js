@@ -113,6 +113,24 @@ export class ColumnStyles {
         }
     }
 
+    
+    static CenterWithLargeText = {
+        0: {
+            textColor: 'black',
+            lineWidth: 0.5,
+            fontSize: 9,
+            halign: 'center',
+            fillColor: [255, 255, 255]
+        },
+        1: {
+            textColor: 'black',
+            lineWidth: 0.5,
+            fontSize: 9,
+            halign: 'center',
+            fillColor: [255, 255, 255]
+        }
+    }
+
     static Left = {
         0: {
             textColor: 'black',

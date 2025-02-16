@@ -161,11 +161,10 @@ export async function generatorPDF() {
         head: [['DESCRIÇÃO DO SERVIÇO', 'VALOR DO SERVIÇO']],
         body: services.map(service => [
             service.descriptionService,
-            service.amountService
+            formatCurrency(parseCurrency(service.amountService))
         ]),
         headStyles: HeaderStyles.Small,
-       // headStyles: { fillColor: [0, 0, 6], halign: 'center', lineWidth: 0.5, },
-        columnStyles: ColumnStyles.Center,
+        columnStyles: ColumnStyles.CenterWithLargeText,
         margin: { left: 5, right: 5 }
     });
 

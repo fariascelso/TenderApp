@@ -15,6 +15,14 @@ export class HeaderStyles {
         textColor: 'black',
         fontSize: 10
     }
+
+    static Small = {
+        halign: 'center',
+        lineWidth: 0.3,
+        fillColor: [0, 0, 6],
+        textColor: 'white',
+        fontSize: 5
+    }
 }
 
 export class ColumnStyles {

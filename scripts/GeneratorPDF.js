@@ -163,11 +163,9 @@ export async function generatorPDF() {
             service.descriptionService,
             service.amountService
         ]),
-        headStyles: { fillColor: [0, 0, 6], halign: 'center', lineWidth: 0.5, },
-        columnStyles: {
-            1: { cellWidth: 100, halign: 'center' },
-            2: { cellWidth: 30, halign: 'center' },
-        },
+        headStyles: HeaderStyles.Small,
+       // headStyles: { fillColor: [0, 0, 6], halign: 'center', lineWidth: 0.5, },
+        columnStyles: ColumnStyles.Center,
         margin: { left: 5, right: 5 }
     });
 
@@ -258,19 +256,6 @@ export async function generatorPDF() {
         const value = parseCurrency(service.amountService);
         return sum + value;
     }, 0);
-
-
-    // Total geral
-    /*
-    
-    console.log("Serviços:", services);
-    console.log("Total de serviços:", totalServices);
-    
-    console.log("Equipamentos:", equipments);
-    console.log("Total de equipamentos:", totalEquipments);
-    
-    console.log("Total geral:", totalBudget);
-    */
 
     let totalBudget;
 

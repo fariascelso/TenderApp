@@ -222,56 +222,6 @@ includeEquipmentsCheckbox.addEventListener('change', function () {
     }
 });
 
-export async function searchData() {
-    const searchTerm = document.getElementById('searchBar').value.trim();
-
-    if (!searchTerm) {
-        alert('Digite um termo para buscar.');
-        return;
-    }
-
-    try {
-        let querySnapshot = await db.collection("empresasEmitenteOrcamento")
-            .where("cnpj", "==", searchTerm)
-            .get();
-
-        // Se não encontrou pelo CNPJ, tentar pelo nome da empresa
-        if (querySnapshot.empty) {
-            querySnapshot = await db.collection("empresasEmitenteOrcamento")
-                .where("nomeEmpresa", "==", searchTerm)
-                .get();
-        }
-
-        if (querySnapshot.empty) {
-            alert("Nenhum resultado encontrado.");
-            return;
-        }
-
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-
-            // Preencher os campos do formulário com os dados encontrados
-            document.getElementById('nameBusiness').value = data.nomeEmpresa || "";
-            document.getElementById('fantasyName').value = data.fantasyName || "";
-            document.getElementById('cpfCnpj').value = data.cnpj || "";
-            document.getElementById('address').value = data.endereco || "";
-            document.getElementById('numberAddress').value = data.numero || "";
-            document.getElementById('neighborhood').value = data.bairro || "";
-            document.getElementById('state').value = data.estado || "";
-            document.getElementById('city').value = data.cidade || "";
-            document.getElementById('zipcode').value = data.cep || "";
-            document.getElementById('phone').value = data.telefone || "";
-            document.getElementById('email').value = data.email || "";
-        });
-
-        alert("Dados carregados com sucesso!");
-
-    } catch (error) {
-        console.error("Erro ao buscar dados: ", error);
-        alert("Erro ao buscar dados.");
-    }
-}
-
 // Função para carregar os clientes ao abrir a página
 export async function loadClients() {
     const clientSelect = document.getElementById('clientSelect');

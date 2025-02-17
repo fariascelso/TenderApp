@@ -295,17 +295,29 @@ if (addServiceBtn) {
     })
 }
 
-const equipmentsContainer = document.getElementById('equipments-container')
+function parseCurrency(value) {
+    if (!value) return 0;
+    // Remove "R$" e substitui "." (milhar) por "" e "," (decimal) por "."
+    const cleanValue = value.replace('R$', '').replace(/\./g, '').replace(',', '.').trim();
+    return parseFloat(cleanValue) || 0;
+}
+
+const equipmentsContainer = document.getElementById('equipments-container');
 if (equipmentsContainer) {
     equipmentsContainer.addEventListener('input', function (event) {
-        const equipmentItem = event.target.closest('.equipment-item')
-        const quantity = equipmentItem.querySelector('.quantityEquipment').value
-        const unitPrice = equipmentItem.querySelector('.unitPriceEquipment').value
-        const subtotal = equipmentItem.querySelector('.subtotalEquipment')
+        const equipmentItem = event.target.closest('.equipment-item');
+        if (!equipmentItem) return; // Garante que o evento está dentro de um .equipment-item
 
-        const calculatedSubtotal = parseFloat(quantity) * parseFloat(unitPrice || 0)
-        subtotal.value = calculatedSubtotal ? `R$ ${calculatedSubtotal.toFixed(2)}` : ''
-    })
+        const quantity = equipmentItem.querySelector('.quantityEquipment').value;
+        const unitPrice = equipmentItem.querySelector('.unitPriceEquipment').value;
+        const subtotal = equipmentItem.querySelector('.subtotalEquipment');
+
+        const qty = parseFloat(quantity) || 0;
+        const price = parseCurrency(unitPrice);
+        const calculatedSubtotal = qty * price;
+
+        subtotal.value = calculatedSubtotal ? `R$ ${calculatedSubtotal.toFixed(2).replace('.', ',')}` : '';
+    });
 }
 
 const addEquipmentBtn = document.getElementById('add-equipment-btn')
@@ -334,6 +346,7 @@ if (addEquipmentBtn) {
         `
 
         equipmentsContainer.appendChild(newEquipmentItem)
+        applyInputMasks(newEquipmentItem);
     })
 }
 
@@ -833,7 +846,7 @@ function applyInputMasks(container) {
         console.error('IMask não está carregado. Verifique se o script foi incluído corretamente.');
         return;
     }
-    
+
     const phoneInputs = container.querySelectorAll('#phone, #phoneClient')
     phoneInputs.forEach(input => {
         IMask(input, {

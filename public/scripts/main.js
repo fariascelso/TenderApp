@@ -621,7 +621,7 @@ async function updateDataToFirestore(id) {
     try {
         await db.collection("orcamentos").doc(id).update(orcamento);
         alert(`Orçamento atualizado com sucesso! ID: ${id}`);
-        window.location.href = "listorders.html"; // Redireciona para a lista após salvar
+        window.location.href = "pages/listorders.html"; // Redireciona para a lista após salvar
     } catch (e) {
         console.error("Erro ao atualizar documento: ", e);
         alert("Erro ao atualizar orçamento.");
@@ -631,7 +631,7 @@ async function updateDataToFirestore(id) {
 window.updateDataToFirestore = updateDataToFirestore;
 
 function editOrcamento(id) {
-    window.location.href = `index.html?id=${id}`;
+    window.location.href = `../index.html?id=${id}`;
 }
 
 window.editOrcamento = editOrcamento;
@@ -658,7 +658,7 @@ const observer = new MutationObserver(function(mutations) {
 observer.observe(document.body, { childList: true, subtree: true })
 
 function navigateToListarOrcamentos() {
-    window.location.href = "listorders.html"
+    window.location.href = "pages/listorders.html";
 }
 
 function navigateToCriarOrcamento() {
@@ -763,7 +763,7 @@ async function loadOrcamentoDetails() {
     }
 }
 
-if (window.location.pathname.includes("details.html")) {
+if (window.location.pathname.includes("/details.html")) {
     window.onload = loadOrcamentoDetails
 }
 

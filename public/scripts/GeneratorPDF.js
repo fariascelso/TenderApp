@@ -1,6 +1,6 @@
 import { HeaderStyles, ColumnStyles } from "./TableStyles.js"
 
-export async function generatorPDF() {
+export async function generatorPDF(uploadedLogo) {
     const { jsPDF } = window.jspdf
 
     const doc = new jsPDF({
@@ -50,6 +50,15 @@ export async function generatorPDF() {
     // Verifique o estado do checkbox
     const includeEquipments = document.getElementById('includeEquipments').checked;
 
+    // Usar a imagem enviada, se disponível
+    if (uploadedLogo) {
+        doc.addImage(uploadedLogo, 'PNG', 1, 1, 50, 50); // Adiciona a imagem enviada
+        lastTable = 1 + 50 + 5; // Ajusta a posição com base na altura da imagem + margem
+    } else {
+        console.warn("Nenhuma imagem enviada. Usando layout sem logo.");
+        lastTable = 5; // Mantém a posição inicial se não houver logo
+    }
+/*
     const imageUrl = '../logo.png';
     const image = await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -77,7 +86,7 @@ export async function generatorPDF() {
     } else {
         console.error("Erro ao carregar a imagem");
     }
-
+*/
     doc.setFontSize(10)
 
     const nameOrder = issuingCompany.fantasyName || issuingCompany.nameBusiness

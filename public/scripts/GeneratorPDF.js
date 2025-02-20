@@ -58,35 +58,7 @@ export async function generatorPDF(uploadedLogo) {
         console.warn("Nenhuma imagem enviada. Usando layout sem logo.");
         lastTable = 5; // Mantém a posição inicial se não houver logo
     }
-/*
-    const imageUrl = '../logo.png';
-    const image = await new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.onload = () => {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                console.log("Imagem carregada com sucesso");
-                resolve(reader.result);
-            };
-            reader.readAsDataURL(xhr.response);
-        };
-        xhr.onerror = () => {
-            console.error("Erro ao carregar a imagem");
-            reject();
-        };
-        xhr.open('GET', imageUrl);
-        xhr.responseType = 'blob';
-        xhr.send();
-    });
 
-    // Verifique se a imagem foi carregada
-    if (image) {
-        doc.addImage(image, 'PNG', 1, 1, 50, 50);
-        lastTable = 50
-    } else {
-        console.error("Erro ao carregar a imagem");
-    }
-*/
     doc.setFontSize(10)
 
     const nameOrder = issuingCompany.fantasyName || issuingCompany.nameBusiness

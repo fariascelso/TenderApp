@@ -237,8 +237,17 @@
 
         <div class="button-container">
             <button onclick="saveDataToFirestore()">Salvar Orçamento</button>
-            <button onclick="generatorPDF()">Gerar PDF</button>
+            <button onclick="generatePDFWithLogo()">Gerar PDF</button>
         </div>
+
+        <button class="accordion" data-group="logo-panel">Upload de Logo</button>
+        <div class="panel" id="logo-panel">
+            <label for="logoUpload">Carregar Logo da Empresa:</label>
+            <input type="file" id="logoUpload" accept="image/*" onchange="handleLogoUpload(event)">
+            <p id="logoPreviewText">Nenhuma imagem selecionada.</p>
+            <img id="logoPreview" src="" alt="Pré-visualização do Logo" style="max-width: 200px; max-height: 200px; display: none;">
+        </div>
+
     </div>
     <script type="module" src="./scripts/main.js"></script>
 </body>

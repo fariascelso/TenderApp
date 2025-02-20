@@ -53,7 +53,7 @@ export async function generatorPDF(uploadedLogo) {
     // Usar a imagem enviada, se disponível
     if (uploadedLogo) {
         doc.addImage(uploadedLogo, 'PNG', 1, 1, 50, 50); // Adiciona a imagem enviada
-        lastTable = 1 + 50 + 5; // Ajusta a posição com base na altura da imagem + margem
+        lastTable = 50; // Ajusta a posição com base na altura da imagem + margem
     } else {
         console.warn("Nenhuma imagem enviada. Usando layout sem logo.");
         lastTable = 5; // Mantém a posição inicial se não houver logo

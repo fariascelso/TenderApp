@@ -155,7 +155,7 @@ export class ColumnStyles {
             textColor: 'black',
             lineWidth: 0.5,
             fontSize: 7,
-            halign: 'Center',
+            halign: 'center',
             fillColor: [255, 255, 255]
         },
         1: {

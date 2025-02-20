@@ -210,7 +210,7 @@ export async function generatorPDF() {
                 equipment.name,
                 equipment.quantity,
                 formatCurrency(parseCurrency(equipment.unitPrice)),
-                equipment.subtotal
+                formatCurrency(parseCurrency(equipment.subtotal))
             ]),
             headStyles: { fillColor: [0, 0, 0], halign: 'center', lineWidth: 0.5 },
             columnStyles: {

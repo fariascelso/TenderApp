@@ -10,12 +10,13 @@ export async function generatorPDF(uploadedLogo) {
     })
 
     function updateLastTablePosition() {
-        return doc.lastAutoTable.finalY + 1 || 0
+        return doc.lastAutoTable.finalY + 1 || 5
     }
 
     let lastTable = 5
 
     const margin = { top: 2, bottom: 2, left: 5, right: 5 }
+    const pageWidth = doc.internal.pageSize.getWidth();
 
     const issuingCompany = {
         nameBusiness: document.getElementById("nameBusiness").value,
@@ -46,14 +47,16 @@ export async function generatorPDF(uploadedLogo) {
     }
 
     const observations = document.getElementById('observations').value
-
-    // Verifique o estado do checkbox
     const includeEquipments = document.getElementById('includeEquipments').checked;
 
-    // Usar a imagem enviada, se disponível
     if (uploadedLogo) {
-        doc.addImage(uploadedLogo, 'PNG', 1, 1, 50, 50); // Adiciona a imagem enviada
-        lastTable = 50; // Ajusta a posição com base na altura da imagem + margem
+        const logoWidth = 30; // Largura da logo (fixa em 50mm)
+        const logoHeight = 30; // Altura da logo (fixa em 50mm)
+        const logoX = margin.left; // Alinha com a margem esquerda
+        const logoY = 5; // Posição Y inicial (5mm do topo)
+
+        doc.addImage(uploadedLogo, 'PNG', logoX, logoY, logoWidth, logoHeight);
+        lastTable = logoY + logoHeight + 5; // Ajusta a posição com base na altura da logo + margem
     } else {
         console.warn("Nenhuma imagem enviada. Usando layout sem logo.");
         lastTable = 5; // Mantém a posição inicial se não houver logo

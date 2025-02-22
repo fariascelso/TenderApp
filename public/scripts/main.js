@@ -457,7 +457,8 @@ window.fillClientData = fillClientData
 
 async function generatePDFWithLogo() {
     try {
-        await generatorPDF(uploadedLogo); // Passa a variável uploadedLogo
+        const numericId = await generateNumericId();
+        await generatorPDF(uploadedLogo, numericId); // Passa a variável uploadedLogo
     } catch (error) {
         console.error("Erro ao gerar PDF:", error);
         alert("Erro ao gerar PDF. Veja o console para mais detalhes.");

@@ -1,6 +1,6 @@
 import { HeaderStyles, ColumnStyles } from "./TableStyles.js"
 
-export async function generatorPDF(uploadedLogo) {
+export async function generatorPDF(uploadedLogo, orderNumber) {
     const { jsPDF } = window.jspdf
 
     const doc = new jsPDF({
@@ -56,6 +56,17 @@ export async function generatorPDF(uploadedLogo) {
         const logoY = 5; // Posição Y inicial (5mm do topo)
 
         doc.addImage(uploadedLogo, 'PNG', logoX, logoY, logoWidth, logoHeight);
+
+        // Adicionar o número do orçamento no canto direito
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        const orderNumberText = `Orçamento Nº: ${orderNumber}`;
+        const orderNumberWidth = doc.getTextWidth(orderNumberText); // Largura do texto
+        const orderNumberX = pageWidth - margin.right - orderNumberWidth; // Alinha à direita com margem
+        doc.text(orderNumberText, orderNumberX, logoY + 10); // Posiciona 10mm abaixo do topo
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+
         lastTable = logoY + logoHeight + 5; // Ajusta a posição com base na altura da logo + margem
     } else {
         console.warn("Nenhuma imagem enviada. Usando layout sem logo.");

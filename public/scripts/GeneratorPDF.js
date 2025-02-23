@@ -50,8 +50,8 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
     const includeEquipments = document.getElementById('includeEquipments').checked;
 
     if (uploadedLogo) {
-        const logoWidth = 30; // Largura da logo (fixa em 50mm)
-        const logoHeight = 30; // Altura da logo (fixa em 50mm)
+        const logoWidth = 25; // Largura da logo (fixa em 50mm)
+        const logoHeight = 25; // Altura da logo (fixa em 50mm)
         const logoX = margin.left; // Alinha com a margem esquerda
         const logoY = 5; // Posição Y inicial (5mm do topo)
 
@@ -60,11 +60,20 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
         // Adicionar o número do orçamento no canto direito
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
-        const orderNumberText = `Orçamento Nº: ${orderNumber}`;
+        const orderNumberText = `Nº da Proposta: ${orderNumber}`;
         const orderNumberWidth = doc.getTextWidth(orderNumberText); // Largura do texto
         const orderNumberX = pageWidth - margin.right - orderNumberWidth; // Alinha à direita com margem
         doc.text(orderNumberText, orderNumberX, logoY + 10); // Posiciona 10mm abaixo do topo
-        doc.setFontSize(10);
+            
+        // Adicionar a data de criação abaixo do número do orçamento
+        doc.setFontSize(8); // Fonte menor para a data
+        doc.setFont('helvetica', 'normal'); // Sem negrito
+        const currentDate = new Date(); // Data atual (11/03/2025)
+        const dateText = `Data: ${formatDate(currentDate, '/')}`; // Ex.: "Data: 11/03/2025"
+        const dateWidth = doc.getTextWidth(dateText);
+        doc.text(dateText, orderNumberX, logoY + 15); // Posiciona 5mm abaixo do número
+
+        doc.setFontSize(10); // Restaura o tamanho da fonte para o resto do documento
         doc.setFont('helvetica', 'normal');
 
         lastTable = logoY + logoHeight + 5; // Ajusta a posição com base na altura da logo + margem
@@ -300,7 +309,7 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
     function getValidityDate() {
         const validityDate = new Date();
         validityDate.setDate(validityDate.getDate() + 15);
-        return formatCurrentDate(validityDate);
+        return formatDate(validityDate, '/');
     }
 
     const validityDate = getValidityDate();
@@ -342,16 +351,21 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
     }
 
-    function formatCurrentDate(date) {
-        const day = String(date.getDate()).padStart(2, '0')
-        const month = String(date.getMonth() + 1).padStart(2, '0')
+    function formatDate(date, separator = '-', forFileName = false) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
 
-        return `${day}-${month}-${year}`
+        // Força o uso de '-' para nomes de arquivos se forFileName for true
+        if (forFileName) {
+            return `${day}-${month}-${year}`;
+        }
+
+        return `${day}${separator}${month}${separator}${year}`;
     }
 
     const now = new Date()
-    const formattedDate = formatCurrentDate(now)
+    const formattedDate = formatDate(now, '-', true);
 
     doc.save(`Orçamento_${nameOrder}_${formattedDate}.pdf`)
 }

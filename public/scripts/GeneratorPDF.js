@@ -263,19 +263,6 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
         return sum + value;
     }, 0);
 
-
-    // Total geral
-    /*
-    
-    console.log("Serviços:", services);
-    console.log("Total de serviços:", totalServices);
-    
-    console.log("Equipamentos:", equipments);
-    console.log("Total de equipamentos:", totalEquipments);
-    
-    console.log("Total geral:", totalBudget);
-    */
-
     let totalBudget;
 
     if (includeEquipments) {

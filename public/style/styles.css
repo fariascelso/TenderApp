@@ -505,6 +505,10 @@ button {
     border-radius: 3px;
 }
 
+button .spinner {
+    margin-left: 8px;
+}
+
 button:hover {
     background-color: #0056b3;
 }
@@ -653,4 +657,32 @@ button:hover {
     color: #555;
     font-size: 14px;
     margin-top: 5px;
+}
+
+/* Estilo do botão durante o carregamento */
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Estilo do spinner */
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ffffff; /* Cor do spinner (ajuste conforme o fundo do botão) */
+    border-top: 2px solid transparent; /* Cria o efeito de rotação */
+    border-radius: 50%;
+    margin-left: 8px;
+    animation: spin 1s linear infinite;
+}
+
+/* Animação de rotação */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

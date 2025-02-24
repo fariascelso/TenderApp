@@ -236,8 +236,17 @@
         </div>
 
         <div class="button-container">
-            <button onclick="saveDataToFirestore()">Salvar Orçamento</button>
-            <button onclick="generatePDFWithLogo()">Gerar PDF</button>
+            <!-- Botão de Salvar Orçamento -->
+            <button onclick="saveDataToFirestore()" id="save-budget-btn">
+                Salvar Orçamento
+                <span class="spinner" style="display: none;"></span>
+            </button>
+        
+            <!-- Botão de Gerar PDF -->
+            <button onclick="generatePDFWithLogo()" id="generate-pdf-btn">
+                Gerar PDF
+                <span class="spinner" style="display: none;"></span>
+            </button>
         </div>
 
         <button class="accordion" data-group="logo-panel">Upload de Logo</button>

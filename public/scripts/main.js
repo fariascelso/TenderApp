@@ -197,6 +197,11 @@ async function generateNumericId() {
 }
 
 export async function saveDataToFirestore() {
+    toggleButtonLoading('save-budget-btn', true); // Mostra o spinner
+
+    try {
+        const numericId = await generateNumericId();
+
     const issuingCompany = {
         nomeEmpresa: document.getElementById('nameBusiness').value,
         fantasyName: document.getElementById('fantasyName').value,
@@ -264,15 +269,14 @@ export async function saveDataToFirestore() {
         dataCriacao: new Date()
     }
 
-    try {
-        const numericId = await generateNumericId()
-
         await db.collection("orcamentos").doc(numericId.toString()).set(orcamento)
 
         alert(`Orçamento salvo com sucesso! ID do orçamento: ${numericId}`)
     } catch (e) {
         console.error("Erro ao adicionar documento: ", e)
         alert("Erro ao salvar orçamento.")
+    } finally {
+        toggleButtonLoading('save-budget-btn', false); // Esconde o spinner
     }
 }
 
@@ -456,12 +460,16 @@ export function fillClientData() {
 window.fillClientData = fillClientData
 
 async function generatePDFWithLogo() {
+    toggleButtonLoading('generate-pdf-btn', true); // Mostra o spinner antes de iniciar
+    
     try {
         const numericId = await generateNumericId();
         await generatorPDF(uploadedLogo, numericId); // Passa a variável uploadedLogo
     } catch (error) {
         console.error("Erro ao gerar PDF:", error);
         alert("Erro ao gerar PDF. Veja o console para mais detalhes.");
+    } finally {
+        toggleButtonLoading('generate-pdf-btn', false); // Esconde o spinner
     }
 }
 
@@ -942,4 +950,18 @@ function applyInputMasks(container) {
             mask: '00000-000'
         })
     })
+}
+
+// Função auxiliar para controlar o estado do botão
+function toggleButtonLoading(buttonId, isLoading) {
+    const button = document.getElementById(buttonId);
+    const spinner = button.querySelector('.spinner');
+
+    if (isLoading) {
+        button.disabled = true; // Desabilita o botão
+        spinner.style.display = 'inline-block'; // Mostra o spinner
+    } else {
+        button.disabled = false; // Reabilita o botão
+        spinner.style.display = 'none'; // Esconde o spinner
+    }
 }

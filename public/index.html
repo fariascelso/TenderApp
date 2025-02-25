@@ -90,6 +90,14 @@
             </div>
         </div>
 
+        <button class="accordion" data-group="logo-panel">Upload de Logo</button>
+        <div class="panel" id="logo-panel">
+            <label for="logoUpload">Carregar Logo da Empresa:</label>
+            <input type="file" id="logoUpload" accept="image/*" onchange="handleLogoUpload(event)">
+            <p id="logoPreviewText">Nenhuma imagem selecionada.</p>
+            <img id="logoPreview" src="" alt="Pré-visualização do Logo" style="max-width: 200px; max-height: 200px; display: none;">
+        </div>
+
         <button class="accordion" data-group="company-data-panel">Dados da Empresa</button>
 
         <div class="panel" id="company-data-panel">
@@ -236,27 +244,15 @@
         </div>
 
         <div class="button-container">
-            <!-- Botão de Salvar Orçamento -->
             <button onclick="saveDataToFirestore()" id="save-budget-btn">
                 Salvar Orçamento
                 <span class="spinner" style="display: none;"></span>
             </button>
-        
-            <!-- Botão de Gerar PDF -->
             <button onclick="generatePDFWithLogo()" id="generate-pdf-btn">
                 Gerar PDF
                 <span class="spinner" style="display: none;"></span>
             </button>
         </div>
-
-        <button class="accordion" data-group="logo-panel">Upload de Logo</button>
-        <div class="panel" id="logo-panel">
-            <label for="logoUpload">Carregar Logo da Empresa:</label>
-            <input type="file" id="logoUpload" accept="image/*" onchange="handleLogoUpload(event)">
-            <p id="logoPreviewText">Nenhuma imagem selecionada.</p>
-            <img id="logoPreview" src="" alt="Pré-visualização do Logo" style="max-width: 200px; max-height: 200px; display: none;">
-        </div>
-
     </div>
     <script type="module" src="./scripts/main.js"></script>
 </body>

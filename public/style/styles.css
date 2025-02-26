@@ -135,19 +135,28 @@ select::-ms-expand {
 /* Contêiner de botões */
 .button-container {
     text-align: center;
+    display: flex; /* Usa flexbox para alinhar os botões */
+    justify-content: center; /* Centraliza os botões horizontalmente */
+    gap: 20px; /* Espaço entre os botões */
 }
 
 .button-container button {
     background: linear-gradient(90deg, #ff8a00, #ffd200);
     color: white;
     border: none;
-    padding: 14px 32px;
+    padding: 14px 0; /* Padding vertical fixo, removemos o padding lateral */
     font-size: 18px;
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
     box-shadow: 0 4px 10px rgba(255, 136, 0, 0.3);
-    margin: 0 10px;
+    margin: 0; /* Remove margens para evitar deslocamentos */
+    width: 200px; /* Largura fixa para os botões */
+    height: 50px; /* Altura fixa para os botões */
+    display: flex; /* Usa flexbox dentro do botão */
+    align-items: center; /* Centraliza verticalmente o conteúdo */
+    justify-content: center; /* Centraliza horizontalmente o conteúdo */
+    box-sizing: border-box; /* Garante que padding e borda não aumentem o tamanho */
 }
 
 .button-container button:hover {

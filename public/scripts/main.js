@@ -1,5 +1,5 @@
 import { generatorPDF } from './GeneratorPDF.js';
-
+/*
 const firebaseConfig = {
     apiKey: "AIzaSyCrqYU-lgB8XFiYVzUR5n7hyUW1hOqlZdg",
     authDomain: "masterclimatizadores-f03bf.firebaseapp.com",
@@ -8,7 +8,16 @@ const firebaseConfig = {
     messagingSenderId: "387752534660",
     appId: "1:387752534660:web:e8a188e296d0900f1918d1",
     measurementId: "G-2PQQZQ1KRX"
-}
+}*/
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBEjIDlgVTfO425_9gZZ4JiIuvKA8Ab64I",
+    authDomain: "criarproposta.firebaseapp.com",
+    projectId: "criarproposta",
+    storageBucket: "criarproposta.firebasestorage.app",
+    messagingSenderId: "1029025542577",
+    appId: "1:1029025542577:web:f293d8c8d15b168f9d8d90"
+  };
 
 firebase.initializeApp(firebaseConfig)
 const db = firebase.firestore()

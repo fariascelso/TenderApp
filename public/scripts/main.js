@@ -1,14 +1,4 @@
 import { generatorPDF } from './GeneratorPDF.js';
-/*
-const firebaseConfig = {
-    apiKey: "AIzaSyCrqYU-lgB8XFiYVzUR5n7hyUW1hOqlZdg",
-    authDomain: "masterclimatizadores-f03bf.firebaseapp.com",
-    projectId: "masterclimatizadores-f03bf",
-    storageBucket: "masterclimatizadores-f03bf.appspot.com",
-    messagingSenderId: "387752534660",
-    appId: "1:387752534660:web:e8a188e296d0900f1918d1",
-    measurementId: "G-2PQQZQ1KRX"
-}*/
 
 const firebaseConfig = {
     apiKey: "AIzaSyBEjIDlgVTfO425_9gZZ4JiIuvKA8Ab64I",

@@ -191,6 +191,12 @@
         <button class="accordion" data-group="services-container">Serviços que serão realizados</button>
         <div class="panel" id="services-container">
 
+            <!-- Campo de seleção de serviços -->
+            <label for="serviceSelect">Selecione um Serviço:</label>
+            <select id="serviceSelect" onchange="fillServiceData()">
+                <option value="">Carregando serviços...</option>
+            </select>
+
             <!-- Botão de adicionar serviço integrado ao painel de serviços -->
             <button id="add-service-btn">
                 <i class="fas fa-plus"></i> Adicionar Serviço
@@ -213,6 +219,12 @@
         <button id="materials-btn" style="display: none;" class="accordion" data-group="equipments-panel">Materiais
             necessários</button>
         <div class="panel" id="equipments-panel">
+            <!-- Campo de seleção de equipamentos -->
+            <label for="equipmentSelect">Selecione um Equipamento:</label>
+            <select id="equipmentSelect" onchange="fillEquipmentData()">
+                <option value="">Carregando equipamentos...</option>
+            </select>
+
             <button id="add-equipment-btn">
                 <i class="fas fa-plus"></i> Cadastrar Material / Equipamento
             </button>

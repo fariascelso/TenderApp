@@ -1,4 +1,4 @@
-import { generatorPDF } from './GeneratorPDF.js';
+import { generatorPDF } from './GeneratorPDF.js'
 
 const firebaseConfig = {
     apiKey: "AIzaSyBEjIDlgVTfO425_9gZZ4JiIuvKA8Ab64I",
@@ -7,7 +7,7 @@ const firebaseConfig = {
     storageBucket: "criarproposta.firebasestorage.app",
     messagingSenderId: "1029025542577",
     appId: "1:1029025542577:web:f293d8c8d15b168f9d8d90"
-  };
+}
 
 firebase.initializeApp(firebaseConfig)
 const db = firebase.firestore()
@@ -68,113 +68,107 @@ function injectModalContent(sourceId, targetId) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const mainFab = document.getElementById('main-fab');
-    const fabOptions = document.getElementById('fab-options');
+    const mainFab = document.getElementById('main-fab')
+    const fabOptions = document.getElementById('fab-options')
 
     if (mainFab && fabOptions) {
-        // Evento de clique
         mainFab.addEventListener('click', function () {
-            fabOptions.classList.toggle('show');
-        });
+            fabOptions.classList.toggle('show')
+        })
 
-        // Evento de toque para dispositivos móveis
         mainFab.addEventListener('touchstart', function (e) {
-            e.preventDefault(); // Evita comportamento padrão
-            fabOptions.classList.toggle('show');
-        });
+            e.preventDefault()
+            fabOptions.classList.toggle('show')
+        })
     } else {
-        console.error('Elementos main-fab ou fab-options não encontrados no DOM.');
+        console.error('Elementos main-fab ou fab-options não encontrados no DOM.')
     }
 
-    const fabOptionsButtons = document.querySelectorAll(".fab-option");
-    const modals = document.querySelectorAll(".modal");
-    const closeButtons = document.querySelectorAll(".close");
+    const fabOptionsButtons = document.querySelectorAll(".fab-option")
+    const modals = document.querySelectorAll(".modal")
+    const closeButtons = document.querySelectorAll(".close")
 
     modals.forEach(modal => {
-        modal.style.display = "none";
-    });
+        modal.style.display = "none"
+    })
 
     fabOptionsButtons.forEach(button => {
-        // Evento de clique
         button.addEventListener("click", () => {
-            const targetModal = document.getElementById(button.dataset.target);
+            const targetModal = document.getElementById(button.dataset.target)
             if (targetModal) {
-                let sourceId, targetId;
+                let sourceId, targetId
                 if (button.dataset.target === "clientModal") {
-                    sourceId = "client-data-panel";
-                    targetId = "clientModalContent";
+                    sourceId = "client-data-panel"
+                    targetId = "clientModalContent"
                 } else if (button.dataset.target === "companyModal") {
-                    sourceId = "company-data-panel";
-                    targetId = "companyModalContent";
+                    sourceId = "company-data-panel"
+                    targetId = "companyModalContent"
                 } else if (button.dataset.target === "equipmentModal") {
-                    sourceId = "equipments-panel";
-                    targetId = "equipmentModalContent";
+                    sourceId = "equipments-panel"
+                    targetId = "equipmentModalContent"
                 } else if (button.dataset.target === "serviceModal") {
-                    sourceId = "services-container";
-                    targetId = "serviceModalContent";
+                    sourceId = "services-container"
+                    targetId = "serviceModalContent"
                 }
 
-                injectModalContent(sourceId, targetId);
+                injectModalContent(sourceId, targetId)
 
                 setTimeout(() => {
-                    targetModal.classList.add("show");
-                    targetModal.style.display = "flex";
-                }, 0);
+                    targetModal.classList.add("show")
+                    targetModal.style.display = "flex"
+                }, 0)
             }
-        });
-    });
+        })
+    })
 
-    // Adicione eventos de toque para os botões de fechar
     closeButtons.forEach(button => {
         button.addEventListener("touchstart", (e) => {
-            e.preventDefault();
-            const modal = button.closest(".modal");
-            modal.classList.remove("show");
+            e.preventDefault()
+            const modal = button.closest(".modal")
+            modal.classList.remove("show")
             setTimeout(() => {
-                modal.style.display = "none";
-            }, 300);
-        });
+                modal.style.display = "none"
+            }, 300)
+        })
 
         button.addEventListener("click", () => {
-            const modal = button.closest(".modal");
-            modal.classList.remove("show");
+            const modal = button.closest(".modal")
+            modal.classList.remove("show")
             setTimeout(() => {
-                modal.style.display = "none";
-            }, 300);
-        });
-    });
+                modal.style.display = "none"
+            }, 300)
+        })
+    })
 
-    // Adicione eventos de toque para fechar o modal ao clicar fora
     modals.forEach(modal => {
         modal.addEventListener("click", (event) => {
             if (event.target === modal) {
-                modal.classList.remove("show");
+                modal.classList.remove("show")
                 setTimeout(() => {
-                    modal.style.display = "none";
-                }, 300);
+                    modal.style.display = "none"
+                }, 300)
             }
-        });
-    });
+        })
+    })
 
-    const menuHamburger = document.getElementById('menu-hamburger');
+    const menuHamburger = document.getElementById('menu-hamburger')
     if (menuHamburger) {
         menuHamburger.addEventListener('click', function() {
-            const menuLinks = document.getElementById('menu-links');
-            menuLinks.classList.toggle('show');
-        });
+            const menuLinks = document.getElementById('menu-links')
+            menuLinks.classList.toggle('show')
+        })
 
-        // Evento de toque para o menu hambúrguer
         menuHamburger.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            const menuLinks = document.getElementById('menu-links');
-            menuLinks.classList.toggle('show');
-        });
+            e.preventDefault()
+            const menuLinks = document.getElementById('menu-links')
+            menuLinks.classList.toggle('show')
+        })
     } else {
-        console.error('Elemento menu-hamburger não encontrado no DOM.');
+        console.error('Elemento menu-hamburger não encontrado no DOM.')
     }
 
-    applyInputMasks(document);
-});
+    applyInputMasks(document)
+})
 
 async function generateNumericId() {
     const counterRef = db.collection('counters').doc('orcamentoCounter')
@@ -196,10 +190,10 @@ async function generateNumericId() {
 }
 
 export async function saveDataToFirestore() {
-    toggleButtonLoading('save-budget-btn', true); // Mostra o spinner
+    toggleButtonLoading('save-budget-btn', true)
 
     try {
-        const numericId = await generateNumericId();
+        const numericId = await generateNumericId()
 
     const issuingCompany = {
         nomeEmpresa: document.getElementById('nameBusiness').value,
@@ -275,7 +269,7 @@ export async function saveDataToFirestore() {
         console.error("Erro ao adicionar documento: ", e)
         alert("Erro ao salvar orçamento.")
     } finally {
-        toggleButtonLoading('save-budget-btn', false); // Esconde o spinner
+        toggleButtonLoading('save-budget-btn', false)
     }
 }
 
@@ -301,28 +295,27 @@ if (addServiceBtn) {
 }
 
 function parseCurrency(value) {
-    if (!value) return 0;
-    // Remove "R$" e substitui "." (milhar) por "" e "," (decimal) por "."
-    const cleanValue = value.replace('R$', '').replace(/\./g, '').replace(',', '.').trim();
-    return parseFloat(cleanValue) || 0;
+    if (!value) return 0
+    const cleanValue = value.replace('R$', '').replace(/\./g, '').replace(',', '.').trim()
+    return parseFloat(cleanValue) || 0
 }
 
-const equipmentsContainer = document.getElementById('equipments-container');
+const equipmentsContainer = document.getElementById('equipments-container')
 if (equipmentsContainer) {
     equipmentsContainer.addEventListener('input', function (event) {
-        const equipmentItem = event.target.closest('.equipment-item');
-        if (!equipmentItem) return; // Garante que o evento está dentro de um .equipment-item
+        const equipmentItem = event.target.closest('.equipment-item')
+        if (!equipmentItem) return
 
-        const quantity = equipmentItem.querySelector('.quantityEquipment').value;
-        const unitPrice = equipmentItem.querySelector('.unitPriceEquipment').value;
-        const subtotal = equipmentItem.querySelector('.subtotalEquipment');
+        const quantity = equipmentItem.querySelector('.quantityEquipment').value
+        const unitPrice = equipmentItem.querySelector('.unitPriceEquipment').value
+        const subtotal = equipmentItem.querySelector('.subtotalEquipment')
 
-        const qty = parseFloat(quantity) || 0;
-        const price = parseCurrency(unitPrice);
-        const calculatedSubtotal = qty * price;
+        const qty = parseFloat(quantity) || 0
+        const price = parseCurrency(unitPrice)
+        const calculatedSubtotal = qty * price
 
-        subtotal.value = calculatedSubtotal ? `R$ ${calculatedSubtotal.toFixed(2).replace('.', ',')}` : '';
-    });
+        subtotal.value = calculatedSubtotal ? `R$ ${calculatedSubtotal.toFixed(2).replace('.', ',')}` : ''
+    })
 }
 
 const addEquipmentBtn = document.getElementById('add-equipment-btn')
@@ -351,7 +344,7 @@ if (addEquipmentBtn) {
         `
 
         equipmentsContainer.appendChild(newEquipmentItem)
-        applyInputMasks(newEquipmentItem);
+        applyInputMasks(newEquipmentItem)
     })
 }
 
@@ -459,132 +452,132 @@ export function fillClientData() {
 window.fillClientData = fillClientData
 
 async function generatePDFWithLogo() {
-    toggleButtonLoading('generate-pdf-btn', true); // Mostra o spinner antes de iniciar
+    toggleButtonLoading('generate-pdf-btn', true)
     
     try {
-        const numericId = await generateNumericId();
-        await generatorPDF(uploadedLogo, numericId); // Passa a variável uploadedLogo
+        const numericId = await generateNumericId()
+        await generatorPDF(uploadedLogo, numericId)
     } catch (error) {
-        console.error("Erro ao gerar PDF:", error);
-        alert("Erro ao gerar PDF. Veja o console para mais detalhes.");
+        console.error("Erro ao gerar PDF:", error)
+        alert("Erro ao gerar PDF. Veja o console para mais detalhes.")
     } finally {
-        toggleButtonLoading('generate-pdf-btn', false); // Esconde o spinner
+        toggleButtonLoading('generate-pdf-btn', false)
     }
 }
 
-window.generatePDFWithLogo = generatePDFWithLogo;
+window.generatePDFWithLogo = generatePDFWithLogo
 
-let uploadedLogo = null; // Variável global para armazenar a imagem enviada
+let uploadedLogo = null
 
 function handleLogoUpload(event) {
-    const file = event.target.files[0];
-    const logoPreview = document.getElementById('logoPreview');
-    const logoPreviewText = document.getElementById('logoPreviewText');
+    const file = event.target.files[0]
+    const logoPreview = document.getElementById('logoPreview')
+    const logoPreviewText = document.getElementById('logoPreviewText')
 
     if (file) {
-        // Validação básica
         if (!file.type.startsWith('image/')) {
-            alert('Por favor, selecione um arquivo de imagem válido.');
-            event.target.value = ''; // Limpa o campo
-            return;
+            alert('Por favor, selecione um arquivo de imagem válido.')
+            event.target.value = ''
+            return
         }
-        if (file.size > 5 * 1024 * 1024) { // Limite de 5MB
-            alert('A imagem não pode exceder 5MB.');
-            event.target.value = ''; // Limpa o campo
-            return;
+        if (file.size > 5 * 1024 * 1024) {
+            alert('A imagem não pode exceder 5MB.')
+            event.target.value = ''
+            return
         }
 
-        // Converter a imagem para base64
-        const reader = new FileReader();
+        const reader = new FileReader()
         reader.onload = function(e) {
-            uploadedLogo = e.target.result; // Armazena a imagem em base64
-            logoPreview.src = uploadedLogo; // Mostra a pré-visualização
-            logoPreview.style.display = 'block';
-            logoPreviewText.textContent = 'Imagem selecionada: ' + file.name;
-        };
+            uploadedLogo = e.target.result
+            logoPreview.src = uploadedLogo
+            logoPreview.style.display = 'block'
+            logoPreviewText.textContent = 'Imagem selecionada: ' + file.name
+        }
         reader.onerror = function() {
-            alert('Erro ao carregar a imagem.');
-            event.target.value = ''; // Limpa o campo
-        };
-        reader.readAsDataURL(file);
+            alert('Erro ao carregar a imagem.')
+            event.target.value = ''
+        }
+        reader.readAsDataURL(file)
     } else {
-        uploadedLogo = null;
-        logoPreview.style.display = 'none';
-        logoPreviewText.textContent = 'Nenhuma imagem selecionada.';
+        uploadedLogo = null
+        logoPreview.style.display = 'none'
+        logoPreviewText.textContent = 'Nenhuma imagem selecionada.'
     }
 }
 
-window.handleLogoUpload = handleLogoUpload; // Expõe a função para o HTML
+window.handleLogoUpload = handleLogoUpload
+window.loadEquipments = loadEquipments
+window.loadServices = loadServices
+window.fillEquipmentData = fillEquipmentData
+window.fillServiceData = fillServiceData
 
 window.onload = function () {
     loadClients()
     loadCompanies()
+    loadEquipments()
+    loadServices()
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const orcamentoId = urlParams.get('id');
+    const urlParams = new URLSearchParams(window.location.search)
+    const orcamentoId = urlParams.get('id')
 
     if (orcamentoId) {
-        loadOrcamentoForEdit(orcamentoId);
+        loadOrcamentoForEdit(orcamentoId)
     }
 }
 
 async function loadOrcamentoForEdit(id) {
     try {
-        const doc = await db.collection("orcamentos").doc(id).get();
+        const doc = await db.collection("orcamentos").doc(id).get()
         if (doc.exists) {
-            const data = doc.data();
+            const data = doc.data()
 
-            // Preencher dados da empresa
-            document.getElementById('nameBusiness').value = data.empresa.nomeEmpresa || "";
-            document.getElementById('fantasyName').value = data.empresa.fantasyName || "";
-            document.getElementById('cpfCnpj').value = data.empresa.cnpj || "";
-            document.getElementById('address').value = data.empresa.endereco || "";
-            document.getElementById('numberAddress').value = data.empresa.numero || "";
-            document.getElementById('neighborhood').value = data.empresa.bairro || "";
-            document.getElementById('state').value = data.empresa.estado || "";
-            document.getElementById('city').value = data.empresa.cidade || "";
-            document.getElementById('zipcode').value = data.empresa.cep || "";
-            document.getElementById('phone').value = data.empresa.telefone || "";
-            document.getElementById('email').value = data.empresa.email || "";
+            document.getElementById('nameBusiness').value = data.empresa.nomeEmpresa || ""
+            document.getElementById('fantasyName').value = data.empresa.fantasyName || ""
+            document.getElementById('cpfCnpj').value = data.empresa.cnpj || ""
+            document.getElementById('address').value = data.empresa.endereco || ""
+            document.getElementById('numberAddress').value = data.empresa.numero || ""
+            document.getElementById('neighborhood').value = data.empresa.bairro || ""
+            document.getElementById('state').value = data.empresa.estado || ""
+            document.getElementById('city').value = data.empresa.cidade || ""
+            document.getElementById('zipcode').value = data.empresa.cep || ""
+            document.getElementById('phone').value = data.empresa.telefone || ""
+            document.getElementById('email').value = data.empresa.email || ""
 
-            // Preencher dados do cliente
-            document.getElementById('nameClient').value = data.cliente.nameClient || "";
-            document.getElementById('cpfCNPJClient').value = data.cliente.cpfCNPJClient || "";
-            document.getElementById('fantasyNameClient').value = data.cliente.fantasyNameClient || "";
-            document.getElementById('streetClient').value = data.cliente.streetClient || "";
-            document.getElementById('numberAddressClient').value = data.cliente.numberAddressClient || "";
-            document.getElementById('neighborhoodClient').value = data.cliente.neighborhoodClient || "";
-            document.getElementById('cityClient').value = data.cliente.cityClient || "";
-            document.getElementById('zipcodeClient').value = data.cliente.zipcodeClient || "";
-            document.getElementById('stateClient').value = data.cliente.stateClient || "";
-            document.getElementById('phoneClient').value = data.cliente.phoneClient || "";
-            document.getElementById('emailClient').value = data.cliente.emailClient || "";
+            document.getElementById('nameClient').value = data.cliente.nameClient || ""
+            document.getElementById('cpfCNPJClient').value = data.cliente.cpfCNPJClient || ""
+            document.getElementById('fantasyNameClient').value = data.cliente.fantasyNameClient || ""
+            document.getElementById('streetClient').value = data.cliente.streetClient || ""
+            document.getElementById('numberAddressClient').value = data.cliente.numberAddressClient || ""
+            document.getElementById('neighborhoodClient').value = data.cliente.neighborhoodClient || ""
+            document.getElementById('cityClient').value = data.cliente.cityClient || ""
+            document.getElementById('zipcodeClient').value = data.cliente.zipcodeClient || ""
+            document.getElementById('stateClient').value = data.cliente.stateClient || ""
+            document.getElementById('phoneClient').value = data.cliente.phoneClient || ""
+            document.getElementById('emailClient').value = data.cliente.emailClient || ""
 
-            // Preencher serviços
-            const servicesContainer = document.getElementById('services-container');
-            servicesContainer.innerHTML = ""; // Limpar serviços existentes
+            const servicesContainer = document.getElementById('services-container')
+            servicesContainer.innerHTML = ""
             data.servicos.forEach(servico => {
-                const newServiceItem = document.createElement('div');
-                newServiceItem.classList.add('service-item');
+                const newServiceItem = document.createElement('div')
+                newServiceItem.classList.add('service-item')
                 newServiceItem.innerHTML = `
                     <label for="descriptionService">Descrição do Serviço:</label>
                     <input type="text" class="descriptionService" name="descriptionService" value="${servico.descriptionService}">
                     <label for="amountService">Valor do Serviço:</label>
                     <input type="text" class="amountService" name="amountService" value="${servico.amountService}">
-                `;
-                servicesContainer.appendChild(newServiceItem);
-            });
+                `
+                servicesContainer.appendChild(newServiceItem)
+            })
 
-            // Preencher equipamentos (se existirem)
-            const includeEquipmentsCheckbox = document.getElementById('includeEquipments');
-            const equipmentsContainer = document.getElementById('equipments-container');
+            const includeEquipmentsCheckbox = document.getElementById('includeEquipments')
+            const equipmentsContainer = document.getElementById('equipments-container')
             if (data.equipamentos.length > 0) {
-                includeEquipmentsCheckbox.checked = true;
-                document.getElementById('materials-btn').style.display = 'block';
-                equipmentsContainer.innerHTML = ""; // Limpar equipamentos existentes
+                includeEquipmentsCheckbox.checked = true
+                document.getElementById('materials-btn').style.display = 'block'
+                equipmentsContainer.innerHTML = ""
                 data.equipamentos.forEach(equipamento => {
-                    const newEquipmentItem = document.createElement('div');
-                    newEquipmentItem.classList.add('equipment-item');
+                    const newEquipmentItem = document.createElement('div')
+                    newEquipmentItem.classList.add('equipment-item')
                     newEquipmentItem.innerHTML = `
                         <label for="codeEquipment">Código:</label>
                         <input type="text" class="codeEquipment" value="${equipamento.codeEquipment}">
@@ -596,22 +589,20 @@ async function loadOrcamentoForEdit(id) {
                         <input type="text" class="unitPriceEquipment" value="${equipamento.unitPriceEquipment}">
                         <label for="subtotalEquipment">Subtotal:</label>
                         <input type="text" class="subtotalEquipment" value="${equipamento.subtotalEquipment}" readonly>
-                    `;
-                    equipmentsContainer.appendChild(newEquipmentItem);
-                });
+                    `
+                    equipmentsContainer.appendChild(newEquipmentItem)
+                })
             }
 
-            // Preencher observações
-            document.getElementById('observations').value = data.observacoes || "";
+            document.getElementById('observations').value = data.observacoes || ""
 
-            // Alterar o texto do botão "Salvar" para indicar edição
-            const saveButton = document.querySelector('.button-container button:first-child');
-            saveButton.textContent = "Salvar Alterações";
-            saveButton.onclick = () => updateDataToFirestore(id);
+            const saveButton = document.querySelector('.button-container button:first-child')
+            saveButton.textContent = "Salvar Alterações"
+            saveButton.onclick = () => updateDataToFirestore(id)
         }
     } catch (error) {
-        console.error("Erro ao carregar orçamento para edição:", error);
-        alert("Erro ao carregar orçamento para edição.");
+        console.error("Erro ao carregar orçamento para edição:", error)
+        alert("Erro ao carregar orçamento para edição.")
     }
 }
 
@@ -628,7 +619,7 @@ async function updateDataToFirestore(id) {
         cep: document.getElementById('zipcode').value,
         telefone: document.getElementById('phone').value,
         email: document.getElementById('email').value
-    };
+    }
 
     const clientFormData = {
         nameClient: document.getElementById('nameClient').value,
@@ -642,24 +633,24 @@ async function updateDataToFirestore(id) {
         zipcodeClient: document.getElementById('zipcodeClient').value,
         phoneClient: document.getElementById('phoneClient').value,
         emailClient: document.getElementById('emailClient').value,
-    };
+    }
 
-    const serviceData = [];
-    const descriptions = document.querySelectorAll('.descriptionService');
-    const amounts = document.querySelectorAll('.amountService');
+    const serviceData = []
+    const descriptions = document.querySelectorAll('.descriptionService')
+    const amounts = document.querySelectorAll('.amountService')
     for (let i = 0; i < descriptions.length; i++) {
         serviceData.push({
             descriptionService: descriptions[i].value,
             amountService: amounts[i].value
-        });
+        })
     }
 
-    const equipmentData = [];
-    const codes = document.querySelectorAll('.codeEquipment');
-    const names = document.querySelectorAll('.nameEquipment');
-    const quantities = document.querySelectorAll('.quantityEquipment');
-    const unitPrices = document.querySelectorAll('.unitPriceEquipment');
-    const subtotals = document.querySelectorAll('.subtotalEquipment');
+    const equipmentData = []
+    const codes = document.querySelectorAll('.codeEquipment')
+    const names = document.querySelectorAll('.nameEquipment')
+    const quantities = document.querySelectorAll('.quantityEquipment')
+    const unitPrices = document.querySelectorAll('.unitPriceEquipment')
+    const subtotals = document.querySelectorAll('.subtotalEquipment')
     for (let i = 0; i < codes.length; i++) {
         equipmentData.push({
             codeEquipment: codes[i].value,
@@ -667,10 +658,10 @@ async function updateDataToFirestore(id) {
             quantityEquipment: quantities[i].value,
             unitPriceEquipment: unitPrices[i].value,
             subtotalEquipment: subtotals[i].value
-        });
+        })
     }
 
-    const observations = document.getElementById('observations').value;
+    const observations = document.getElementById('observations').value
 
     const orcamento = {
         empresa: issuingCompany,
@@ -678,26 +669,26 @@ async function updateDataToFirestore(id) {
         servicos: serviceData,
         equipamentos: equipmentData,
         observacoes: observations,
-        dataCriacao: new Date() // Ou mantenha a data original, se desejar
-    };
+        dataCriacao: new Date()
+    }
 
     try {
-        await db.collection("orcamentos").doc(id).update(orcamento);
-        alert(`Orçamento atualizado com sucesso! ID: ${id}`);
-        window.location.href = "pages/listorders.html"; // Redireciona para a lista após salvar
+        await db.collection("orcamentos").doc(id).update(orcamento)
+        alert(`Orçamento atualizado com sucesso! ID: ${id}`)
+        window.location.href = "pages/listorders.html"
     } catch (e) {
-        console.error("Erro ao atualizar documento: ", e);
-        alert("Erro ao atualizar orçamento.");
+        console.error("Erro ao atualizar documento: ", e)
+        alert("Erro ao atualizar orçamento.")
     }
 }
 
-window.updateDataToFirestore = updateDataToFirestore;
+window.updateDataToFirestore = updateDataToFirestore
 
 function editOrcamento(id) {
-    window.location.href = `../index.html?id=${id}`;
+    window.location.href = `../index.html?id=${id}`
 }
 
-window.editOrcamento = editOrcamento;
+window.editOrcamento = editOrcamento
 
 const observer = new MutationObserver(function(mutations) {
     mutations.forEach(function(mutation) {
@@ -721,7 +712,7 @@ const observer = new MutationObserver(function(mutations) {
 observer.observe(document.body, { childList: true, subtree: true })
 
 function navigateToListarOrcamentos() {
-    window.location.href = "pages/listorders.html";
+    window.location.href = "pages/listorders.html"
 }
 
 function navigateToCriarOrcamento() {
@@ -906,8 +897,8 @@ async function saveServiceToFirestore() {
 
 function applyInputMasks(container) {
     if (typeof IMask === 'undefined') {
-        console.error('IMask não está carregado. Verifique se o script foi incluído corretamente.');
-        return;
+        console.error('IMask não está carregado. Verifique se o script foi incluído corretamente.')
+        return
     }
 
     const phoneInputs = container.querySelectorAll('#phone, #phoneClient')
@@ -951,16 +942,129 @@ function applyInputMasks(container) {
     })
 }
 
-// Função auxiliar para controlar o estado do botão
 function toggleButtonLoading(buttonId, isLoading) {
-    const button = document.getElementById(buttonId);
-    const spinner = button.querySelector('.spinner');
+    const button = document.getElementById(buttonId)
+    const spinner = button.querySelector('.spinner')
 
     if (isLoading) {
-        button.disabled = true; // Desabilita o botão
-        spinner.style.display = 'inline-block'; // Mostra o spinner
+        button.disabled = true
+        spinner.style.display = 'inline-block'
     } else {
-        button.disabled = false; // Reabilita o botão
-        spinner.style.display = 'none'; // Esconde o spinner
+        button.disabled = false
+        spinner.style.display = 'none'
     }
+}
+
+export async function loadEquipments() {
+    const equipmentSelect = document.getElementById('equipmentSelect')
+
+    if (!equipmentSelect) {
+        console.error("Elemento equipmentSelect não encontrado.")
+        return
+    }
+
+    try {
+        const querySnapshot = await db.collection("equipamentos").get()
+
+        equipmentSelect.innerHTML = '<option value="">Selecione um equipamento</option>'
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data()
+            const option = document.createElement('option')
+            option.value = JSON.stringify(data)
+            option.textContent = data.nameEquipment
+            equipmentSelect.appendChild(option)
+        })
+
+    } catch (error) {
+        console.error("Erro ao carregar equipamentos:", error)
+        equipmentSelect.innerHTML = '<option value="">Erro ao carregar</option>'
+    }
+}
+
+export function fillEquipmentData() {
+    const equipmentSelect = document.getElementById('equipmentSelect')
+    const selectedData = equipmentSelect.value
+
+    if (!selectedData) return
+
+    const data = JSON.parse(selectedData)
+
+    const equipmentsContainer = document.getElementById('equipments-container')
+
+    const newEquipmentItem = document.createElement('div')
+    newEquipmentItem.classList.add('equipment-item')
+
+    newEquipmentItem.innerHTML = `
+        <label for="codeEquipment">Código:</label>
+        <input type="text" class="codeEquipment" value="${data.codeEquipment || ''}" placeholder="Código do equipamento">
+
+        <label for="nameEquipment">Nome:</label>
+        <input type="text" class="nameEquipment" value="${data.nameEquipment || ''}" placeholder="Nome do equipamento">
+
+        <label for="quantityEquipment">Quantidade:</label>
+        <input type="number" class="quantityEquipment" placeholder="Quantidade" min="1">
+
+        <label for="unitPriceEquipment">Preço Unitário:</label>
+        <input type="text" class="unitPriceEquipment" value="${data.unitPriceEquipment || ''}" placeholder="Preço unitário">
+
+        <label for="subtotalEquipment">Subtotal:</label>
+        <input type="text" class="subtotalEquipment" placeholder="Subtotal" readonly>
+    `
+
+    equipmentsContainer.appendChild(newEquipmentItem)
+
+    applyInputMasks(newEquipmentItem)
+}
+
+export async function loadServices() {
+    const serviceSelect = document.getElementById('serviceSelect')
+
+    if (!serviceSelect) {
+        console.error("Elemento serviceSelect não encontrado.")
+        return
+    }
+
+    try {
+        const querySnapshot = await db.collection("servicos").get()
+
+        serviceSelect.innerHTML = '<option value="">Selecione um serviço</option>'
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data()
+            const option = document.createElement('option')
+            option.value = JSON.stringify(data)
+            option.textContent = data.descriptionService
+            serviceSelect.appendChild(option)
+        })
+    } catch (error) {
+        console.error("Erro ao carregar serviços:", error)
+        serviceSelect.innerHTML = '<option value="">Erro ao carregar</option>'
+    }
+}
+
+export function fillServiceData() {
+    const serviceSelect = document.getElementById('serviceSelect')
+    const selectedData = serviceSelect.value
+
+    if (!selectedData) return
+
+    const data = JSON.parse(selectedData)
+
+    const servicesContainer = document.getElementById('services-container')
+
+    const newServiceItem = document.createElement('div')
+    newServiceItem.classList.add('service-item')
+
+    newServiceItem.innerHTML = `
+        <label for="descriptionService">Descrição do Serviço:</label>
+        <input type="text" class="descriptionService" value="${data.descriptionService || ''}" placeholder="Descrição do serviço">
+
+        <label for="amountService">Valor do Serviço:</label>
+        <input type="text" class="amountService" value="${data.amountService || ''}" placeholder="Valor do serviço">
+    `
+
+    servicesContainer.appendChild(newServiceItem)
+
+    applyInputMasks(newServiceItem)
 }

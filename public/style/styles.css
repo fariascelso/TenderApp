@@ -25,14 +25,15 @@ h1 {
 .container {
     width: 90%;
     max-width: 1200px;
-    margin: 40px auto;
+    margin: 20px auto;
     background-color: #ffffff;
-    padding: 35px;
+    padding: 20px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    overflow-x: hidden; /* Evita rolagem horizontal */
 }
 
 /* Estilo para labels */
@@ -190,12 +191,14 @@ select::-ms-expand {
 
 /* Painéis de conteúdo dos acordeões */
 .panel {
-    padding: 20px;
+    padding: 15px;
     display: none;
     overflow: hidden;
     background-color: #f9fcff;
     border-radius: 8px;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    width: 100%; /* Garante que ocupe toda a largura */
+    box-sizing: border-box;
 }
 
 /* Botões de ação (adicionar serviço, equipamento, etc.) */
@@ -405,15 +408,16 @@ select::-ms-expand {
     bottom: 20px;
     left: 20px;
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column-reverse; /* Mantém o FAB no topo e opções abaixo */
     align-items: center;
+    gap: 10px; /* Espaço entre o FAB e as opções */
+    z-index: 1000;
 }
 
 #main-fab {
     background-color: #00796b;
     color: white;
     border: none;
-    width: auto;
     height: 50px;
     border-radius: 25px;
     font-size: 18px;
@@ -424,6 +428,7 @@ select::-ms-expand {
     align-items: center;
     padding: 0 20px;
     gap: 10px;
+    touch-action: manipulation; /* Melhora a interação em touchscreens */
 }
 
 #main-fab:hover {
@@ -437,10 +442,13 @@ select::-ms-expand {
 }
 
 #fab-options {
+    position: absolute; /* Alinha as opções relative ao .floating-menu */
+    bottom: 60px; /* Posiciona acima do FAB */
+    left: 0; /* Alinha à esquerda com o FAB */
     display: none;
     flex-direction: column;
     gap: 10px;
-    margin-bottom: 10px;
+    z-index: 999;
     transition: opacity 0.3s ease, transform 0.3s ease;
     opacity: 0;
     transform: translateY(10px);
@@ -453,22 +461,26 @@ select::-ms-expand {
 }
 
 .fab-option {
-    background-color: #007bff;
+    width: auto; /* Remove a largura fixa para se ajustar ao conteúdo */
+    height: 40px; /* Altura fixa para consistência */
+    border-radius: 25px; /* Torna o botão mais retangular com bordas arredondadas */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
     color: white;
     border: none;
-    width: auto;
-    height: 50px;
-    min-width: 50px;
-    border-radius: 25px;
     font-size: 18px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     cursor: pointer;
-    transition: background-color 0.3s;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    gap: 10px;
+    padding: 0 15px; /* Ajusta o padding para o texto e ícone */
+    gap: 8px; /* Espaço entre ícone e texto */
     touch-action: manipulation;
+}
+
+.fab-option i {
+    color: white;
+    font-size: 20px;
 }
 
 .fab-option:nth-child(1) { background-color: #00aaff; } /* Cliente */
@@ -606,42 +618,119 @@ button:hover {
     vertical-align: middle; /* Centraliza verticalmente o ícone */
 }
 
+.fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(90deg, #ff8a00, #ffd200);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.fab:hover {
+    transform: scale(1.1);
+}
+
+.fab i {
+    color: white;
+    font-size: 24px;
+}
+
 @media (max-width: 768px) {
+    .fab {
+        bottom: 15px;
+        right: 15px;
+        width: 50px;
+        height: 50px;
+    }
+
+    .fab i {
+        font-size: 20px;
+    }
+
     .floating-menu {
-        bottom: 10px; /* Reduz a distância do fundo */
-        left: 10px; /* Reduz a distância da esquerda */
+        bottom: 15px;
+        left: 15px;
     }
 
     #main-fab {
-        height: 40px; /* Reduz o tamanho do FAB */
+        height: 40px;
         padding: 0 15px;
         font-size: 16px;
     }
 
     #main-fab span {
-        font-size: 12px; /* Reduz o tamanho do texto */
+        font-size: 12px;
+    }
+
+    #fab-options {
+        bottom: 50px; /* Ajusta para ficar mais próximo do FAB em telas pequenas */
+        left: 0;
+        gap: 8px;
     }
 
     .fab-option {
-        height: 40px; /* Reduz o tamanho das opções */
+        height: 40px;
         padding: 0 15px;
         font-size: 16px;
     }
 
+    .fab-option i {
+        font-size: 14px; /* Reduz o ícone */
+    }
+
     .fab-option span {
-        font-size: 12px; /* Reduz o tamanho do texto nas opções */
+        font-size: 12px;
     }
 
     .modal-content {
-        width: 90%; /* Ajusta o tamanho do modal para telas menores */
+        width: 90%;
         max-width: 400px;
         padding: 15px;
-        box-sizing: border-box
+        box-sizing: border-box;
     }
 
     .modal {
         justify-content: center;
         align-items: center;
+    }
+
+    body {
+        overflow-x: hidden;
+        min-width: 100vw;
+    }
+
+    .container {
+        padding: 10px;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Ajusta os painéis para não empurrarem o layout */
+    .panel, .client-data-panel, .company-data-panel, .equipments-container, .services-container {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    /* Garante que o button-container se ajuste */
+    .button-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .button-container button {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
     }
 }
 

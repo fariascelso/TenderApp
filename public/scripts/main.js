@@ -983,14 +983,18 @@ export async function loadEquipments() {
 }
 
 export function fillEquipmentData() {
+    const equipmentsContainer = document.getElementById('equipments-container');
+    if (!equipmentsContainer) {
+        console.warn('Elemento "equipments-container" não encontrado. Função ignorada.')
+        return
+    }
+
     const equipmentSelect = document.getElementById('equipmentSelect')
     const selectedData = equipmentSelect.value
 
     if (!selectedData) return
 
     const data = JSON.parse(selectedData)
-
-    const equipmentsContainer = document.getElementById('equipments-container')
 
     const newEquipmentItem = document.createElement('div')
     newEquipmentItem.classList.add('equipment-item')

@@ -362,24 +362,60 @@ if (includeEquipmentsCheckbox && materialsBtn) {
 }
 
 export async function loadClients() {
-    const clientSelect = document.getElementById('clientSelect')
+    // Verifica se está na página de listagem de clientes
+    if (window.location.pathname.includes("listclients.html")) {
+        const tbody = document.querySelector("#clientsTable tbody");
 
-    try {
-        const querySnapshot = await db.collection("clientes").get()
+        try {
+            const querySnapshot = await db.collection("clientes").get();
 
-        clientSelect.innerHTML = '<option value="">Selecione um cliente</option>'
+            tbody.innerHTML = ""; // Limpa o conteúdo atual da tabela
 
-        querySnapshot.forEach((doc) => {
-            const data = doc.data()
-            const option = document.createElement('option')
-            option.value = JSON.stringify(data)
-            option.textContent = data.nameClient
-            clientSelect.appendChild(option)
-        })
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const row = `
+                    <tr>
+                        <td>${data.nameClient || "N/A"}</td>
+                        <td>${data.cpfCNPJClient || "N/A"}</td>
+                        <td>${data.fantasyNameClient || "N/A"}</td>
+                        <td>${data.phoneClient || "N/A"}</td>
+                        <td>${data.emailClient || "N/A"}</td>
+                        <td>
+                            <button class="edit-btn" onclick="editClient('${doc.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="delete-btn" onclick="deleteClient('${doc.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        } catch (error) {
+            console.error("Erro ao carregar clientes:", error);
+            alert("Erro ao carregar clientes.");
+        }
+    } else {
+        // Código original para carregar clientes no select (se houver)
+        const clientSelect = document.getElementById('clientSelect');
 
-    } catch (error) {
-        console.error("Erro ao carregar clientes:", error)
-        clientSelect.innerHTML = '<option value="">Erro ao carregar</option>'
+        try {
+            const querySnapshot = await db.collection("clientes").get();
+
+            clientSelect.innerHTML = '<option value="">Selecione um cliente</option>';
+
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const option = document.createElement('option');
+                option.value = JSON.stringify(data);
+                option.textContent = data.nameClient;
+                clientSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error("Erro ao carregar clientes:", error);
+            clientSelect.innerHTML = '<option value="">Erro ao carregar</option>';
+        }
     }
 }
 
@@ -1071,4 +1107,25 @@ export function fillServiceData() {
     servicesContainer.appendChild(newServiceItem)
 
     applyInputMasks(newServiceItem)
+}
+
+window.editClient = function (id) {
+    window.location.href = `../index.html?clientId=${id}`
+}
+
+window.deleteClient = async function (id) {
+    if (confirm("Tem certeza que deseja excluir este cliente?")) {
+        try {
+            await db.collection("clientes").doc(id).delete()
+            alert("Cliente excluído com sucesso!")
+            loadClients()
+        } catch (error) {
+            console.error("Erro ao excluir cliente:", error)
+            alert("Erro ao excluir cliente.")
+        }
+    }
+}
+
+if (window.location.pathname.includes("listclients.html")) {
+    window.onload = loadClients
 }

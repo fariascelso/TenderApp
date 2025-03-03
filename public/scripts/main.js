@@ -362,17 +362,16 @@ if (includeEquipmentsCheckbox && materialsBtn) {
 }
 
 export async function loadClients() {
-    // Verifica se está na página de listagem de clientes
     if (window.location.pathname.includes("listclients.html")) {
-        const tbody = document.querySelector("#clientsTable tbody");
+        const tbody = document.querySelector("#clientsTable tbody")
 
         try {
-            const querySnapshot = await db.collection("clientes").get();
+            const querySnapshot = await db.collection("clientes").get()
 
-            tbody.innerHTML = ""; // Limpa o conteúdo atual da tabela
+            tbody.innerHTML = ""
 
             querySnapshot.forEach((doc) => {
-                const data = doc.data();
+                const data = doc.data()
                 const row = `
                     <tr>
                         <td>${data.nameClient || "N/A"}</td>
@@ -389,32 +388,31 @@ export async function loadClients() {
                             </button>
                         </td>
                     </tr>
-                `;
-                tbody.innerHTML += row;
-            });
+                `
+                tbody.innerHTML += row
+            })
         } catch (error) {
-            console.error("Erro ao carregar clientes:", error);
-            alert("Erro ao carregar clientes.");
+            console.error("Erro ao carregar clientes:", error)
+            alert("Erro ao carregar clientes.")
         }
     } else {
-        // Código original para carregar clientes no select (se houver)
-        const clientSelect = document.getElementById('clientSelect');
+        const clientSelect = document.getElementById('clientSelect')
 
         try {
-            const querySnapshot = await db.collection("clientes").get();
+            const querySnapshot = await db.collection("clientes").get()
 
-            clientSelect.innerHTML = '<option value="">Selecione um cliente</option>';
+            clientSelect.innerHTML = '<option value="">Selecione um cliente</option>'
 
             querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                const option = document.createElement('option');
-                option.value = JSON.stringify(data);
-                option.textContent = data.nameClient;
-                clientSelect.appendChild(option);
-            });
+                const data = doc.data()
+                const option = document.createElement('option')
+                option.value = JSON.stringify(data)
+                option.textContent = data.nameClient
+                clientSelect.appendChild(option)
+            })
         } catch (error) {
-            console.error("Erro ao carregar clientes:", error);
-            clientSelect.innerHTML = '<option value="">Erro ao carregar</option>';
+            console.error("Erro ao carregar clientes:", error)
+            clientSelect.innerHTML = '<option value="">Erro ao carregar</option>'
         }
     }
 }
@@ -555,9 +553,12 @@ window.onload = function () {
 
     const urlParams = new URLSearchParams(window.location.search)
     const orcamentoId = urlParams.get('id')
+    const clientId = urlParams.get('clientId');
 
     if (orcamentoId) {
-        loadOrcamentoForEdit(orcamentoId)
+        loadOrcamentoForEdit(orcamentoId);
+    } else if (clientId) {
+        loadClientForEdit(clientId);
     }
 }
 
@@ -641,6 +642,60 @@ async function loadOrcamentoForEdit(id) {
         alert("Erro ao carregar orçamento para edição.")
     }
 }
+
+async function loadClientForEdit(id) {
+    try {
+        const doc = await db.collection("clientes").doc(id).get()
+        if (doc.exists) {
+            const data = doc.data()
+
+            document.getElementById('nameClient').value = data.nameClient || ""
+            document.getElementById('cpfCNPJClient').value = data.cpfCNPJClient || ""
+            document.getElementById('fantasyNameClient').value = data.fantasyNameClient || ""
+            document.getElementById('streetClient').value = data.streetClient || ""
+            document.getElementById('numberAddressClient').value = data.numberAddressClient || ""
+            document.getElementById('neighborhoodClient').value = data.neighborhoodClient || ""
+            document.getElementById('cityClient').value = data.cityClient || ""
+            document.getElementById('zipcodeClient').value = data.zipcodeClient || ""
+            document.getElementById('stateClient').value = data.stateClient || ""
+            document.getElementById('phoneClient').value = data.phoneClient || ""
+            document.getElementById('emailClient').value = data.emailClient || ""
+
+            const saveButton = document.querySelector('.button-container button:first-child')
+            saveButton.textContent = "Salvar Alterações"
+            saveButton.onclick = () => updateClientToFirestore(id)
+        }
+    } catch (error) {
+        console.error("Erro ao carregar cliente para edição:", error)
+        alert("Erro ao carregar cliente para edição.")
+    }
+}
+
+async function updateClientToFirestore(id) {
+    const clientData = {
+        nameClient: document.getElementById('nameClient').value,
+        cpfCNPJClient: document.getElementById('cpfCNPJClient').value,
+        fantasyNameClient: document.getElementById('fantasyNameClient').value,
+        streetClient: document.getElementById('streetClient').value,
+        numberAddressClient: document.getElementById('numberAddressClient').value,
+        neighborhoodClient: document.getElementById('neighborhoodClient').value,
+        cityClient: document.getElementById('cityClient').value,
+        zipcodeClient: document.getElementById('zipcodeClient').value,
+        stateClient: document.getElementById('stateClient').value,
+        phoneClient: document.getElementById('phoneClient').value,
+        emailClient: document.getElementById('emailClient').value
+    };
+
+    try {
+        await db.collection("clientes").doc(id).update(clientData);
+        alert("Cliente atualizado com sucesso!");
+        window.location.href = "pages/listclients.html"; // Redireciona para a lista de clientes
+    } catch (error) {
+        console.error("Erro ao atualizar cliente:", error);
+        alert("Erro ao atualizar cliente.");
+    }
+}
+window.updateClientToFirestore = updateClientToFirestore;
 
 async function updateDataToFirestore(id) {
     const issuingCompany = {
@@ -1019,7 +1074,7 @@ export async function loadEquipments() {
 }
 
 export function fillEquipmentData() {
-    const equipmentsContainer = document.getElementById('equipments-container');
+    const equipmentsContainer = document.getElementById('equipments-container')
     if (!equipmentsContainer) {
         console.warn('Elemento "equipments-container" não encontrado. Função ignorada.')
         return
@@ -1109,9 +1164,10 @@ export function fillServiceData() {
     applyInputMasks(newServiceItem)
 }
 
-window.editClient = function (id) {
+function editClient(id) {
     window.location.href = `../index.html?clientId=${id}`
 }
+window.editClient = editClient
 
 window.deleteClient = async function (id) {
     if (confirm("Tem certeza que deseja excluir este cliente?")) {

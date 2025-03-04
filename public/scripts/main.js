@@ -553,12 +553,12 @@ window.onload = function () {
 
     const urlParams = new URLSearchParams(window.location.search)
     const orcamentoId = urlParams.get('id')
-    const clientId = urlParams.get('clientId');
+    const clientId = urlParams.get('clientId')
 
     if (orcamentoId) {
-        loadOrcamentoForEdit(orcamentoId);
+        loadOrcamentoForEdit(orcamentoId)
     } else if (clientId) {
-        loadClientForEdit(clientId);
+        loadClientForEdit(clientId)
     }
 }
 
@@ -684,18 +684,18 @@ async function updateClientToFirestore(id) {
         stateClient: document.getElementById('stateClient').value,
         phoneClient: document.getElementById('phoneClient').value,
         emailClient: document.getElementById('emailClient').value
-    };
+    }
 
     try {
-        await db.collection("clientes").doc(id).update(clientData);
-        alert("Cliente atualizado com sucesso!");
-        window.location.href = "pages/listclients.html"; // Redireciona para a lista de clientes
+        await db.collection("clientes").doc(id).update(clientData)
+        alert("Cliente atualizado com sucesso!")
+        window.location.href = "pages/listclients.html"
     } catch (error) {
-        console.error("Erro ao atualizar cliente:", error);
-        alert("Erro ao atualizar cliente.");
+        console.error("Erro ao atualizar cliente:", error)
+        alert("Erro ao atualizar cliente.")
     }
 }
-window.updateClientToFirestore = updateClientToFirestore;
+window.updateClientToFirestore = updateClientToFirestore
 
 async function updateDataToFirestore(id) {
     const issuingCompany = {

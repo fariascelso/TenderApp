@@ -51,15 +51,34 @@ function init() {
     loadServices();
     setupEquipmentListeners();
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const orcamentoId = urlParams.get('id');
-    const clientId = urlParams.get('clientId');
+   // Verificar se há um ID na URL para carregar dados
+   const urlParams = new URLSearchParams(window.location.search);
+   const id = urlParams.get('id');
+   const type = urlParams.get('type');
+   const viewMode = urlParams.get('view') === 'true';
 
-    if (orcamentoId) {
-        loadOrcamentoForEdit(orcamentoId);
-    } else if (clientId) {
-        loadClientForEdit(clientId);
-    }
+   if (id && type === 'client') {
+       loadClientForEdit(id);
+       if (viewMode) {
+           // Desabilitar campos para modo de visualização
+           const inputs = document.querySelectorAll('input, textarea, select');
+           inputs.forEach(input => {
+               input.disabled = true;
+           });
+           const saveButton = document.querySelector('.button-container button:first-child');
+           if (saveButton) saveButton.style.display = 'none';
+       }
+   } else if (id && type === 'orcamento') {
+       loadOrcamentoForEdit(id);
+       if (viewMode) {
+           const inputs = document.querySelectorAll('input, textarea, select');
+           inputs.forEach(input => {
+               input.disabled = true;
+           });
+           const saveButton = document.querySelector('.button-container button:first-child');
+           if (saveButton) saveButton.style.display = 'none';
+       }
+   }
 
     function calculateSubtotal(equipmentItem) {
         const quantityInput = equipmentItem.querySelector('.quantityEquipment');

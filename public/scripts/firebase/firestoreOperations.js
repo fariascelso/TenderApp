@@ -1,34 +1,31 @@
-// scripts/firebase/firestoreOperations.js
-import { db } from './firebaseConfig.js';
-import { toggleButtonLoading } from '../utils/helpers.js';
-import { applyInputMasks } from '../utils/inputMasks.js';
-
-// Não precisamos importar funções do Firestore, pois elas estão disponíveis via firebase.firestore()
+import { db } from './firebaseConfig.js'
+import { toggleButtonLoading } from '../utils/helpers.js'
+import { applyInputMasks } from '../utils/inputMasks.js'
 
 export async function generateNumericId() {
-    const counterRef = firebase.firestore().collection('counters').doc('orcamentoCounter');
-    let numericId;
+    const counterRef = firebase.firestore().collection('counters').doc('orcamentoCounter')
+    let numericId
 
     await firebase.firestore().runTransaction(async (transaction) => {
-        const doc = await transaction.get(counterRef);
+        const doc = await transaction.get(counterRef)
         if (!doc.exists) {
-            transaction.set(counterRef, { count: 1 });
-            numericId = 1;
+            transaction.set(counterRef, { count: 1 })
+            numericId = 1
         } else {
-            const currentCount = doc.data().count;
-            numericId = currentCount + 1;
-            transaction.update(counterRef, { count: numericId });
+            const currentCount = doc.data().count
+            numericId = currentCount + 1
+            transaction.update(counterRef, { count: numericId })
         }
-    });
+    })
 
-    return numericId;
+    return numericId
 }
 
 export async function saveDataToFirestore() {
-    toggleButtonLoading('save-budget-btn', true);
+    toggleButtonLoading('save-budget-btn', true)
 
     try {
-        const numericId = await generateNumericId();
+        const numericId = await generateNumericId()
 
         const issuingCompany = {
             nomeEmpresa: document.getElementById('nameBusiness').value,
@@ -42,7 +39,7 @@ export async function saveDataToFirestore() {
             cep: document.getElementById('zipcode').value,
             telefone: document.getElementById('phone').value,
             email: document.getElementById('email').value
-        };
+        }
 
         const clientFormData = {
             nameClient: document.getElementById('nameClient').value,
@@ -56,42 +53,41 @@ export async function saveDataToFirestore() {
             zipcodeClient: document.getElementById('zipcodeClient').value,
             phoneClient: document.getElementById('phoneClient').value,
             emailClient: document.getElementById('emailClient').value,
-        };
+        }
 
-        const serviceData = [];
-        const descriptions = document.querySelectorAll('.descriptionService');
-        const amounts = document.querySelectorAll('.amountService');
+        const serviceData = []
+        const descriptions = document.querySelectorAll('.descriptionService')
+        const amounts = document.querySelectorAll('.amountService')
 
-        const equipmentData = [];
-        const codes = document.querySelectorAll('.codeEquipment');
-        const names = document.querySelectorAll('.nameEquipment');
-        const quantities = document.querySelectorAll('.quantityEquipment');
-        const unitPrices = document.querySelectorAll('.unitPriceEquipment');
-        const subtotals = document.querySelectorAll('.subtotalEquipment');
+        const equipmentData = []
+        const codes = document.querySelectorAll('.codeEquipment')
+        const names = document.querySelectorAll('.nameEquipment')
+        const quantities = document.querySelectorAll('.quantityEquipment')
+        const unitPrices = document.querySelectorAll('.unitPriceEquipment')
+        const subtotals = document.querySelectorAll('.subtotalEquipment')
 
-        const observations = document.getElementById('observations').value;
+        const observations = document.getElementById('observations').value
 
         for (let i = 0; i < codes.length; i++) {
-            // Limpar os valores formatados
-            let unitPrice = unitPrices[i].value.replace(/[^\d,]/g, '').replace(',', '.');
-            unitPrice = parseFloat(unitPrice) || 0;
-            let subtotal = subtotals[i].value.replace(/[^\d,]/g, '').replace(',', '.');
-            subtotal = parseFloat(subtotal) || 0;
+            let unitPrice = unitPrices[i].value.replace(/[^\d,]/g, '').replace(',', '.')
+            unitPrice = parseFloat(unitPrice) || 0
+            let subtotal = subtotals[i].value.replace(/[^\d,]/g, '').replace(',', '.')
+            subtotal = parseFloat(subtotal) || 0
 
             equipmentData.push({
                 codeEquipment: codes[i].value,
                 nameEquipment: names[i].value,
                 quantityEquipment: parseInt(quantities[i].value) || 0,
-                unitPriceEquipment: unitPrice, // Salva como número
-                subtotalEquipment: subtotal // Salva como número
-            });
+                unitPriceEquipment: unitPrice,
+                subtotalEquipment: subtotal
+            })
         }
 
         for (let i = 0; i < descriptions.length; i++) {
             serviceData.push({
                 descriptionService: descriptions[i].value,
                 amountService: amounts[i].value
-            });
+            })
         }
 
         const orcamento = {
@@ -102,16 +98,16 @@ export async function saveDataToFirestore() {
             observacoes: observations,
             dataCriacao: new Date(),
             numericId: numericId
-        };
+        }
 
-        await firebase.firestore().collection('orcamentos').doc(numericId.toString()).set(orcamento);
+        await firebase.firestore().collection('orcamentos').doc(numericId.toString()).set(orcamento)
 
-        alert(`Orçamento salvo com sucesso! ID do orçamento: ${numericId}`);
+        alert(`Orçamento salvo com sucesso! ID do orçamento: ${numericId}`)
     } catch (e) {
-        console.error("Erro ao adicionar documento: ", e);
-        alert("Erro ao salvar orçamento.");
+        console.error("Erro ao adicionar documento: ", e)
+        alert("Erro ao salvar orçamento.")
     } finally {
-        toggleButtonLoading('save-budget-btn', false);
+        toggleButtonLoading('save-budget-btn', false)
     }
 }
 
@@ -128,7 +124,7 @@ export async function updateDataToFirestore(id) {
         cep: document.getElementById('zipcode').value,
         telefone: document.getElementById('phone').value,
         email: document.getElementById('email').value
-    };
+    }
 
     const clientFormData = {
         nameClient: document.getElementById('nameClient').value,
@@ -142,24 +138,24 @@ export async function updateDataToFirestore(id) {
         zipcodeClient: document.getElementById('zipcodeClient').value,
         phoneClient: document.getElementById('phoneClient').value,
         emailClient: document.getElementById('emailClient').value,
-    };
+    }
 
-    const serviceData = [];
-    const descriptions = document.querySelectorAll('.descriptionService');
-    const amounts = document.querySelectorAll('.amountService');
+    const serviceData = []
+    const descriptions = document.querySelectorAll('.descriptionService')
+    const amounts = document.querySelectorAll('.amountService')
     for (let i = 0; i < descriptions.length; i++) {
         serviceData.push({
             descriptionService: descriptions[i].value,
             amountService: amounts[i].value
-        });
+        })
     }
 
-    const equipmentData = [];
-    const codes = document.querySelectorAll('.codeEquipment');
-    const names = document.querySelectorAll('.nameEquipment');
-    const quantities = document.querySelectorAll('.quantityEquipment');
-    const unitPrices = document.querySelectorAll('.unitPriceEquipment');
-    const subtotals = document.querySelectorAll('.subtotalEquipment');
+    const equipmentData = []
+    const codes = document.querySelectorAll('.codeEquipment')
+    const names = document.querySelectorAll('.nameEquipment')
+    const quantities = document.querySelectorAll('.quantityEquipment')
+    const unitPrices = document.querySelectorAll('.unitPriceEquipment')
+    const subtotals = document.querySelectorAll('.subtotalEquipment')
     for (let i = 0; i < codes.length; i++) {
         equipmentData.push({
             codeEquipment: codes[i].value,
@@ -167,10 +163,10 @@ export async function updateDataToFirestore(id) {
             quantityEquipment: quantities[i].value,
             unitPriceEquipment: unitPrices[i].value,
             subtotalEquipment: subtotals[i].value
-        });
+        })
     }
 
-    const observations = document.getElementById('observations').value;
+    const observations = document.getElementById('observations').value
 
     const orcamento = {
         empresa: issuingCompany,
@@ -179,112 +175,111 @@ export async function updateDataToFirestore(id) {
         equipamentos: equipmentData,
         observacoes: observations,
         dataCriacao: new Date()
-    };
+    }
 
     try {
-        await firebase.firestore().collection('orcamentos').doc(id).update(orcamento);
-        alert(`Orçamento atualizado com sucesso! ID: ${id}`);
-        window.location.href = "pages/listorders.html";
+        await firebase.firestore().collection('orcamentos').doc(id).update(orcamento)
+        alert(`Orçamento atualizado com sucesso! ID: ${id}`)
+        window.location.href = "pages/listorders.html"
     } catch (e) {
-        console.error("Erro ao atualizar documento: ", e);
-        alert("Erro ao atualizar orçamento.");
+        console.error("Erro ao atualizar documento: ", e)
+        alert("Erro ao atualizar orçamento.")
     }
 }
 
 export async function deleteOrcamento(id) {
     if (confirm("Tem certeza que deseja excluir este orçamento?")) {
         try {
-            await firebase.firestore().collection('orcamentos').doc(id).delete();
-            alert("Orçamento excluído com sucesso!");
-            // loadOrcamentos() será movido para listOrders.js, se necessário
+            await firebase.firestore().collection('orcamentos').doc(id).delete()
+            alert("Orçamento excluído com sucesso!")
         } catch (error) {
-            console.error("Erro ao excluir orçamento:", error);
-            alert("Erro ao excluir orçamento.");
+            console.error("Erro ao excluir orçamento:", error)
+            alert("Erro ao excluir orçamento.")
         }
     }
 }
 
 export async function loadClients() {
-    const clientSelect = document.getElementById('clientSelect');
+    const clientSelect = document.getElementById('clientSelect')
     if (!clientSelect) {
-        console.warn('Elemento clientSelect não encontrado.');
-        return;
+        console.warn('Elemento clientSelect não encontrado.')
+        return
     }
     try {
-        const querySnapshot = await firebase.firestore().collection('clientes').get();
-        clientSelect.innerHTML = '<option value="">Selecione um cliente</option>';
+        const querySnapshot = await firebase.firestore().collection('clientes').get()
+        clientSelect.innerHTML = '<option value="">Selecione um cliente</option>'
         querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const option = document.createElement('option');
-            option.value = JSON.stringify(data);
-            option.textContent = data.nameClient || 'Cliente sem nome';
-            clientSelect.appendChild(option);
-        });
+            const data = doc.data()
+            const option = document.createElement('option')
+            option.value = JSON.stringify(data)
+            option.textContent = data.nameClient || 'Cliente sem nome'
+            clientSelect.appendChild(option)
+        })
     } catch (error) {
-        console.error('Erro ao carregar clientes:', error);
+        console.error('Erro ao carregar clientes:', error)
     }
 }
 
 export async function loadCompanies() {
-    const companySelect = document.getElementById('companySelect');
+    const companySelect = document.getElementById('companySelect')
     if (!companySelect) {
-        console.warn('Elemento companySelect não encontrado.');
-        return;
+        console.warn('Elemento companySelect não encontrado.')
+        return
     }
     try {
-        const querySnapshot = await firebase.firestore().collection('empresasEmitenteOrcamento').get();
-        companySelect.innerHTML = '<option value="">Selecione uma empresa</option>';
+        const querySnapshot = await firebase.firestore().collection('empresasEmitenteOrcamento').get()
+        companySelect.innerHTML = '<option value="">Selecione uma empresa</option>'
         querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const option = document.createElement('option');
-            option.value = JSON.stringify(data);
-            option.textContent = data.nomeEmpresa || 'Empresa sem nome';
-            companySelect.appendChild(option);
-        });
+            const data = doc.data()
+            const option = document.createElement('option')
+            option.value = JSON.stringify(data)
+            option.textContent = data.nomeEmpresa || 'Empresa sem nome'
+            companySelect.appendChild(option)
+        })
     } catch (error) {
-        console.error('Erro ao carregar empresas:', error);
+        console.error('Erro ao carregar empresas:', error)
     }
 }
 
 export async function loadEquipments() {
-    const equipmentSelect = document.getElementById('equipmentSelect');
+    const equipmentSelect = document.getElementById('equipmentSelect')
     if (!equipmentSelect) {
-        console.warn('Elemento equipmentSelect não encontrado.');
-        return;
+        console.warn('Elemento equipmentSelect não encontrado.')
+        return
     }
     try {
-        const querySnapshot = await firebase.firestore().collection('equipamentos').get();
-        equipmentSelect.innerHTML = '<option value="">Selecione um equipamento</option>';
+        const querySnapshot = await firebase.firestore().collection('equipamentos').get()
+        equipmentSelect.innerHTML = '<option value="">Selecione um equipamento</option>'
         querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const option = document.createElement('option');
-            option.value = JSON.stringify(data);
-            option.textContent = data.nameEquipment || 'Equipamento sem nome';
-            equipmentSelect.appendChild(option);
-        });
+            const data = doc.data()
+            const option = document.createElement('option')
+            option.value = JSON.stringify(data)
+            option.textContent = data.nameEquipment || 'Equipamento sem nome'
+            equipmentSelect.appendChild(option)
+        })
     } catch (error) {
-        console.error('Erro ao carregar equipamentos:', error);
+        console.error('Erro ao carregar equipamentos:', error)
     }
 }
 
 export async function loadServices() {
-    const serviceSelect = document.getElementById('serviceSelect');
+    const serviceSelect = document.getElementById('serviceSelect')
     if (!serviceSelect) {
-        console.warn('Elemento serviceSelect não encontrado.');
-        return;
+        console.warn('Elemento serviceSelect não encontrado.')
+        return
     }
     try {
-        const querySnapshot = await firebase.firestore().collection('servicos').get();
-        serviceSelect.innerHTML = '<option value="">Selecione um serviço</option>';
+        const querySnapshot = await firebase.firestore().collection('servicos').get()
+        serviceSelect.innerHTML = '<option value="">Selecione um serviço</option>'
         querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const option = document.createElement('option');
-            option.value = JSON.stringify(data);
-            option.textContent = data.descriptionService || 'Serviço sem descrição';
-            serviceSelect.appendChild(option);
-        });
+            const data = doc.data()
+            const option = document.createElement('option')
+            option.value = JSON.stringify(data)
+            option.textContent = data.descriptionService || 'Serviço sem descrição'
+            serviceSelect.appendChild(option)
+        })
     } catch (error) {
-        console.error('Erro ao carregar serviços:', error);
+        console.error('Erro ao carregar serviços:', error)
     }
 }
 
@@ -301,8 +296,8 @@ export async function saveClientToFirestore() {
         stateClient: document.querySelector('#clientModalContent #stateClient').value,
         phoneClient: document.querySelector('#clientModalContent #phoneClient').value,
         emailClient: document.querySelector('#clientModalContent #emailClient').value
-    };
-    await firebase.firestore().collection('clientes').add(clientData);
+    }
+    await firebase.firestore().collection('clientes').add(clientData)
 }
 
 export async function saveCompanyToFirestore() {
@@ -318,8 +313,8 @@ export async function saveCompanyToFirestore() {
         cep: document.querySelector('#companyModalContent #zipcode').value,
         telefone: document.querySelector('#companyModalContent #phone').value,
         email: document.querySelector('#companyModalContent #email').value
-    };
-    await firebase.firestore().collection('empresas').add(companyData);
+    }
+    await firebase.firestore().collection('empresas').add(companyData)
 }
 
 export async function saveEquipmentToFirestore() {
@@ -327,126 +322,126 @@ export async function saveEquipmentToFirestore() {
         codeEquipment: document.querySelector('#equipmentModalContent .codeEquipment').value,
         nameEquipment: document.querySelector('#equipmentModalContent .nameEquipment').value,
         unitPriceEquipment: document.querySelector('#equipmentModalContent .unitPriceEquipment').value
-    };
-    await firebase.firestore().collection('equipamentos').add(equipmentData);
+    }
+    await firebase.firestore().collection('equipamentos').add(equipmentData)
 }
 
 export async function saveServiceToFirestore() {
     const serviceData = {
         descriptionService: document.querySelector('#serviceModalContent .descriptionService').value,
         amountService: document.querySelector('#serviceModalContent .amountService').value
-    };
-    await firebase.firestore().collection('servicos').add(serviceData);
+    }
+    await firebase.firestore().collection('servicos').add(serviceData)
 }
 
 export async function saveModalData(targetId) {
     try {
         if (targetId === 'clientModalContent') {
-            await saveClientToFirestore();
+            await saveClientToFirestore()
         } else if (targetId === 'companyModalContent') {
-            await saveCompanyToFirestore();
+            await saveCompanyToFirestore()
         } else if (targetId === 'equipmentModalContent') {
-            await saveEquipmentToFirestore();
+            await saveEquipmentToFirestore()
         } else if (targetId === 'serviceModalContent') {
-            await saveServiceToFirestore();
+            await saveServiceToFirestore()
         }
-        alert('Dados salvos com sucesso!');
-        const modal = document.getElementById(targetId).closest('.modal');
-        modal.classList.remove('show');
+        alert('Dados salvos com sucesso!')
+        const modal = document.getElementById(targetId).closest('.modal')
+        modal.classList.remove('show')
         setTimeout(() => {
-            modal.style.display = 'none';
-        }, 300);
+            modal.style.display = 'none'
+        }, 300)
     } catch (error) {
-        console.error('Erro ao salvar dados:', error);
-        alert('Erro ao salvar dados. Veja o console para mais detalhes.');
+        console.error('Erro ao salvar dados:', error)
+        alert('Erro ao salvar dados. Veja o console para mais detalhes.')
     }
 }
 
 export async function loadClientForEdit(id) {
     try {
-        const doc = await firebase.firestore().collection('clientes').doc(id).get();
+        const doc = await firebase.firestore().collection('clientes').doc(id).get()
         if (doc.exists) {
-            const data = doc.data();
+            const data = doc.data()
 
-            document.getElementById('nameClient').value = data.nameClient || "";
-            document.getElementById('cpfCNPJClient').value = data.cpfCNPJClient || "";
-            document.getElementById('fantasyNameClient').value = data.fantasyNameClient || "";
-            document.getElementById('streetClient').value = data.streetClient || "";
-            document.getElementById('numberAddressClient').value = data.numberAddressClient || "";
-            document.getElementById('neighborhoodClient').value = data.neighborhoodClient || "";
-            document.getElementById('cityClient').value = data.cityClient || "";
-            document.getElementById('zipcodeClient').value = data.zipcodeClient || "";
-            document.getElementById('stateClient').value = data.stateClient || "";
-            document.getElementById('phoneClient').value = data.phoneClient || "";
-            document.getElementById('emailClient').value = data.emailClient || "";
+            document.getElementById('nameClient').value = data.nameClient || ""
+            document.getElementById('cpfCNPJClient').value = data.cpfCNPJClient || ""
+            document.getElementById('fantasyNameClient').value = data.fantasyNameClient || ""
+            document.getElementById('streetClient').value = data.streetClient || ""
+            document.getElementById('numberAddressClient').value = data.numberAddressClient || ""
+            document.getElementById('neighborhoodClient').value = data.neighborhoodClient || ""
+            document.getElementById('cityClient').value = data.cityClient || ""
+            document.getElementById('zipcodeClient').value = data.zipcodeClient || ""
+            document.getElementById('stateClient').value = data.stateClient || ""
+            document.getElementById('phoneClient').value = data.phoneClient || ""
+            document.getElementById('emailClient').value = data.emailClient || ""
 
-            const saveButton = document.querySelector('.button-container button:first-child');
-            saveButton.textContent = "Salvar Alterações";
-            saveButton.onclick = () => updateClientToFirestore(id);
+            const saveButton = document.querySelector('.button-container button:first-child')
+            saveButton.textContent = "Salvar Alterações"
+            saveButton.onclick = () => updateClientToFirestore(id)
         } else {
-            console.error(`Cliente com ID ${id} não encontrado.`);
-            alert("Cliente não encontrado.");
+            console.error(`Cliente com ID ${id} não encontrado.`)
+            alert("Cliente não encontrado.")
         }
     } catch (error) {
-        console.error("Erro ao carregar cliente para edição:", error);
-        alert("Erro ao carregar cliente para edição.");
+        console.error("Erro ao carregar cliente para edição:", error)
+        alert("Erro ao carregar cliente para edição.")
     }
 }
 
 export async function loadOrcamentoForEdit(id) {
     try {
-        const doc = await firebase.firestore().collection('orcamentos').doc(id).get();
+        const doc = await firebase.firestore().collection('orcamentos').doc(id).get()
         if (doc.exists) {
-            const data = doc.data();
+            const data = doc.data()
 
-            document.getElementById('nameBusiness').value = data.empresa.nomeEmpresa || "";
-            document.getElementById('fantasyName').value = data.empresa.fantasyName || "";
-            document.getElementById('cpfCnpj').value = data.empresa.cnpj || "";
-            document.getElementById('address').value = data.empresa.endereco || "";
-            document.getElementById('numberAddress').value = data.empresa.numero || "";
-            document.getElementById('neighborhood').value = data.empresa.bairro || "";
-            document.getElementById('state').value = data.empresa.estado || "";
-            document.getElementById('city').value = data.empresa.cidade || "";
-            document.getElementById('zipcode').value = data.empresa.cep || "";
-            document.getElementById('phone').value = data.empresa.telefone || "";
-            document.getElementById('email').value = data.empresa.email || "";
+            document.getElementById('nameBusiness').value = data.empresa.nomeEmpresa || ""
+            document.getElementById('fantasyName').value = data.empresa.fantasyName || ""
+            document.getElementById('cpfCnpj').value = data.empresa.cnpj || ""
+            document.getElementById('address').value = data.empresa.endereco || ""
+            document.getElementById('numberAddress').value = data.empresa.numero || ""
+            document.getElementById('neighborhood').value = data.empresa.bairro || ""
+            document.getElementById('state').value = data.empresa.estado || ""
+            document.getElementById('city').value = data.empresa.cidade || ""
+            document.getElementById('zipcode').value = data.empresa.cep || ""
+            document.getElementById('phone').value = data.empresa.telefone || ""
+            document.getElementById('email').value = data.empresa.email || ""
 
-            document.getElementById('nameClient').value = data.cliente.nameClient || "";
-            document.getElementById('cpfCNPJClient').value = data.cliente.cpfCNPJClient || "";
-            document.getElementById('fantasyNameClient').value = data.cliente.fantasyNameClient || "";
-            document.getElementById('streetClient').value = data.cliente.streetClient || "";
-            document.getElementById('numberAddressClient').value = data.cliente.numberAddressClient || "";
-            document.getElementById('neighborhoodClient').value = data.cliente.neighborhoodClient || "";
-            document.getElementById('cityClient').value = data.cliente.cityClient || "";
-            document.getElementById('zipcodeClient').value = data.cliente.zipcodeClient || "";
-            document.getElementById('stateClient').value = data.cliente.stateClient || "";
-            document.getElementById('phoneClient').value = data.cliente.phoneClient || "";
-            document.getElementById('emailClient').value = data.cliente.emailClient || "";
+            document.getElementById('nameClient').value = data.cliente.nameClient || ""
+            document.getElementById('cpfCNPJClient').value = data.cliente.cpfCNPJClient || ""
+            document.getElementById('fantasyNameClient').value = data.cliente.fantasyNameClient || ""
+            document.getElementById('streetClient').value = data.cliente.streetClient || ""
+            document.getElementById('numberAddressClient').value = data.cliente.numberAddressClient || ""
+            document.getElementById('neighborhoodClient').value = data.cliente.neighborhoodClient || ""
+            document.getElementById('cityClient').value = data.cliente.cityClient || ""
+            document.getElementById('zipcodeClient').value = data.cliente.zipcodeClient || ""
+            document.getElementById('stateClient').value = data.cliente.stateClient || ""
+            document.getElementById('phoneClient').value = data.cliente.phoneClient || ""
+            document.getElementById('emailClient').value = data.cliente.emailClient || ""
 
-            const servicesContainer = document.getElementById('services-container');
-            servicesContainer.innerHTML = "";
+            const servicesContainer = document.getElementById('services-container')
+            servicesContainer.innerHTML = ""
             data.servicos.forEach(servico => {
-                const newServiceItem = document.createElement('div');
-                newServiceItem.classList.add('service-item');
+                const newServiceItem = document.createElement('div')
+                newServiceItem.classList.add('service-item')
                 newServiceItem.innerHTML = `
                     <label for="descriptionService">Descrição do Serviço:</label>
                     <input type="text" class="descriptionService" name="descriptionService" value="${servico.descriptionService}">
                     <label for="amountService">Valor do Serviço:</label>
                     <input type="text" class="amountService" name="amountService" value="${servico.amountService}">
-                `;
-                servicesContainer.appendChild(newServiceItem);
-                applyInputMasks(newServiceItem);
-            });
+                `
+                servicesContainer.appendChild(newServiceItem)
+                applyInputMasks(newServiceItem)
+            })
 
-            const includeEquipmentsCheckbox = document.getElementById('includeEquipments');
-            const equipmentsContainer = document.getElementById('equipments-container');
+            const includeEquipmentsCheckbox = document.getElementById('includeEquipments')
+            const equipmentsContainer = document.getElementById('equipments-container')
             if (data.equipamentos.length > 0) {
-                includeEquipmentsCheckbox.checked = true;
-                document.getElementById('materials-btn').style.display = 'block';
-                equipmentsContainer.innerHTML = "";
+                includeEquipmentsCheckbox.checked = true
+                document.getElementById('materials-btn').style.display = 'block'
+                equipmentsContainer.innerHTML = ""
                 data.equipamentos.forEach(equipamento => {
-                    const newEquipmentItem = document.createElement('div');
-                    newEquipmentItem.classList.add('equipment-item');
+                    const newEquipmentItem = document.createElement('div')
+                    newEquipmentItem.classList.add('equipment-item')
                     newEquipmentItem.innerHTML = `
                         <label for="codeEquipment">Código:</label>
                         <input type="text" class="codeEquipment" value="${equipamento.codeEquipment}">
@@ -458,24 +453,24 @@ export async function loadOrcamentoForEdit(id) {
                         <input type="text" class="unitPriceEquipment" value="${equipamento.unitPriceEquipment}">
                         <label for="subtotalEquipment">Subtotal:</label>
                         <input type="text" class="subtotalEquipment" value="${equipamento.subtotalEquipment}" readonly>
-                    `;
-                    equipmentsContainer.appendChild(newEquipmentItem);
-                    applyInputMasks(newEquipmentItem);
-                });
+                    `
+                    equipmentsContainer.appendChild(newEquipmentItem)
+                    applyInputMasks(newEquipmentItem)
+                })
             }
 
-            document.getElementById('observations').value = data.observacoes || "";
+            document.getElementById('observations').value = data.observacoes || ""
 
-            const saveButton = document.querySelector('.button-container button:first-child');
-            saveButton.textContent = "Salvar Alterações";
-            saveButton.onclick = () => updateDataToFirestore(id);
+            const saveButton = document.querySelector('.button-container button:first-child')
+            saveButton.textContent = "Salvar Alterações"
+            saveButton.onclick = () => updateDataToFirestore(id)
         } else {
-            console.error(`Orçamento com ID ${id} não encontrado.`);
-            alert("Orçamento não encontrado.");
+            console.error(`Orçamento com ID ${id} não encontrado.`)
+            alert("Orçamento não encontrado.")
         }
     } catch (error) {
-        console.error("Erro ao carregar orçamento para edição:", error);
-        alert("Erro ao carregar orçamento para edição.");
+        console.error("Erro ao carregar orçamento para edição:", error)
+        alert("Erro ao carregar orçamento para edição.")
     }
 }
 
@@ -492,30 +487,30 @@ export async function updateClientToFirestore(id) {
         stateClient: document.getElementById('stateClient').value,
         phoneClient: document.getElementById('phoneClient').value,
         emailClient: document.getElementById('emailClient').value
-    };
+    }
 
     try {
-        await firebase.firestore().collection('clientes').doc(id).update(clientData);
-        alert("Cliente atualizado com sucesso!");
-        window.location.href = "pages/listclients.html";
+        await firebase.firestore().collection('clientes').doc(id).update(clientData)
+        alert("Cliente atualizado com sucesso!")
+        window.location.href = "pages/listclients.html"
     } catch (error) {
-        console.error("Erro ao atualizar cliente:", error);
-        alert("Erro ao atualizar cliente.");
+        console.error("Erro ao atualizar cliente:", error)
+        alert("Erro ao atualizar cliente.")
     }
 }
 
 export async function loadOrcamentos() {
-    const tbody = document.querySelector("#orcamentosTable tbody");
+    const tbody = document.querySelector("#orcamentosTable tbody")
     if (!tbody) {
-        console.warn('Elemento #orcamentosTable tbody não encontrado.');
-        return;
+        console.warn('Elemento #orcamentosTable tbody não encontrado.')
+        return
     }
 
     try {
-        const querySnapshot = await firebase.firestore().collection('orcamentos').get();
-        tbody.innerHTML = "";
+        const querySnapshot = await firebase.firestore().collection('orcamentos').get()
+        tbody.innerHTML = ""
         querySnapshot.forEach((doc) => {
-            const data = doc.data();
+            const data = doc.data()
             const row = `
                 <tr>
                     <td>${data.numericId || doc.id}</td>
@@ -528,24 +523,24 @@ export async function loadOrcamentos() {
                         <button class="delete-btn" onclick="App.deleteOrcamento('${doc.id}')"><i class="fas fa-trash"></i></button>
                     </td>
                 </tr>
-            `;
-            tbody.innerHTML += row;
-        });
+            `
+            tbody.innerHTML += row
+        })
     } catch (error) {
-        console.error("Erro ao carregar orçamentos:", error);
-        alert("Erro ao carregar orçamentos.");
+        console.error("Erro ao carregar orçamentos:", error)
+        alert("Erro ao carregar orçamentos.")
     }
 }
 
 export async function loadOrcamentoDetails() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const orcamentoId = urlParams.get('id');
-    const detalhesDiv = document.getElementById("detalhesOrcamento");
+    const urlParams = new URLSearchParams(window.location.search)
+    const orcamentoId = urlParams.get('id')
+    const detalhesDiv = document.getElementById("detalhesOrcamento")
 
     try {
-        const doc = await firebase.firestore().collection('orcamentos').doc(orcamentoId).get();
+        const doc = await firebase.firestore().collection('orcamentos').doc(orcamentoId).get()
         if (doc.exists) {
-            const data = doc.data();
+            const data = doc.data()
             detalhesDiv.innerHTML = `
                 <p><strong>ID:</strong> ${data.numericId || doc.id}</p>
                 <p><strong>Empresa:</strong> ${data.empresa.nomeEmpresa}</p>
@@ -560,12 +555,12 @@ export async function loadOrcamentoDetails() {
                     ${data.equipamentos.map(equipamento => `<li>${equipamento.nameEquipment} - ${equipamento.quantityEquipment} x R$ ${equipamento.unitPriceEquipment}</li>`).join("")}
                 </ul>
                 <p><strong>Observações:</strong> ${data.observacoes}</p>
-            `;
+            `
         } else {
-            detalhesDiv.innerHTML = "<p>Orçamento não encontrado.</p>";
+            detalhesDiv.innerHTML = "<p>Orçamento não encontrado.</p>"
         }
     } catch (error) {
-        console.error("Erro ao carregar detalhes do orçamento:", error);
-        detalhesDiv.innerHTML = "<p>Erro ao carregar detalhes.</p>";
+        console.error("Erro ao carregar detalhes do orçamento:", error)
+        detalhesDiv.innerHTML = "<p>Erro ao carregar detalhes.</p>"
     }
 }

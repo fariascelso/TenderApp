@@ -1,22 +1,21 @@
-// scripts/equipmentsAndServices.js
-import { applyInputMasks } from './utils/inputMasks.js';
+import { applyInputMasks } from './utils/inputMasks.js'
 
 export function fillEquipmentData() {
-    const equipmentsContainer = document.getElementById('equipments-container');
+    const equipmentsContainer = document.getElementById('equipments-container')
     if (!equipmentsContainer) {
-        console.warn('Elemento "equipments-container" não encontrado. Função ignorada.');
-        return;
+        console.warn('Elemento "equipments-container" não encontrado. Função ignorada.')
+        return
     }
 
-    const equipmentSelect = document.getElementById('equipmentSelect');
-    const selectedData = equipmentSelect.value;
+    const equipmentSelect = document.getElementById('equipmentSelect')
+    const selectedData = equipmentSelect.value
 
-    if (!selectedData) return;
+    if (!selectedData) return
 
-    const data = JSON.parse(selectedData);
+    const data = JSON.parse(selectedData)
 
-    const newEquipmentItem = document.createElement('div');
-    newEquipmentItem.classList.add('equipment-item');
+    const newEquipmentItem = document.createElement('div')
+    newEquipmentItem.classList.add('equipment-item')
 
     newEquipmentItem.innerHTML = `
         <label for="codeEquipment">Código:</label>
@@ -33,24 +32,24 @@ export function fillEquipmentData() {
 
         <label for="subtotalEquipment">Subtotal:</label>
         <input type="text" class="subtotalEquipment" placeholder="Subtotal" readonly>
-    `;
+    `
 
-    equipmentsContainer.appendChild(newEquipmentItem);
-    applyInputMasks(newEquipmentItem);
+    equipmentsContainer.appendChild(newEquipmentItem)
+    applyInputMasks(newEquipmentItem)
 }
 
 export function fillServiceData() {
-    const serviceSelect = document.getElementById('serviceSelect');
-    const selectedData = serviceSelect.value;
+    const serviceSelect = document.getElementById('serviceSelect')
+    const selectedData = serviceSelect.value
 
-    if (!selectedData) return;
+    if (!selectedData) return
 
-    const data = JSON.parse(selectedData);
+    const data = JSON.parse(selectedData)
 
-    const servicesContainer = document.getElementById('services-container');
+    const servicesContainer = document.getElementById('services-container')
 
-    const newServiceItem = document.createElement('div');
-    newServiceItem.classList.add('service-item');
+    const newServiceItem = document.createElement('div')
+    newServiceItem.classList.add('service-item')
 
     newServiceItem.innerHTML = `
         <label for="descriptionService">Descrição do Serviço:</label>
@@ -58,8 +57,8 @@ export function fillServiceData() {
 
         <label for="amountService">Valor do Serviço:</label>
         <input type="text" class="amountService" value="${data.amountService || ''}" placeholder="Valor do serviço">
-    `;
+    `
 
-    servicesContainer.appendChild(newServiceItem);
-    applyInputMasks(newServiceItem);
+    servicesContainer.appendChild(newServiceItem)
+    applyInputMasks(newServiceItem)
 }

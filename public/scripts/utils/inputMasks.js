@@ -1,30 +1,28 @@
-// scripts/utils/inputMasks.js
 export function applyInputMasks(container) {
     if (typeof IMask === 'undefined') {
-        console.error('IMask não está carregado. Verifique se o script foi incluído corretamente.');
-        return;
+        console.error('IMask não está carregado. Verifique se o script foi incluído corretamente.')
+        return
     }
 
-    const inputs = container.querySelectorAll('input');
+    const inputs = container.querySelectorAll('input')
     inputs.forEach(input => {
-        if (input.classList.contains('unitPriceEquipment')) { // Aplica apenas ao preço unitário
+        if (input.classList.contains('unitPriceEquipment')) {
             input.addEventListener('input', () => {
-                let value = input.value.replace(/\D/g, ''); // Remove tudo que não é dígito
-                value = (value / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                input.value = value;
-            });
+                let value = input.value.replace(/\D/g, '')
+                value = (value / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                input.value = value
+            })
         }
-        // Outras máscaras, se necessário (ex.: CPF, telefone, etc.)
-    });
+    })
 
-    const phoneInputs = container.querySelectorAll('#phone, #phoneClient');
+    const phoneInputs = container.querySelectorAll('#phone, #phoneClient')
     phoneInputs.forEach(input => {
         IMask(input, {
             mask: '(00) 00000-0000'
-        });
-    });
+        })
+    })
 
-    const moneyInputs = container.querySelectorAll('.amountService, .unitPriceEquipment');
+    const moneyInputs = container.querySelectorAll('.amountService, .unitPriceEquipment')
     moneyInputs.forEach(input => {
         IMask(input, {
             mask: 'R$ num',
@@ -40,20 +38,20 @@ export function applyInputMasks(container) {
                     normalizeZeros: true
                 }
             }
-        });
-    });
+        })
+    })
 
-    const cnpjInputs = container.querySelectorAll('#cpfCnpj, #cpfCNPJClient');
+    const cnpjInputs = container.querySelectorAll('#cpfCnpj, #cpfCNPJClient')
     cnpjInputs.forEach(input => {
         IMask(input, {
             mask: '00.000.000/0000-00'
-        });
-    });
+        })
+    })
 
-    const cepInputs = container.querySelectorAll('#zipcode, #zipcodeClient');
+    const cepInputs = container.querySelectorAll('#zipcode, #zipcodeClient')
     cepInputs.forEach(input => {
         IMask(input, {
             mask: '00000-000'
-        });
-    });
+        })
+    })
 }

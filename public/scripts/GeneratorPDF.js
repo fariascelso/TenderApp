@@ -16,7 +16,7 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
     let lastTable = 5
 
     const margin = { top: 2, bottom: 2, left: 5, right: 5 }
-    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageWidth = doc.internal.pageSize.getWidth()
 
     const issuingCompany = {
         nameBusiness: document.getElementById("nameBusiness").value,
@@ -47,39 +47,37 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
     }
 
     const observations = document.getElementById('observations').value
-    const includeEquipments = document.getElementById('includeEquipments').checked;
+    const includeEquipments = document.getElementById('includeEquipments').checked
 
     if (uploadedLogo) {
-        const logoWidth = 25; // Largura da logo (fixa em 50mm)
-        const logoHeight = 25; // Altura da logo (fixa em 50mm)
-        const logoX = margin.left; // Alinha com a margem esquerda
-        const logoY = 5; // Posição Y inicial (5mm do topo)
+        const logoWidth = 25
+        const logoHeight = 25
+        const logoX = margin.left
+        const logoY = 5
 
-        doc.addImage(uploadedLogo, 'PNG', logoX, logoY, logoWidth, logoHeight);
+        doc.addImage(uploadedLogo, 'PNG', logoX, logoY, logoWidth, logoHeight)
 
-        // Adicionar o número do orçamento no canto direito
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'bold');
-        const orderNumberText = `Nº da Proposta: ${orderNumber}`;
-        const orderNumberWidth = doc.getTextWidth(orderNumberText); // Largura do texto
-        const orderNumberX = pageWidth - margin.right - orderNumberWidth; // Alinha à direita com margem
-        doc.text(orderNumberText, orderNumberX, logoY + 10); // Posiciona 10mm abaixo do topo
+        doc.setFontSize(12)
+        doc.setFont('helvetica', 'bold')
+        const orderNumberText = `Nº da Proposta: ${orderNumber}`
+        const orderNumberWidth = doc.getTextWidth(orderNumberText)
+        const orderNumberX = pageWidth - margin.right - orderNumberWidth
+        doc.text(orderNumberText, orderNumberX, logoY + 10)
             
-        // Adicionar a data de criação abaixo do número do orçamento
-        doc.setFontSize(8); // Fonte menor para a data
-        doc.setFont('helvetica', 'normal'); // Sem negrito
-        const currentDate = new Date(); // Data atual (11/03/2025)
-        const dateText = `Data: ${formatDate(currentDate, '/')}`; // Ex.: "Data: 11/03/2025"
-        const dateWidth = doc.getTextWidth(dateText);
-        doc.text(dateText, orderNumberX, logoY + 15); // Posiciona 5mm abaixo do número
+        doc.setFontSize(8)
+        doc.setFont('helvetica', 'normal')
+        const currentDate = new Date()
+        const dateText = `Data: ${formatDate(currentDate, '/')}`
+        const dateWidth = doc.getTextWidth(dateText)
+        doc.text(dateText, orderNumberX, logoY + 15)
 
-        doc.setFontSize(10); // Restaura o tamanho da fonte para o resto do documento
-        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10)
+        doc.setFont('helvetica', 'normal')
 
-        lastTable = logoY + logoHeight + 5; // Ajusta a posição com base na altura da logo + margem
+        lastTable = logoY + logoHeight + 5
     } else {
-        console.warn("Nenhuma imagem enviada. Usando layout sem logo.");
-        lastTable = 5; // Mantém a posição inicial se não houver logo
+        console.warn("Nenhuma imagem enviada. Usando layout sem logo.")
+        lastTable = 5
     }
 
     doc.setFontSize(10)
@@ -147,17 +145,16 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
         margin: margin,
     })
 
-    const services = [];
+    const services = []
 
-    const descriptionServices = document.querySelectorAll('.descriptionService');
-    const amountServices = document.querySelectorAll('.amountService');
+    const descriptionServices = document.querySelectorAll('.descriptionService')
+    const amountServices = document.querySelectorAll('.amountService')
 
-    // Coletar todos os serviços
     for (let i = 0; i < descriptionServices.length; i++) {
         services.push({
             descriptionService: descriptionServices[i].value,
             amountService: amountServices[i].value
-        });
+        })
     }
 
     doc.autoTable({
@@ -173,9 +170,9 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
             2: { cellWidth: 30, halign: 'center' },
         },
         margin: { left: 5, right: 5 }
-    });
+    })
 
-    let totalEquipments = 0; 
+    let totalEquipments = 0
 
     if (includeEquipments) {
 
@@ -188,12 +185,12 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
             margin: margin,
         })
 
-        const equipments = [];
-        const codes = document.querySelectorAll('.codeEquipment');
-        const names = document.querySelectorAll('.nameEquipment');
-        const quantities = document.querySelectorAll('.quantityEquipment');
-        const unitPrices = document.querySelectorAll('.unitPriceEquipment');
-        const subtotals = document.querySelectorAll('.subtotalEquipment');
+        const equipments = []
+        const codes = document.querySelectorAll('.codeEquipment')
+        const names = document.querySelectorAll('.nameEquipment')
+        const quantities = document.querySelectorAll('.quantityEquipment')
+        const unitPrices = document.querySelectorAll('.unitPriceEquipment')
+        const subtotals = document.querySelectorAll('.subtotalEquipment')
 
         for (let i = 0; i < codes.length; i++) {
             equipments.push({
@@ -202,10 +199,9 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
                 quantity: quantities[i].value,
                 unitPrice: unitPrices[i].value,
                 subtotal: subtotals[i].value
-            });
+            })
         }
 
-        // Adicione a tabela de equipamentos ao PDF
         doc.autoTable({
             startY: lastTable = updateLastTablePosition(),
             head: [['Código', 'Nome', 'Quantidade', 'Preço unitário', 'Subtotal']],
@@ -225,16 +221,14 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
                 4: { cellWidth: 40, halign: 'center' },
             },
             margin: { left: 5, right: 5 }
-        });
+        })
 
-        // Total de equipamentos
         totalEquipments = equipments.reduce((sum, equipment) => {
-            const quantity = parseFloat(equipment.quantity) || 0;
-            const unitPrice = parseCurrency(equipment.unitPrice); // Converte o preço unitário
-            const subtotal = quantity * unitPrice; // Calcula o subtotal
-            return sum + subtotal;
-        }, 0);
-
+            const quantity = parseFloat(equipment.quantity) || 0
+            const unitPrice = parseCurrency(equipment.unitPrice)
+            const subtotal = quantity * unitPrice
+            return sum + subtotal
+        }, 0)
     }
 
     doc.autoTable({
@@ -246,32 +240,29 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
         margin: margin,
     })
 
-    // Função para tratar e converter valores monetários
     function parseCurrency(value) {
-        if (!value) return 0;
+        if (!value) return 0
         return parseFloat(
-            value.replace('R$', '') // Remove o símbolo de moeda
-                .replace(/\./g, '') // Remove separadores de milhar
-                .replace(',', '.') // Substitui vírgula por ponto para formato numérico
-                .trim() // Remove espaços extras
-        ) || 0; // Retorna 0 se o resultado for NaN
+            value.replace('R$', '')
+                .replace(/\./g, '')
+                .replace(',', '.')
+                .trim()
+        ) || 0
     }
 
-    // Total de serviços
     const totalServices = services.reduce((sum, service) => {
-        const value = parseCurrency(service.amountService);
-        return sum + value;
-    }, 0);
+        const value = parseCurrency(service.amountService)
+        return sum + value
+    }, 0)
 
-    let totalBudget;
+    let totalBudget
 
     if (includeEquipments) {
-        totalBudget = totalServices + totalEquipments;
+        totalBudget = totalServices + totalEquipments
     } else {
         totalBudget = totalServices
     }
 
-    // Adiciona a linha do valor total à tabela
     doc.autoTable({
         startY: lastTable = updateLastTablePosition(),
         columnStyles: ColumnStyles.Left,
@@ -281,7 +272,7 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
             ]
         ],
         margin: { left: 5, right: 5 },
-    });
+    })
 
     doc.autoTable({
         startY: lastTable = updateLastTablePosition(),
@@ -292,15 +283,13 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
         margin: margin,
     })
 
-
     function getValidityDate() {
-        const validityDate = new Date();
-        validityDate.setDate(validityDate.getDate() + 15);
-        return formatDate(validityDate, '/');
+        const validityDate = new Date()
+        validityDate.setDate(validityDate.getDate() + 15)
+        return formatDate(validityDate, '/')
     }
 
-    const validityDate = getValidityDate();
-
+    const validityDate = getValidityDate()
 
     doc.autoTable({
         startY: lastTable = updateLastTablePosition() - 1,
@@ -335,24 +324,23 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
     })
 
     function formatCurrency(value) {
-        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
     }
 
     function formatDate(date, separator = '-', forFileName = false) {
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
+        const day = String(date.getDate()).padStart(2, '0')
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const year = date.getFullYear()
 
-        // Força o uso de '-' para nomes de arquivos se forFileName for true
         if (forFileName) {
-            return `${day}-${month}-${year}`;
+            return `${day}-${month}-${year}`
         }
 
-        return `${day}${separator}${month}${separator}${year}`;
+        return `${day}${separator}${month}${separator}${year}`
     }
 
     const now = new Date()
-    const formattedDate = formatDate(now, '-', true);
+    const formattedDate = formatDate(now, '-', true)
 
     doc.save(`Orçamento_${nameOrder}_${formattedDate}.pdf`)
 }

@@ -43,11 +43,11 @@ async function loadOrcamentos() {
 }
 
 function viewOrcamento(id) {
-    window.location.href = `../index.html?id=${id}&view=true`
+    window.location.href = `details.html?id=${id}&mode=view`
 }
 
 function editOrcamento(id) {
-    window.location.href = `../index.html?id=${id}`
+    window.location.href = `details.html?id=${id}&mode=edit`
 }
 
 async function deleteOrcamento(id) {

@@ -43,7 +43,7 @@ const App = {
 
 window.App = App
 
-function init() {
+async function init() {
     loadClients()
     loadCompanies()
     loadEquipments()
@@ -66,7 +66,7 @@ function init() {
            if (saveButton) saveButton.style.display = 'none'
        }
    } else if (id && type === 'orcamento') {
-       loadOrcamentoForEdit(id)
+       await loadOrcamentoForEdit(id)
        if (viewMode) {
            const inputs = document.querySelectorAll('input, textarea, select')
            inputs.forEach(input => {

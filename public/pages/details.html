@@ -5,17 +5,175 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes do Orçamento</title>
     <link rel="stylesheet" href="../style/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script defer src="https://unpkg.com/imask@7.1.3/dist/imask.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Detalhes do Orçamento</h1>
-        <div id="detalhesOrcamento">
-            <!-- Detalhes serão carregados aqui -->
+        <h1>
+            <i class="fas fa-bars" id="menu-hamburger"></i>
+            Detalhes do Orçamento
+        </h1>
+
+        <div id="menu-links" class="hidden">
+            <a href="../index.html">Criar Orçamento</a>
+            <a href="listorders.html">Listar Orçamentos</a>
+            <a href="listclients.html">Listar Clientes</a>
         </div>
-        <button onclick="window.history.back()">Voltar</button>
+
+        <!-- Dados da Empresa -->
+        <button class="accordion" data-group="company-data-panel">Dados da Empresa</button>
+        <div class="panel" id="company-data-panel">
+            <form id="companyForm">
+                <label for="nameBusiness">Nome da Empresa:</label>
+                <input type="text" id="nameBusiness" value="">
+                <label for="fantasyName">Nome Fantasia:</label>
+                <input type="text" id="fantasyName" value="">
+                <label for="cpfCnpj">CNPJ:</label>
+                <input type="text" id="cpfCnpj" value="">
+                <label for="address">Endereço:</label>
+                <input type="text" id="address" value="">
+                <label for="numberAddress">Número:</label>
+                <input type="text" id="numberAddress" value="">
+                <label for="neighborhood">Bairro:</label>
+                <input type="text" id="neighborhood" value="">
+                <label for="state">Estado:</label>
+                <input type="text" id="state" value="">
+                <label for="city">Cidade:</label>
+                <input type="text" id="city" value="">
+                <label for="zipcode">CEP:</label>
+                <input type="text" id="zipcode" value="">
+                <label for="phone">Telefone para contato:</label>
+                <input type="text" id="phone" value="">
+                <label for="email">Email:</label>
+                <input type="text" id="email" value="">
+            </form>
+        </div>
+
+        <!-- Dados do Cliente -->
+        <button class="accordion" data-group="client-data-panel">Dados do Cliente</button>
+        <div class="panel" id="client-data-panel">
+            <form id="clientForm">
+                <label for="nameClient">Nome do Cliente:</label>
+                <input type="text" id="nameClient" value="">
+                <label for="cpfCNPJClient">CNPJ do cliente:</label>
+                <input type="text" id="cpfCNPJClient" value="">
+                <label for="fantasyNameClient">Nome fantasia do cliente:</label>
+                <input type="text" id="fantasyNameClient" value="">
+                <label for="streetClient">Rua:</label>
+                <input type="text" id="streetClient" value="">
+                <label for="numberAddressClient">Número:</label>
+                <input type="text" id="numberAddressClient" value="">
+                <label for="neighborhoodClient">Bairro:</label>
+                <input type="text" id="neighborhoodClient" value="">
+                <label for="cityClient">Cidade:</label>
+                <input type="text" id="cityClient" value="">
+                <label for="zipcodeClient">CEP:</label>
+                <input type="text" id="zipcodeClient" value="">
+                <label for="stateClient">Estado:</label>
+                <input type="text" id="stateClient" value="">
+                <label for="phoneClient">Telefone para contato:</label>
+                <input type="text" id="phoneClient" value="">
+                <label for="emailClient">Email:</label>
+                <input type="text" id="emailClient" value="">
+            </form>
+        </div>
+
+        <!-- Serviços -->
+        <button class="accordion" data-group="services-container">Serviços que serão realizados</button>
+        <div class="panel" id="services-container">
+            <!-- Serviços serão preenchidos dinamicamente -->
+        </div>
+
+        <!-- Equipamentos -->
+        <div class="checkbox-container">
+            <input type="checkbox" id="includeEquipments" />
+            <label for="includeEquipments">Incluir equipamentos no orçamento?</label>
+        </div>
+        <button id="materials-btn" style="display: none;" class="accordion" data-group="equipments-panel">Materiais necessários</button>
+        <div class="panel" id="equipments-panel">
+            <div id="equipments-container">
+                <!-- Equipamentos serão preenchidos dinamicamente -->
+            </div>
+        </div>
+
+        <!-- Observações -->
+        <button class="accordion" data-group="observations-data-panel">Observações</button>
+        <div class="panel" id="observations-data-panel">
+            <label for="observations">Informações para serem destacadas no orçamento:</label>
+            <textarea id="observations" placeholder="Insira as informações aqui..."></textarea>
+        </div>
+
+        <div class="button-container">
+            <button id="save-budget-btn" style="display: none;" onclick="saveOrcamento()">
+                Salvar Alterações
+                <span class="spinner" style="display: none;"></span>
+            </button>
+            <button onclick="window.location.href='listorders.html'">Voltar</button>
+        </div>
     </div>
-    <script type="module" src="../scripts/main.js"></script>
+
+    <script type="module" src="../scripts/firebase/firebaseConfig.js"></script>
+    <script type="module" src="../scripts/firebase/firestoreOperations.js"></script>
+    <script type="module" src="../scripts/utils/inputMasks.js"></script>
+    <script type="module" src="../scripts/utils/helpers.js"></script>
+    <script type="module" src="../scripts/EventHandler.js"></script>
+    <script type="module">
+        import { loadOrcamentoForEdit, updateDataToFirestore } from '../scripts/firebase/firestoreOperations.js'
+        import { applyInputMasks } from '../scripts/utils/inputMasks.js'
+        import { toggleButtonLoading } from '../scripts/utils/helpers.js'
+    
+        async function init() {
+            const urlParams = new URLSearchParams(window.location.search)
+            const id = urlParams.get('id')
+            const mode = urlParams.get('mode')
+    
+            if (id) {
+                await loadOrcamentoForEdit(id)
+    
+                const inputs = document.querySelectorAll('input, textarea, select')
+                const saveButton = document.getElementById('save-budget-btn')
+    
+                if (mode === 'view') {
+                    inputs.forEach(input => input.disabled = true)
+                    saveButton.style.display = 'none'
+                } else if (mode === 'edit') {
+                    saveButton.style.display = 'block'
+                    saveButton.onclick = async () => {
+                        toggleButtonLoading('save-budget-btn', true)
+                        await updateDataToFirestore(id)
+                        toggleButtonLoading('save-budget-btn', false)
+                    }
+                }
+    
+                // Configurar checkbox de equipamentos
+                const includeEquipmentsCheckbox = document.getElementById('includeEquipments')
+                const materialsBtn = document.getElementById('materials-btn')
+                const equipmentsPanel = document.getElementById('equipments-panel')
+                includeEquipmentsCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        materialsBtn.style.display = 'block'
+                        if (!materialsBtn.classList.contains('active')) {
+                            materialsBtn.click()
+                        }
+                    } else {
+                        materialsBtn.style.display = 'none'
+                        materialsBtn.classList.remove('active')
+                        equipmentsPanel.style.display = 'none'
+                    }
+                })
+
+                window.saveOrcamento = async function() {
+                toggleButtonLoading('save-budget-btn', true)
+                await updateDataToFirestore(id)
+                toggleButtonLoading('save-budget-btn', false)
+                }
+            }
+        }
+    
+        window.onload = init
+    </script>
 </body>
 </html>

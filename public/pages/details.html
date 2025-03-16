@@ -135,17 +135,13 @@
     
                 const inputs = document.querySelectorAll('input, textarea, select')
                 const saveButton = document.getElementById('save-budget-btn')
+                console.log('saveButton após loadOrcamentoForEdit:', saveButton) // Log 1
     
                 if (mode === 'view') {
                     inputs.forEach(input => input.disabled = true)
                     saveButton.style.display = 'none'
                 } else if (mode === 'edit') {
                     saveButton.style.display = 'block'
-                    saveButton.onclick = async () => {
-                        toggleButtonLoading('save-budget-btn', true)
-                        await updateDataToFirestore(id)
-                        toggleButtonLoading('save-budget-btn', false)
-                    }
                 }
     
                 // Configurar checkbox de equipamentos
@@ -164,11 +160,18 @@
                         equipmentsPanel.style.display = 'none'
                     }
                 })
-
+    
+                // Função global para salvar
                 window.saveOrcamento = async function() {
-                toggleButtonLoading('save-budget-btn', true)
-                await updateDataToFirestore(id)
-                toggleButtonLoading('save-budget-btn', false)
+                    const button = document.getElementById('save-budget-btn')
+                    console.log('Botão antes de toggleButtonLoading:', button) // Log 2
+                    if (!button) {
+                        console.error('Botão save-budget-btn não encontrado no momento do clique!')
+                        return
+                    }
+                    toggleButtonLoading('save-budget-btn', true)
+                    await updateDataToFirestore(id)
+                    toggleButtonLoading('save-budget-btn', false)
                 }
             }
         }

@@ -180,7 +180,7 @@ export async function updateDataToFirestore(id) {
     try {
         await firebase.firestore().collection('orcamentos').doc(id).update(orcamento)
         alert(`Orçamento atualizado com sucesso! ID: ${id}`)
-        window.location.href = "pages/listorders.html"
+        window.location.href = "listorders.html"
     } catch (e) {
         console.error("Erro ao atualizar documento: ", e)
         alert("Erro ao atualizar orçamento.")
@@ -492,7 +492,7 @@ export async function updateClientToFirestore(id) {
     try {
         await firebase.firestore().collection('clientes').doc(id).update(clientData)
         alert("Cliente atualizado com sucesso!")
-        window.location.href = "pages/listclients.html"
+        window.location.href = "listclients.html"
     } catch (error) {
         console.error("Erro ao atualizar cliente:", error)
         alert("Erro ao atualizar cliente.")

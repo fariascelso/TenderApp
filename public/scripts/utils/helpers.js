@@ -6,7 +6,15 @@ export function parseCurrency(value) {
 
 export function toggleButtonLoading(buttonId, isLoading) {
     const button = document.getElementById(buttonId)
+    if (!button) {
+        console.error(`Botão com ID '${buttonId}' não encontrado.`)
+        return
+    }
     const spinner = button.querySelector('.spinner')
+    if (!spinner) {
+        console.error(`Spinner não encontrado dentro do botão com ID '${buttonId}'.`)
+        return
+    }
 
     if (isLoading) {
         button.disabled = true

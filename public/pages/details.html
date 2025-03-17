@@ -107,7 +107,7 @@
         </div>
 
         <div class="button-container">
-            <button id="save-budget-btn" style="display: none;" onclick="saveOrcamento()">
+            <button id="save-budget-btn" style="display: none;" onclick="toggleButtonLoading('save-budget-btn', true); App.updateDataToFirestore(window.location.search.split('id=')[1].split('&')[0]); toggleButtonLoading('save-budget-btn', false);">
                 Salvar Alterações
                 <span class="spinner" style="display: none;"></span>
             </button>
@@ -121,7 +121,7 @@
     <script type="module" src="../scripts/utils/helpers.js"></script>
     <script type="module" src="../scripts/EventHandler.js"></script>
     <script type="module">
-        import { loadOrcamentoForEdit, updateDataToFirestore } from '../scripts/firebase/firestoreOperations.js'
+        import { loadOrcamentoForEdit } from '../scripts/firebase/firestoreOperations.js'
         import { applyInputMasks } from '../scripts/utils/inputMasks.js'
         import { toggleButtonLoading } from '../scripts/utils/helpers.js'
     
@@ -135,7 +135,7 @@
     
                 const inputs = document.querySelectorAll('input, textarea, select')
                 const saveButton = document.getElementById('save-budget-btn')
-                console.log('saveButton após loadOrcamentoForEdit:', saveButton) // Log 1
+                console.log('saveButton após loadOrcamentoForEdit:', saveButton)
     
                 if (mode === 'view') {
                     inputs.forEach(input => input.disabled = true)
@@ -160,19 +160,6 @@
                         equipmentsPanel.style.display = 'none'
                     }
                 })
-    
-                // Função global para salvar
-                window.saveOrcamento = async function() {
-                    const button = document.getElementById('save-budget-btn')
-                    console.log('Botão antes de toggleButtonLoading:', button) // Log 2
-                    if (!button) {
-                        console.error('Botão save-budget-btn não encontrado no momento do clique!')
-                        return
-                    }
-                    toggleButtonLoading('save-budget-btn', true)
-                    await updateDataToFirestore(id)
-                    toggleButtonLoading('save-budget-btn', false)
-                }
             }
         }
     

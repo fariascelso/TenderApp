@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            window.location.href = 'details.html'
+            window.location.href = 'index.html'
         } else {
             console.log('Usuário não autenticado, mostrando página de login')
         }
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return
             }
 
-            window.location.href = 'details.html'
+            window.location.href = '../index.html'
         } catch (error) {
             loginButton.disabled = false
             loginButton.innerHTML = 'Entrar'

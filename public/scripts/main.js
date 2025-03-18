@@ -1,4 +1,3 @@
-import { db } from './firebase/firebaseConfig.js'
 import { 
     loadClients, 
     loadCompanies, 
@@ -11,9 +10,9 @@ import {
     loadClientForEdit, 
     updateClientToFirestore 
 } from './firebase/firestoreOperations.js'
-import { injectModalContent } from './modals/modalContentInjector.js'
+//import { injectModalContent } from './modals/modalContentInjector.js'
 import { applyInputMasks } from './utils/inputMasks.js'
-import { parseCurrency, toggleButtonLoading } from './utils/helpers.js'
+//import { parseCurrency, toggleButtonLoading } from './utils/helpers.js'
 import { editOrcamento, viewOrcamento, deleteClient, editClient } from './tables/tableHandlers.js'
 import { generatePDFWithLogo, handleLogoUpload } from './pdf.js'
 import { fillEquipmentData, fillServiceData } from './equipmentsAndServices.js'

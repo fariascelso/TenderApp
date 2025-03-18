@@ -1,4 +1,3 @@
-import { db } from './firebaseConfig.js'
 import { toggleButtonLoading } from '../utils/helpers.js'
 import { applyInputMasks } from '../utils/inputMasks.js'
 
@@ -227,7 +226,7 @@ export async function loadCompanies() {
         return
     }
     try {
-        const querySnapshot = await firebase.firestore().collection('empresasEmitenteOrcamento').get()
+        const querySnapshot = await firebase.firestore().collection('empresas').get()
         companySelect.innerHTML = '<option value="">Selecione uma empresa</option>'
         querySnapshot.forEach((doc) => {
             const data = doc.data()

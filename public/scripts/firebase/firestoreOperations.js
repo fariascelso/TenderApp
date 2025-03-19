@@ -1,17 +1,29 @@
+import { db } from './firebaseConfig.js'
+import { 
+    collection, 
+    getDocs, 
+    doc, 
+    setDoc, 
+    updateDoc, 
+    deleteDoc, 
+    runTransaction, 
+    increment, 
+    getDoc 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
 import { toggleButtonLoading } from '../utils/helpers.js'
 import { applyInputMasks } from '../utils/inputMasks.js'
 
 export async function generateNumericId() {
-    const counterRef = firebase.firestore().collection('counters').doc('orcamentoCounter')
+    const counterRef = doc(db, 'counters', 'orcamentoCounter')
     let numericId
 
-    await firebase.firestore().runTransaction(async (transaction) => {
-        const doc = await transaction.get(counterRef)
-        if (!doc.exists) {
+    await runTransaction(db, async (transaction) => {
+        const counterDoc = await transaction.get(counterRef)
+        if (!counterDoc.exists()) {
             transaction.set(counterRef, { count: 1 })
             numericId = 1
         } else {
-            const currentCount = doc.data().count
+            const currentCount = counterDoc.data().count
             numericId = currentCount + 1
             transaction.update(counterRef, { count: numericId })
         }
@@ -72,7 +84,6 @@ export async function saveDataToFirestore() {
             unitPrice = parseFloat(unitPrice) || 0
             let subtotal = subtotals[i].value.replace(/[^\d,]/g, '').replace(',', '.')
             subtotal = parseFloat(subtotal) || 0
-
             equipmentData.push({
                 codeEquipment: codes[i].value,
                 nameEquipment: names[i].value,
@@ -99,7 +110,7 @@ export async function saveDataToFirestore() {
             numericId: numericId
         }
 
-        await firebase.firestore().collection('orcamentos').doc(numericId.toString()).set(orcamento)
+        await setDoc(doc(db, 'orcamentos', numericId.toString()), orcamento)
 
         alert(`Orçamento salvo com sucesso! ID do orçamento: ${numericId}`)
     } catch (e) {
@@ -177,7 +188,7 @@ export async function updateDataToFirestore(id) {
     }
 
     try {
-        await firebase.firestore().collection('orcamentos').doc(id).update(orcamento)
+        await updateDoc(doc(db, 'orcamentos', id), orcamento)
         alert(`Orçamento atualizado com sucesso! ID: ${id}`)
         window.location.href = "listorders.html"
     } catch (e) {
@@ -189,7 +200,7 @@ export async function updateDataToFirestore(id) {
 export async function deleteOrcamento(id) {
     if (confirm("Tem certeza que deseja excluir este orçamento?")) {
         try {
-            await firebase.firestore().collection('orcamentos').doc(id).delete()
+            await deleteDoc(doc(db, 'orcamentos', id))
             alert("Orçamento excluído com sucesso!")
         } catch (error) {
             console.error("Erro ao excluir orçamento:", error)
@@ -199,86 +210,62 @@ export async function deleteOrcamento(id) {
 }
 
 export async function loadClients() {
-    const clientSelect = document.getElementById('clientSelect')
-    if (!clientSelect) {
-        console.warn('Elemento clientSelect não encontrado.')
-        return
-    }
     try {
-        const querySnapshot = await firebase.firestore().collection('clientes').get()
-        clientSelect.innerHTML = '<option value="">Selecione um cliente</option>'
+        const querySnapshot = await getDocs(collection(db, "clientes"))
+        const clients = []
         querySnapshot.forEach((doc) => {
-            const data = doc.data()
-            const option = document.createElement('option')
-            option.value = JSON.stringify(data)
-            option.textContent = data.nameClient || 'Cliente sem nome'
-            clientSelect.appendChild(option)
+            clients.push({ id: doc.id, ...doc.data() })
         })
+        console.log("Clientes carregados:", clients)
+        return clients
     } catch (error) {
-        console.error('Erro ao carregar clientes:', error)
+        console.error("Erro ao carregar clientes:", error)
+        throw error
     }
 }
 
 export async function loadCompanies() {
-    const companySelect = document.getElementById('companySelect')
-    if (!companySelect) {
-        console.warn('Elemento companySelect não encontrado.')
-        return
-    }
     try {
-        const querySnapshot = await firebase.firestore().collection('empresas').get()
-        companySelect.innerHTML = '<option value="">Selecione uma empresa</option>'
+        const querySnapshot = await getDocs(collection(db, "empresas"))
+        const companies = []
         querySnapshot.forEach((doc) => {
-            const data = doc.data()
-            const option = document.createElement('option')
-            option.value = JSON.stringify(data)
-            option.textContent = data.nomeEmpresa || 'Empresa sem nome'
-            companySelect.appendChild(option)
+            companies.push({ id: doc.id, ...doc.data() })
         })
+        console.log("Empresas carregadas:", companies)
+        return companies
     } catch (error) {
-        console.error('Erro ao carregar empresas:', error)
+        console.error("Erro ao carregar empresas:", error)
+        throw error
     }
 }
 
 export async function loadEquipments() {
-    const equipmentSelect = document.getElementById('equipmentSelect')
-    if (!equipmentSelect) {
-        console.warn('Elemento equipmentSelect não encontrado.')
-        return
-    }
     try {
-        const querySnapshot = await firebase.firestore().collection('equipamentos').get()
-        equipmentSelect.innerHTML = '<option value="">Selecione um equipamento</option>'
+        const querySnapshot = await getDocs(collection(db, "equipamentos"))
+        const equipments = []
         querySnapshot.forEach((doc) => {
-            const data = doc.data()
-            const option = document.createElement('option')
-            option.value = JSON.stringify(data)
-            option.textContent = data.nameEquipment || 'Equipamento sem nome'
-            equipmentSelect.appendChild(option)
+            equipments.push({ id: doc.id, ...doc.data() })
         })
+        console.log("Equipamentos carregados:", equipments)
+        return equipments
     } catch (error) {
-        console.error('Erro ao carregar equipamentos:', error)
+        console.error("Erro ao carregar equipamentos:", error)
+        throw error
     }
 }
 
 export async function loadServices() {
-    const serviceSelect = document.getElementById('serviceSelect')
-    if (!serviceSelect) {
-        console.warn('Elemento serviceSelect não encontrado.')
-        return
-    }
     try {
-        const querySnapshot = await firebase.firestore().collection('servicos').get()
-        serviceSelect.innerHTML = '<option value="">Selecione um serviço</option>'
+        const querySnapshot = await getDocs(collection(db, "servicos"))
+        const services = []
         querySnapshot.forEach((doc) => {
-            const data = doc.data()
-            const option = document.createElement('option')
-            option.value = JSON.stringify(data)
-            option.textContent = data.descriptionService || 'Serviço sem descrição'
-            serviceSelect.appendChild(option)
+            services.push({ id: doc.id, ...doc.data() })
         })
+        console.log("Serviços carregados:", services)
+        return services
     } catch (error) {
-        console.error('Erro ao carregar serviços:', error)
+        console.error("Erro ao carregar serviços:", error)
+        throw error
     }
 }
 
@@ -296,7 +283,7 @@ export async function saveClientToFirestore() {
         phoneClient: document.querySelector('#clientModalContent #phoneClient').value,
         emailClient: document.querySelector('#clientModalContent #emailClient').value
     }
-    await firebase.firestore().collection('clientes').add(clientData)
+    await setDoc(doc(collection(db, 'clientes')), clientData)
 }
 
 export async function saveCompanyToFirestore() {
@@ -313,7 +300,7 @@ export async function saveCompanyToFirestore() {
         telefone: document.querySelector('#companyModalContent #phone').value,
         email: document.querySelector('#companyModalContent #email').value
     }
-    await firebase.firestore().collection('empresas').add(companyData)
+    await setDoc(doc(collection(db, 'empresas')), companyData)
 }
 
 export async function saveEquipmentToFirestore() {
@@ -322,7 +309,7 @@ export async function saveEquipmentToFirestore() {
         nameEquipment: document.querySelector('#equipmentModalContent .nameEquipment').value,
         unitPriceEquipment: document.querySelector('#equipmentModalContent .unitPriceEquipment').value
     }
-    await firebase.firestore().collection('equipamentos').add(equipmentData)
+    await setDoc(doc(collection(db, 'equipamentos')), equipmentData)
 }
 
 export async function saveServiceToFirestore() {
@@ -330,7 +317,7 @@ export async function saveServiceToFirestore() {
         descriptionService: document.querySelector('#serviceModalContent .descriptionService').value,
         amountService: document.querySelector('#serviceModalContent .amountService').value
     }
-    await firebase.firestore().collection('servicos').add(serviceData)
+    await setDoc(doc(collection(db, 'servicos')), serviceData)
 }
 
 export async function saveModalData(targetId) {
@@ -358,9 +345,9 @@ export async function saveModalData(targetId) {
 
 export async function loadClientForEdit(id) {
     try {
-        const doc = await firebase.firestore().collection('clientes').doc(id).get()
-        if (doc.exists) {
-            const data = doc.data()
+        const clientDoc = await getDoc(doc(db, 'clientes', id))
+        if (clientDoc.exists()) {
+            const data = clientDoc.data()
 
             document.getElementById('nameClient').value = data.nameClient || ""
             document.getElementById('cpfCNPJClient').value = data.cpfCNPJClient || ""
@@ -389,9 +376,9 @@ export async function loadClientForEdit(id) {
 
 export async function loadOrcamentoForEdit(id) {
     try {
-        const doc = await firebase.firestore().collection('orcamentos').doc(id).get()
-        if (doc.exists) {
-            const data = doc.data()
+        const orcamentoDoc = await getDoc(doc(db, 'orcamentos', id))
+        if (orcamentoDoc.exists()) {
+            const data = orcamentoDoc.data()
 
             document.getElementById('nameBusiness').value = data.empresa.nomeEmpresa || ""
             document.getElementById('fantasyName').value = data.empresa.fantasyName || ""
@@ -442,16 +429,30 @@ export async function loadOrcamentoForEdit(id) {
                     const newEquipmentItem = document.createElement('div')
                     newEquipmentItem.classList.add('equipment-item')
                     newEquipmentItem.innerHTML = `
-                        <label for="codeEquipment">Código:</label>
-                        <input type="text" class="codeEquipment" value="${equipamento.codeEquipment}">
-                        <label for="nameEquipment">Nome:</label>
-                        <input type="text" class="nameEquipment" value="${equipamento.nameEquipment}">
-                        <label for="quantityEquipment">Quantidade:</label>
-                        <input type="number" class="quantityEquipment" value="${equipamento.quantityEquipment}" min="1">
-                        <label for="unitPriceEquipment">Preço Unitário:</label>
-                        <input type="text" class="unitPriceEquipment" value="${equipamento.unitPriceEquipment}">
-                        <label for="subtotalEquipment">Subtotal:</label>
-                        <input type="text" class="subtotalEquipment" value="${equipamento.subtotalEquipment}" readonly>
+                        <div class="equipment-row">
+                            <div class="field-group code-name">
+                                <label>Código:</label>
+                                <input type="text" class="codeEquipment" value="${equipamento.codeEquipment}">
+                            </div>
+                            <div class="field-group code-name">
+                                <label>Nome:</label>
+                                <input type="text" class="nameEquipment" value="${equipamento.nameEquipment}">
+                            </div>
+                        </div>
+                        <div class="equipment-row">
+                            <div class="field-group quantity-price-subtotal">
+                                <label>Quantidade:</label>
+                                <input type="number" class="quantityEquipment" value="${equipamento.quantityEquipment}" min="1">
+                            </div>
+                            <div class="field-group quantity-price-subtotal">
+                                <label>Preço Unitário:</label>
+                                <input type="text" class="unitPriceEquipment" value="${equipamento.unitPriceEquipment}">
+                            </div>
+                            <div class="field-group quantity-price-subtotal">
+                                <label>Subtotal:</label>
+                                <input type="text" class="subtotalEquipment" value="${equipamento.subtotalEquipment}" readonly>
+                            </div>
+                        </div>
                     `
                     equipmentsContainer.appendChild(newEquipmentItem)
                     applyInputMasks(newEquipmentItem)
@@ -489,7 +490,7 @@ export async function updateClientToFirestore(id) {
     }
 
     try {
-        await firebase.firestore().collection('clientes').doc(id).update(clientData)
+        await updateDoc(doc(db, 'clientes', id), clientData)
         alert("Cliente atualizado com sucesso!")
         window.location.href = "listclients.html"
     } catch (error) {
@@ -506,7 +507,7 @@ export async function loadOrcamentos() {
     }
 
     try {
-        const querySnapshot = await firebase.firestore().collection('orcamentos').get()
+        const querySnapshot = await getDocs(collection(db, 'orcamentos'))
         tbody.innerHTML = ""
         querySnapshot.forEach((doc) => {
             const data = doc.data()
@@ -537,11 +538,11 @@ export async function loadOrcamentoDetails() {
     const detalhesDiv = document.getElementById("detalhesOrcamento")
 
     try {
-        const doc = await firebase.firestore().collection('orcamentos').doc(orcamentoId).get()
-        if (doc.exists) {
-            const data = doc.data()
+        const docSnap = await getDoc(doc(db, 'orcamentos', orcamentoId))
+        if (docSnap.exists()) {
+            const data = docSnap.data()
             detalhesDiv.innerHTML = `
-                <p><strong>ID:</strong> ${data.numericId || doc.id}</p>
+                <p><strong>ID:</strong> ${data.numericId || docSnap.id}</p>
                 <p><strong>Empresa:</strong> ${data.empresa.nomeEmpresa}</p>
                 <p><strong>Cliente:</strong> ${data.cliente.nameClient}</p>
                 <p><strong>Data de Criação:</strong> ${data.dataCriacao.toDate().toLocaleDateString()}</p>

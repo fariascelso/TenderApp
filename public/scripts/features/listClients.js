@@ -1,4 +1,10 @@
 import { db } from '../firebase/firebaseConfig.js'
+import { 
+    collection, 
+    getDocs, 
+    doc, 
+    deleteDoc 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
 
 async function loadClients() {
     const clientsTableBody = document.querySelector('#clientsTable tbody')
@@ -8,7 +14,7 @@ async function loadClients() {
     }
 
     try {
-        const querySnapshot = await db.collection('clientes').get()
+        const querySnapshot = await getDocs(collection(db, 'clientes'))
         clientsTableBody.innerHTML = ''
 
         querySnapshot.forEach((doc) => {
@@ -38,7 +44,7 @@ async function loadClients() {
             btn.addEventListener('click', () => deleteClient(btn.dataset.id))
         })
     } catch (error) {
-        console.error('Erro ao carregar clientes:', error)
+        console.error('Erro ao carregar clientes:', error);
         alert('Erro ao carregar clientes. Veja o console para mais detalhes.')
     }
 }
@@ -54,7 +60,7 @@ function editClient(id) {
 async function deleteClient(id) {
     if (confirm('Tem certeza que deseja excluir este cliente?')) {
         try {
-            await db.collection('clientes').doc(id).delete()
+            await deleteDoc(doc(db, 'clientes', id))
             alert('Cliente excluído com sucesso!')
             loadClients()
         } catch (error) {

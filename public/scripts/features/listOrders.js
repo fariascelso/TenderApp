@@ -1,4 +1,10 @@
 import { db } from '../firebase/firebaseConfig.js'
+import { 
+    collection, 
+    getDocs, 
+    doc, 
+    deleteDoc 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
 
 async function loadOrcamentos() {
     const orcamentosTableBody = document.querySelector('#orcamentosTable tbody')
@@ -8,7 +14,7 @@ async function loadOrcamentos() {
     }
 
     try {
-        const querySnapshot = await db.collection('orcamentos').get()
+        const querySnapshot = await getDocs(collection(db, 'orcamentos'))
         orcamentosTableBody.innerHTML = ''
 
         querySnapshot.forEach((doc) => {
@@ -53,7 +59,7 @@ function editOrcamento(id) {
 async function deleteOrcamento(id) {
     if (confirm('Tem certeza que deseja excluir este orçamento?')) {
         try {
-            await db.collection('orcamentos').doc(id).delete()
+            await deleteDoc(doc(db, 'orcamentos', id))
             loadOrcamentos()
         } catch (error) {
             console.error('Erro ao excluir orçamento:', error)

@@ -550,6 +550,30 @@ button:hover {
     display: none;
 }
 
+#menu-links button {
+    background: none;
+    border: none;
+    text-decoration: none;
+    color: #00796b;
+    font-size: 16px;
+    font-weight: 500;
+    display: block;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+}
+
+#menu-links button:hover {
+    background-color: #e0f2f1;
+}
+
+#menu-links button i {
+    margin-right: 8px;
+}
+
 #menu-links a {
     text-decoration: none;
     color: #00796b;
@@ -934,9 +958,10 @@ button:disabled {
     background-color: #fff;
 }
 
+/* Garante que o botão "Entrar" tenha um tamanho consistente */
 .btn-login {
-    width: 100%;
-    padding: 12px;
+    width: 200px; /* Largura fixa, igual aos outros botões no projeto */
+    padding: 12px; /* Mantém o padding para um tamanho confortável */
     background-color: #007bff;
     border: none;
     border-radius: 5px;
@@ -944,11 +969,39 @@ button:disabled {
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: block; /* Necessário para centralizar com margin */
+    margin: 0 auto; /* Centraliza o botão horizontalmente */
+}
+
+@media (max-width: 480px) {
+    .btn-login {
+        width: 100%; /* Volta a ocupar toda a largura em telas menores */
+        max-width: 200px; /* Garante que não exceda 200px */
+        padding: 10px;
+        font-size: 14px;
+    }
 }
 
 .btn-login:hover {
     background-color: #0056b3;
+    transform: scale(1.02); /* Adiciona um leve efeito de escala ao passar o mouse */
+}
+
+.btn-login:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-login .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ffffff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    margin-left: 8px;
+    animation: spin 1s linear infinite;
 }
 
 .error-message {
@@ -1004,4 +1057,20 @@ button:disabled {
         padding: 10px;
         font-size: 14px;
     }
+}
+
+/* Ajuste no espaçamento do link "Cadastre-se" */
+.register-link {
+    margin-top: 20px; /* Aumenta o espaçamento para harmonizar com o formulário */
+    font-size: 14px;
+}
+
+.register-link a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500; /* Adiciona um peso leve para destacar o link */
+}
+
+.register-link a:hover {
+    text-decoration: underline;
 }

@@ -1,4 +1,5 @@
 import { db } from '../firebase/firebaseConfig.js'
+import { checkAuthState } from '../features/auth.js'
 import { 
     collection, 
     getDocs, 
@@ -70,5 +71,6 @@ async function deleteOrcamento(id) {
 export { loadOrcamentos, viewOrcamento, editOrcamento, deleteOrcamento }
 
 window.onload = function() {
+    checkAuthState(true)
     loadOrcamentos()
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Ferramenta Profissional</title>
+    <title>Login - Orça Rápido</title>
     <link rel="stylesheet" href="../style/styles.css">
 </head>
 <body>
@@ -12,18 +12,21 @@
             <h2>Login</h2>
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="username">Usuário</label>
-                    <input type="text" id="username" name="username" placeholder="Digite seu usuário" required>
+                    <label for="username">E-mail</label>
+                    <input type="email" id="username" name="username" placeholder="Digite seu e-mail" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Senha</label>
                     <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
                 </div>
-                <button type="submit" class="btn-login">Entrar</button>
+                <button type="submit" class="btn-login" id="loginButton">Entrar</button>
             </form>
             <p class="error-message" id="errorMessage"></p>
+            <p class="register-link">
+                Não tem uma conta? <a href="register.html">Cadastre-se</a>
+            </p>
         </div>
     </div>
-    <script src="login.js"></script>
+    <script type="module" src="../scripts/features/login.js"></script>
 </body>
 </html>

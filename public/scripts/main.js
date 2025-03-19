@@ -1,3 +1,4 @@
+import { logout, checkAuthState } from './features/auth.js'
 import { 
     loadClients, 
     loadCompanies, 
@@ -43,6 +44,8 @@ window.App = App
 async function init() {
     try {
 
+        checkAuthState(true)
+
         const clients = await loadClients()
         const companies = await loadCompanies()
         const equipments = await loadEquipments()
@@ -81,6 +84,16 @@ async function init() {
                 if (saveButton) saveButton.style.display = 'none'
             }
         }
+
+        const logoutBtn = document.getElementById('logout-btn')
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                if (confirm('Tem certeza que deseja sair?')) {
+                    logout()
+                }
+            })
+        }
+
     } catch (error) {
         console.error("Erro ao inicializar:", error)
     }

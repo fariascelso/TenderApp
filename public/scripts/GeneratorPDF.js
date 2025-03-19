@@ -1,4 +1,4 @@
-import { HeaderStyles, ColumnStyles } from "./TableStyles.js"
+import { HeaderStyles, ColumnStyles, COLORS } from "./TableStyles.js"
 
 export async function generatorPDF(uploadedLogo, orderNumber) {
     const { jsPDF } = window.jspdf
@@ -202,25 +202,31 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
             })
         }
 
+        const equipmentData = equipments.map((equipment) => [
+            equipment.code,
+            equipment.name,
+            equipment.quantity,
+            equipment.unitPrice,
+            equipment.subtotal,
+        ])
+
         doc.autoTable({
-            startY: lastTable = updateLastTablePosition(),
-            head: [['Código', 'Nome', 'Quantidade', 'Preço unitário', 'Subtotal']],
-            body: equipments.map(equipment => [
-                equipment.code,
-                equipment.name,
-                equipment.quantity,
-                formatCurrency(parseCurrency(equipment.unitPrice)),
-                formatCurrency(parseCurrency(equipment.subtotal))
-            ]),
-            headStyles: { fillColor: [0, 0, 0], halign: 'center', lineWidth: 0.5 },
-            columnStyles: {
-                0: { cellWidth: 20, halign: 'center' },
-                1: { cellWidth: 70, halign: 'center' },
-                2: { cellWidth: 30, halign: 'center' },
-                3: { cellWidth: 40, halign: 'center' },
-                4: { cellWidth: 40, halign: 'center' },
+            startY: (lastTable = updateLastTablePosition()),
+            head: [["Código", "Nome", "Quantidade", "Preço unitário", "Subtotal"]],
+            body: equipmentData,
+            headStyles: HeaderStyles.Materials,
+            columnStyles: ColumnStyles.Materials,
+            styles: {
+                overflow: "linebreak", // Permite quebra de texto
+                cellPadding: 4, // Aumentado para melhor legibilidade
+                fontSize: 7,
             },
-            margin: { left: 5, right: 5 }
+            didParseCell: (data) => {
+                if (data.section === "head") {
+                    data.cell.styles.textColor = COLORS.WHITE // Garante texto branco no cabeçalho
+                }
+            },
+            margin: margin,
         })
 
         totalEquipments = equipments.reduce((sum, equipment) => {

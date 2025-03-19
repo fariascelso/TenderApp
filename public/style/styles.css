@@ -798,3 +798,73 @@ button:disabled {
 #clientsTable th {
     background-color: #f4f4f4;
 }
+
+.equipment-item {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.equipment-row {
+    display: flex;
+    flex-wrap: wrap; /* Permite que os campos quebrem para a próxima linha se necessário */
+    gap: 10px; /* Espaçamento entre os campos */
+    margin-bottom: 10px;
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.field-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.field-group input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%; /* Garante que o input ocupe toda a largura do container pai */
+    box-sizing: border-box; /* Inclui padding e borda na largura total */
+}
+
+/* Código e Nome (50% cada na linha) */
+.field-group.code-name {
+    flex: 1;
+    min-width: 200px; /* Garante que o campo tenha uma largura mínima */
+}
+
+/* Quantidade, Preço Unitário e Subtotal (distribuição ajustada) */
+.field-group.quantity-price-subtotal {
+    flex: 1;
+    min-width: 150px;
+}
+
+/* Ajuste específico para o campo de Quantidade */
+.field-group.quantity-price-subtotal .quantityEquipment {
+    width: 80px; /* Largura reduzida para o input de Quantidade */
+}
+
+/* Ajuste específico para Preço Unitário e Subtotal */
+.field-group.quantity-price-subtotal .unitPriceEquipment,
+.field-group.quantity-price-subtotal .subtotalEquipment {
+    width: 120px; /* Largura um pouco maior para melhor legibilidade */
+}
+
+/* Ajuste para o campo de Subtotal (readonly) */
+.subtotalEquipment {
+    background-color: #f5f5f5;
+}
+
+@media (max-width: 600px) {
+    .equipment-row {
+        flex-direction: column;
+    }
+    .field-group.code-name,
+    .field-group.quantity-price-subtotal {
+        min-width: 100%;
+    }
+}

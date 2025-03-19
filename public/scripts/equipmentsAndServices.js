@@ -18,20 +18,30 @@ export function fillEquipmentData() {
     newEquipmentItem.classList.add('equipment-item')
 
     newEquipmentItem.innerHTML = `
-        <label for="codeEquipment">Código:</label>
-        <input type="text" class="codeEquipment" value="${data.codeEquipment || ''}" placeholder="Código do equipamento">
-
-        <label for="nameEquipment">Nome:</label>
-        <input type="text" class="nameEquipment" value="${data.nameEquipment || ''}" placeholder="Nome do equipamento">
-
-        <label for="quantityEquipment">Quantidade:</label>
-        <input type="number" class="quantityEquipment" placeholder="Quantidade" min="1">
-
-        <label for="unitPriceEquipment">Preço Unitário:</label>
-        <input type="text" class="unitPriceEquipment" value="${data.unitPriceEquipment || ''}" placeholder="Preço unitário">
-
-        <label for="subtotalEquipment">Subtotal:</label>
-        <input type="text" class="subtotalEquipment" placeholder="Subtotal" readonly>
+        <div class="equipment-row">
+            <div class="field-group code-name">
+                <label for="codeEquipment">Código:</label>
+                <input type="text" class="codeEquipment" value="${data.codeEquipment || ''}" placeholder="Código do equipamento">
+            </div>
+            <div class="field-group code-name">
+                <label for="nameEquipment">Nome:</label>
+                <input type="text" class="nameEquipment" value="${data.nameEquipment || ''}" placeholder="Nome do equipamento">
+            </div>
+        </div>
+        <div class="equipment-row">
+            <div class="field-group quantity-price-subtotal">
+                <label for="quantityEquipment">Quantidade:</label>
+                <input type="number" class="quantityEquipment" placeholder="Qtd." min="1">
+            </div>
+            <div class="field-group quantity-price-subtotal">
+                <label for="unitPriceEquipment">Preço Unitário:</label>
+                <input type="text" class="unitPriceEquipment" value="${data.unitPriceEquipment || ''}" placeholder="Preço unitário">
+            </div>
+            <div class="field-group quantity-price-subtotal">
+                <label for="subtotalEquipment">Subtotal:</label>
+                <input type="text" class="subtotalEquipment" placeholder="Subtotal" readonly>
+            </div>
+        </div>
     `
 
     equipmentsContainer.appendChild(newEquipmentItem)

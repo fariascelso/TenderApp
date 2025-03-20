@@ -120,47 +120,51 @@
     <script type="module" src="../scripts/utils/inputMasks.js"></script>
     <script type="module" src="../scripts/utils/helpers.js"></script>
     <script type="module" src="../scripts/EventHandler.js"></script>
+    <script type="module" src="../scripts/features/auth.js"></script>
     <script type="module">
         import { loadOrcamentoForEdit } from '../scripts/firebase/firestoreOperations.js'
         import { applyInputMasks } from '../scripts/utils/inputMasks.js'
         import { toggleButtonLoading } from '../scripts/utils/helpers.js'
+        import { checkAuthState } from '../scripts/features/auth.js'
     
         async function init() {
-            const urlParams = new URLSearchParams(window.location.search)
-            const id = urlParams.get('id')
-            const mode = urlParams.get('mode')
+            checkAuthState(true, async () => {
+                const urlParams = new URLSearchParams(window.location.search)
+                const id = urlParams.get('id')
+                const mode = urlParams.get('mode')
     
-            if (id) {
-                await loadOrcamentoForEdit(id)
+                if (id) {
+                    await loadOrcamentoForEdit(id)
     
-                const inputs = document.querySelectorAll('input, textarea, select')
-                const saveButton = document.getElementById('save-budget-btn')
-                console.log('saveButton após loadOrcamentoForEdit:', saveButton)
+                    const inputs = document.querySelectorAll('input, textarea, select')
+                    const saveButton = document.getElementById('save-budget-btn')
+                    console.log('saveButton após loadOrcamentoForEdit:', saveButton)
     
-                if (mode === 'view') {
-                    inputs.forEach(input => input.disabled = true)
-                    saveButton.style.display = 'none'
-                } else if (mode === 'edit') {
-                    saveButton.style.display = 'block'
-                }
-    
-                // Configurar checkbox de equipamentos
-                const includeEquipmentsCheckbox = document.getElementById('includeEquipments')
-                const materialsBtn = document.getElementById('materials-btn')
-                const equipmentsPanel = document.getElementById('equipments-panel')
-                includeEquipmentsCheckbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        materialsBtn.style.display = 'block'
-                        if (!materialsBtn.classList.contains('active')) {
-                            materialsBtn.click()
-                        }
-                    } else {
-                        materialsBtn.style.display = 'none'
-                        materialsBtn.classList.remove('active')
-                        equipmentsPanel.style.display = 'none'
+                    if (mode === 'view') {
+                        inputs.forEach(input => input.disabled = true)
+                        saveButton.style.display = 'none'
+                    } else if (mode === 'edit') {
+                        saveButton.style.display = 'block'
                     }
-                })
-            }
+    
+                    // Configurar checkbox de equipamentos
+                    const includeEquipmentsCheckbox = document.getElementById('includeEquipments')
+                    const materialsBtn = document.getElementById('materials-btn')
+                    const equipmentsPanel = document.getElementById('equipments-panel')
+                    includeEquipmentsCheckbox.addEventListener('change', function() {
+                        if (this.checked) {
+                            materialsBtn.style.display = 'block'
+                            if (!materialsBtn.classList.contains('active')) {
+                                materialsBtn.click()
+                            }
+                        } else {
+                            materialsBtn.style.display = 'none'
+                            materialsBtn.classList.remove('active')
+                            equipmentsPanel.style.display = 'none'
+                        }
+                    })
+                }
+            })
         }
     
         window.onload = init

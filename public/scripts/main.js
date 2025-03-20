@@ -42,61 +42,59 @@ const App = {
 window.App = App
 
 async function init() {
-    try {
+    checkAuthState(true, async (user) => {
+        try {
+            const clients = await loadClients()
+            const companies = await loadCompanies()
+            const equipments = await loadEquipments()
+            const services = await loadServices()
+            console.log("Todos os dados foram carregados com sucesso.")
 
-        checkAuthState(true)
+            populateClientSelect(clients)
+            populateCompanySelect(companies)
+            populateEquipmentSelect(equipments)
+            populateServiceSelect(services)
+            setupEquipmentListeners()
 
-        const clients = await loadClients()
-        const companies = await loadCompanies()
-        const equipments = await loadEquipments()
-        const services = await loadServices()
-        console.log("Todos os dados foram carregados com sucesso.")
+            const urlParams = new URLSearchParams(window.location.search)
+            const id = urlParams.get('id')
+            const type = urlParams.get('type')
+            const viewMode = urlParams.get('view') === 'true'
 
-        populateClientSelect(clients)
-        populateCompanySelect(companies)
-        populateEquipmentSelect(equipments)
-        populateServiceSelect(services)
-        setupEquipmentListeners()
-
-        const urlParams = new URLSearchParams(window.location.search)
-        const id = urlParams.get('id')
-        const type = urlParams.get('type')
-        const viewMode = urlParams.get('view') === 'true'
-
-        if (id && type === 'client') {
-            await loadClientForEdit(id)
-            if (viewMode) {
-                const inputs = document.querySelectorAll('input, textarea, select')
-                inputs.forEach(input => {
-                    input.disabled = true
-                })
-                const saveButton = document.querySelector('.button-container button:first-child')
-                if (saveButton) saveButton.style.display = 'none'
-            }
-        } else if (id && type === 'orcamento') {
-            await loadOrcamentoForEdit(id)
-            if (viewMode) {
-                const inputs = document.querySelectorAll('input, textarea, select')
-                inputs.forEach(input => {
-                    input.disabled = true
-                })
-                const saveButton = document.querySelector('.button-container button:first-child')
-                if (saveButton) saveButton.style.display = 'none'
-            }
-        }
-
-        const logoutBtn = document.getElementById('logout-btn')
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', () => {
-                if (confirm('Tem certeza que deseja sair?')) {
-                    logout()
+            if (id && type === 'client') {
+                await loadClientForEdit(id)
+                if (viewMode) {
+                    const inputs = document.querySelectorAll('input, textarea, select')
+                    inputs.forEach(input => {
+                        input.disabled = true
+                    })
+                    const saveButton = document.querySelector('.button-container button:first-child')
+                    if (saveButton) saveButton.style.display = 'none'
                 }
-            })
-        }
+            } else if (id && type === 'orcamento') {
+                await loadOrcamentoForEdit(id)
+                if (viewMode) {
+                    const inputs = document.querySelectorAll('input, textarea, select')
+                    inputs.forEach(input => {
+                        input.disabled = true
+                    })
+                    const saveButton = document.querySelector('.button-container button:first-child')
+                    if (saveButton) saveButton.style.display = 'none'
+                }
+            }
 
-    } catch (error) {
-        console.error("Erro ao inicializar:", error)
-    }
+            const logoutBtn = document.getElementById('logout-btn')
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    if (confirm('Tem certeza que deseja sair?')) {
+                        logout()
+                    }
+                })
+            }
+        } catch (error) {
+            console.error("Erro ao inicializar:", error)
+        }
+    })
 }
 
 function populateClientSelect(clients) {

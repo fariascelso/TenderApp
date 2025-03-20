@@ -12,12 +12,13 @@ export async function logout() {
     }
 }
 
-export function checkAuthState(redirectIfNotLoggedIn = true) {
+export function checkAuthState(redirectIfNotLoggedIn = true, onAuthConfirmed = () => {}) {
     onAuthStateChanged(auth, (user) => {
         if (!user && redirectIfNotLoggedIn) {
             window.location.href = 'pages/login.html'
         } else if (user) {
             console.log('Usuário autenticado:', user.uid)
+            onAuthConfirmed(user)
         }
     })
 }

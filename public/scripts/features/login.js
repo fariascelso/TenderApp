@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetPasswordForm = document.getElementById('resetPasswordForm')
     const resetModalClose = document.querySelector('#resetPasswordModal .close')
 
-    // Verifica autenticação
     onAuthStateChanged(auth, (user) => {
         if (user) {
             window.location.href = 'index.html'
@@ -21,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 
-    // Login
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault()
@@ -68,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
 
-    // Abrir modal de reset de senha
     if (forgotPasswordLink) {
         forgotPasswordLink.addEventListener('click', (e) => {
             e.preventDefault()
@@ -80,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
 
-    // Enviar e-mail de redefinição
     if (resetPasswordForm) {
         resetPasswordForm.addEventListener('submit', async (e) => {
             e.preventDefault()
@@ -103,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
 
-    // Fechar modal
     if (resetModalClose) {
         resetModalClose.addEventListener('click', () => {
             const resetModal = document.getElementById('resetPasswordModal')
@@ -111,4 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => resetModal.style.display = 'none', 300)
         })
     }
+
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const passwordInput = document.getElementById('password')
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password'
+        passwordInput.setAttribute('type', type)
+        this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>'
+    })
 })

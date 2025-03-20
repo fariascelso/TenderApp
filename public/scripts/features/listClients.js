@@ -1,10 +1,29 @@
-import { db } from '../firebase/firebaseConfig.js'
+import { db, auth } from '../firebase/firebaseConfig.js'
+import { checkAuthState } from '../features/auth.js'
 import { 
     collection, 
     getDocs, 
     doc, 
     deleteDoc 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
+
+function getCurrentUserId() {
+    const user = auth.currentUser
+    if (!user) {
+        throw new Error("Usuário não está autenticado.")
+    }
+    return user.uid
+}
+
+function getUserCollection(collectionName) {
+    const userId = getCurrentUserId()
+    return collection(db, "users", userId, collectionName)
+}
+
+function getUserDoc(collectionName, docId) {
+    const userId = getCurrentUserId()
+    return doc(db, "users", userId, collectionName, docId)
+}
 
 async function loadClients() {
     const clientsTableBody = document.querySelector('#clientsTable tbody')
@@ -14,7 +33,7 @@ async function loadClients() {
     }
 
     try {
-        const querySnapshot = await getDocs(collection(db, 'clientes'))
+        const querySnapshot = await getDocs(getUserCollection('clientes'))
         clientsTableBody.innerHTML = ''
 
         querySnapshot.forEach((doc) => {
@@ -60,7 +79,7 @@ function editClient(id) {
 async function deleteClient(id) {
     if (confirm('Tem certeza que deseja excluir este cliente?')) {
         try {
-            await deleteDoc(doc(db, 'clientes', id))
+            await deleteDoc(getUserDoc('clientes', id))
             alert('Cliente excluído com sucesso!')
             loadClients()
         } catch (error) {
@@ -73,5 +92,7 @@ async function deleteClient(id) {
 export { loadClients, viewClient, editClient, deleteClient }
 
 window.onload = function() {
-    loadClients()
+    checkAuthState(true, () => {
+        loadClients()
+    })
 }

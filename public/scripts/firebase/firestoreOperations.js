@@ -1,4 +1,4 @@
-import { db } from './firebaseConfig.js'
+import { db, auth } from './firebaseConfig.js'
 import { 
     collection, 
     getDocs, 
@@ -13,8 +13,27 @@ import {
 import { toggleButtonLoading } from '../utils/helpers.js'
 import { applyInputMasks } from '../utils/inputMasks.js'
 
+function getCurrentUserId() {
+    const user = auth.currentUser
+    if (!user) {
+        throw new Error("Usuário não está autenticado.")
+    }
+    return user.uid
+}
+
+function getUserCollection(collectionName) {
+    const userId = getCurrentUserId()
+    return collection(db, "users", userId, collectionName)
+}
+
+function getUserDoc(collectionName, docId) {
+    const userId = getCurrentUserId()
+    return doc(db, "users", userId, collectionName, docId)
+}
+
 export async function generateNumericId() {
-    const counterRef = doc(db, 'counters', 'orcamentoCounter')
+    const userId = getCurrentUserId()
+    const counterRef = doc(db, "users", userId, "counters", "orcamentoCounter")
     let numericId
 
     await runTransaction(db, async (transaction) => {
@@ -110,7 +129,7 @@ export async function saveDataToFirestore() {
             numericId: numericId
         }
 
-        await setDoc(doc(db, 'orcamentos', numericId.toString()), orcamento)
+        await setDoc(doc(getUserCollection('orcamentos'), numericId.toString()), orcamento)
 
         alert(`Orçamento salvo com sucesso! ID do orçamento: ${numericId}`)
     } catch (e) {
@@ -188,7 +207,7 @@ export async function updateDataToFirestore(id) {
     }
 
     try {
-        await updateDoc(doc(db, 'orcamentos', id), orcamento)
+        await updateDoc(getUserDoc('orcamentos', id), orcamento)
         alert(`Orçamento atualizado com sucesso! ID: ${id}`)
         window.location.href = "listorders.html"
     } catch (e) {
@@ -200,7 +219,7 @@ export async function updateDataToFirestore(id) {
 export async function deleteOrcamento(id) {
     if (confirm("Tem certeza que deseja excluir este orçamento?")) {
         try {
-            await deleteDoc(doc(db, 'orcamentos', id))
+            await deleteDoc(getUserDoc('orcamentos', id))
             alert("Orçamento excluído com sucesso!")
         } catch (error) {
             console.error("Erro ao excluir orçamento:", error)
@@ -211,7 +230,7 @@ export async function deleteOrcamento(id) {
 
 export async function loadClients() {
     try {
-        const querySnapshot = await getDocs(collection(db, "clientes"))
+        const querySnapshot = await getDocs(getUserCollection("clientes"))
         const clients = []
         querySnapshot.forEach((doc) => {
             clients.push({ id: doc.id, ...doc.data() })
@@ -226,7 +245,7 @@ export async function loadClients() {
 
 export async function loadCompanies() {
     try {
-        const querySnapshot = await getDocs(collection(db, "empresas"))
+        const querySnapshot = await getDocs(getUserCollection("empresas"))
         const companies = []
         querySnapshot.forEach((doc) => {
             companies.push({ id: doc.id, ...doc.data() })
@@ -241,7 +260,7 @@ export async function loadCompanies() {
 
 export async function loadEquipments() {
     try {
-        const querySnapshot = await getDocs(collection(db, "equipamentos"))
+        const querySnapshot = await getDocs(getUserCollection("equipamentos"))
         const equipments = []
         querySnapshot.forEach((doc) => {
             equipments.push({ id: doc.id, ...doc.data() })
@@ -256,7 +275,7 @@ export async function loadEquipments() {
 
 export async function loadServices() {
     try {
-        const querySnapshot = await getDocs(collection(db, "servicos"))
+        const querySnapshot = await getDocs(getUserCollection("servicos"))
         const services = []
         querySnapshot.forEach((doc) => {
             services.push({ id: doc.id, ...doc.data() })
@@ -283,7 +302,7 @@ export async function saveClientToFirestore() {
         phoneClient: document.querySelector('#clientModalContent #phoneClient').value,
         emailClient: document.querySelector('#clientModalContent #emailClient').value
     }
-    await setDoc(doc(collection(db, 'clientes')), clientData)
+    await setDoc(doc(getUserCollection('clientes')), clientData);
 }
 
 export async function saveCompanyToFirestore() {
@@ -300,7 +319,7 @@ export async function saveCompanyToFirestore() {
         telefone: document.querySelector('#companyModalContent #phone').value,
         email: document.querySelector('#companyModalContent #email').value
     }
-    await setDoc(doc(collection(db, 'empresas')), companyData)
+    await setDoc(doc(getUserCollection('empresas')), companyData)
 }
 
 export async function saveEquipmentToFirestore() {
@@ -309,7 +328,7 @@ export async function saveEquipmentToFirestore() {
         nameEquipment: document.querySelector('#equipmentModalContent .nameEquipment').value,
         unitPriceEquipment: document.querySelector('#equipmentModalContent .unitPriceEquipment').value
     }
-    await setDoc(doc(collection(db, 'equipamentos')), equipmentData)
+    await setDoc(doc(getUserCollection('equipamentos')), equipmentData)
 }
 
 export async function saveServiceToFirestore() {
@@ -317,7 +336,7 @@ export async function saveServiceToFirestore() {
         descriptionService: document.querySelector('#serviceModalContent .descriptionService').value,
         amountService: document.querySelector('#serviceModalContent .amountService').value
     }
-    await setDoc(doc(collection(db, 'servicos')), serviceData)
+    await setDoc(doc(getUserCollection('servicos')), serviceData)
 }
 
 export async function saveModalData(targetId) {
@@ -345,7 +364,7 @@ export async function saveModalData(targetId) {
 
 export async function loadClientForEdit(id) {
     try {
-        const clientDoc = await getDoc(doc(db, 'clientes', id))
+        const clientDoc = await getDoc(getUserDoc('clientes', id))
         if (clientDoc.exists()) {
             const data = clientDoc.data()
 
@@ -376,7 +395,7 @@ export async function loadClientForEdit(id) {
 
 export async function loadOrcamentoForEdit(id) {
     try {
-        const orcamentoDoc = await getDoc(doc(db, 'orcamentos', id))
+        const orcamentoDoc = await getDoc(getUserDoc('orcamentos', id))
         if (orcamentoDoc.exists()) {
             const data = orcamentoDoc.data()
 
@@ -490,7 +509,7 @@ export async function updateClientToFirestore(id) {
     }
 
     try {
-        await updateDoc(doc(db, 'clientes', id), clientData)
+        await updateDoc(getUserDoc('clientes', id), clientData)
         alert("Cliente atualizado com sucesso!")
         window.location.href = "listclients.html"
     } catch (error) {
@@ -507,7 +526,7 @@ export async function loadOrcamentos() {
     }
 
     try {
-        const querySnapshot = await getDocs(collection(db, 'orcamentos'))
+        const querySnapshot = await getDocs(getUserCollection('orcamentos'))
         tbody.innerHTML = ""
         querySnapshot.forEach((doc) => {
             const data = doc.data()
@@ -538,7 +557,7 @@ export async function loadOrcamentoDetails() {
     const detalhesDiv = document.getElementById("detalhesOrcamento")
 
     try {
-        const docSnap = await getDoc(doc(db, 'orcamentos', orcamentoId))
+        const docSnap = await getDoc(getUserDoc('orcamentos', orcamentoId))
         if (docSnap.exists()) {
             const data = docSnap.data()
             detalhesDiv.innerHTML = `

@@ -1,4 +1,4 @@
-import { db } from '../firebase/firebaseConfig.js'
+import { db, auth } from '../firebase/firebaseConfig.js'
 import { checkAuthState } from '../features/auth.js'
 import { 
     collection, 
@@ -6,6 +6,24 @@ import {
     doc, 
     deleteDoc 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
+
+function getCurrentUserId() {
+    const user = auth.currentUser;
+    if (!user) {
+        throw new Error("Usuário não está autenticado.")
+    }
+    return user.uid
+}
+
+function getUserCollection(collectionName) {
+    const userId = getCurrentUserId()
+    return collection(db, "users", userId, collectionName)
+}
+
+function getUserDoc(collectionName, docId) {
+    const userId = getCurrentUserId()
+    return doc(db, "users", userId, collectionName, docId)
+}
 
 async function loadOrcamentos() {
     const orcamentosTableBody = document.querySelector('#orcamentosTable tbody')
@@ -15,7 +33,7 @@ async function loadOrcamentos() {
     }
 
     try {
-        const querySnapshot = await getDocs(collection(db, 'orcamentos'))
+        const querySnapshot = await getDocs(getUserCollection('orcamentos'))
         orcamentosTableBody.innerHTML = ''
 
         querySnapshot.forEach((doc) => {
@@ -60,7 +78,7 @@ function editOrcamento(id) {
 async function deleteOrcamento(id) {
     if (confirm('Tem certeza que deseja excluir este orçamento?')) {
         try {
-            await deleteDoc(doc(db, 'orcamentos', id))
+            await deleteDoc(getUserDoc('orcamentos', id))
             loadOrcamentos()
         } catch (error) {
             console.error('Erro ao excluir orçamento:', error)
@@ -71,6 +89,7 @@ async function deleteOrcamento(id) {
 export { loadOrcamentos, viewOrcamento, editOrcamento, deleteOrcamento }
 
 window.onload = function() {
-    checkAuthState(true)
-    loadOrcamentos()
+    checkAuthState(true, () => {
+        loadOrcamentos()
+    })
 }

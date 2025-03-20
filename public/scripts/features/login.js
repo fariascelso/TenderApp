@@ -1,10 +1,18 @@
 import { auth } from '../firebase/firebaseConfig.js'
-import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"
+import {
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm')
     const errorMessage = document.getElementById('errorMessage')
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink')
+    const resetPasswordForm = document.getElementById('resetPasswordForm')
+    const resetModalClose = document.querySelector('#resetPasswordModal .close')
 
+    // Verifica autenticação
     onAuthStateChanged(auth, (user) => {
         if (user) {
             window.location.href = 'index.html'
@@ -13,47 +21,94 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault()
+    // Login
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault()
 
-        const email = document.getElementById('username').value.trim()
-        const password = document.getElementById('password').value.trim()
-        const loginButton = document.getElementById('loginButton')
+            const email = document.getElementById('username').value.trim()
+            const password = document.getElementById('password').value.trim()
+            const loginButton = document.getElementById('loginButton')
 
-        errorMessage.textContent = ''
-        loginButton.disabled = true
-        loginButton.innerHTML = 'Entrar <span class="spinner"></span>'
+            errorMessage.textContent = ''
+            loginButton.disabled = true
+            loginButton.innerHTML = 'Entrar <span class="spinner"></span>'
 
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password)
-            const user = userCredential.user
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password)
+                const user = userCredential.user
 
-            if (!user.emailVerified) {
-                errorMessage.textContent = 'Por favor, verifique seu e-mail antes de fazer login.'
+                if (!user.emailVerified) {
+                    errorMessage.textContent = 'Por favor, verifique seu e-mail antes de fazer login.'
+                    loginButton.disabled = false
+                    loginButton.innerHTML = 'Entrar'
+                    return
+                }
+
+                window.location.href = '../index.html'
+            } catch (error) {
                 loginButton.disabled = false
                 loginButton.innerHTML = 'Entrar'
-                return
+                switch (error.code) {
+                    case 'auth/invalid-email':
+                        errorMessage.textContent = 'E-mail inválido.'
+                        break
+                    case 'auth/user-disabled':
+                        errorMessage.textContent = 'Este usuário foi desativado.'
+                        break
+                    case 'auth/user-not-found':
+                    case 'auth/wrong-password':
+                        errorMessage.textContent = 'E-mail ou senha incorretos.'
+                        break
+                    default:
+                        errorMessage.textContent = 'Erro ao fazer login. Tente novamente.'
+                        console.error('Erro ao fazer login:', error)
+                }
             }
+        })
+    }
 
-            window.location.href = '../index.html'
-        } catch (error) {
-            loginButton.disabled = false
-            loginButton.innerHTML = 'Entrar'
-            switch (error.code) {
-                case 'auth/invalid-email':
-                    errorMessage.textContent = 'E-mail inválido.'
-                    break
-                case 'auth/user-disabled':
-                    errorMessage.textContent = 'Este usuário foi desativado.'
-                    break
-                case 'auth/user-not-found':
-                case 'auth/wrong-password':
-                    errorMessage.textContent = 'E-mail ou senha incorretos.'
-                    break
-                default:
-                    errorMessage.textContent = 'Erro ao fazer login. Tente novamente.'
-                    console.error('Erro ao fazer login:', error)
+    // Abrir modal de reset de senha
+    if (forgotPasswordLink) {
+        forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault()
+            const resetModal = document.getElementById('resetPasswordModal')
+            if (resetModal) {
+                resetModal.style.display = 'flex'
+                setTimeout(() => resetModal.classList.add('show'), 0)
             }
-        }
-    })
+        })
+    }
+
+    // Enviar e-mail de redefinição
+    if (resetPasswordForm) {
+        resetPasswordForm.addEventListener('submit', async (e) => {
+            e.preventDefault()
+            const email = document.getElementById('resetEmail').value.trim()
+            const resetModal = document.getElementById('resetPasswordModal')
+
+            try {
+                await sendPasswordResetEmail(auth, email)
+                alert('E-mail de redefinição de senha enviado com sucesso! Verifique sua caixa de entrada.')
+                resetModal.classList.remove('show')
+                setTimeout(() => resetModal.style.display = 'none', 300)
+            } catch (error) {
+                errorMessage.textContent = error.code === 'auth/invalid-email'
+                    ? 'E-mail inválido.'
+                    : error.code === 'auth/user-not-found'
+                        ? 'Nenhum usuário encontrado com este e-mail.'
+                        : 'Erro ao enviar e-mail de redefinição. Tente novamente.'
+                console.error('Erro ao enviar e-mail de redefinição:', error)
+            }
+        })
+    }
+
+    // Fechar modal
+    if (resetModalClose) {
+        resetModalClose.addEventListener('click', () => {
+            const resetModal = document.getElementById('resetPasswordModal')
+            resetModal.classList.remove('show')
+            setTimeout(() => resetModal.style.display = 'none', 300)
+        })
+    }
 })

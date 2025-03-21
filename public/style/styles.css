@@ -1,29 +1,27 @@
-/* Reset básico e estilos gerais */
 body {
     font-family: 'Roboto', sans-serif;
-    background: #f5f7fa; /* Fundo claro */
+    background: #f5f7fa;
     color: #333;
     margin: 0;
     padding: 0;
 }
 
 h1 {
-    background: none; /* Remove o fundo gradiente */
-    color: #000; /* Cor preta para o texto */
-    text-align: left; /* Alinha o texto à esquerda */
-    padding: 20px 0; /* Ajusta o padding */
+    background: none;
+    color: #000;
+    text-align: left;
+    padding: 20px 0;
     margin: 0;
     font-size: 28px;
     font-weight: 700;
     letter-spacing: 1px;
-    border-radius: 0; /* Remove o border-radius */
-    box-shadow: none; /* Remove a sombra */
+    border-radius: 0;
+    box-shadow: none;
     display: flex;
-    align-items: center; /* Alinha o ícone e o texto verticalmente */
-    gap: 10px; /* Espaço entre o ícone e o texto */
+    align-items: center;
+    gap: 10px;
 }
 
-/* Contêiner principal */
 .container {
     width: 90%;
     max-width: 1200px;
@@ -35,10 +33,9 @@ h1 {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    overflow-x: hidden; /* Evita rolagem horizontal */
+    overflow-x: hidden;
 }
 
-/* Estilo para labels */
 label {
     display: block;
     margin-bottom: 5px;
@@ -46,7 +43,6 @@ label {
     color: #555;
 }
 
-/* Estilo base para inputs de texto */
 input[type="text"],
 input[type="number"],
 textarea,
@@ -63,7 +59,6 @@ select {
     box-sizing: border-box;
 }
 
-/* Estilo para inputs ao receber foco */
 input[type="text"]:focus,
 input[type="number"]:focus,
 textarea:focus,
@@ -73,7 +68,6 @@ select:focus {
     outline: none;
 }
 
-/* Estilo específico para inputs numéricos */
 input[type="number"] {
     appearance: none;
 }
@@ -94,13 +88,11 @@ input[type="number"]::-webkit-outer-spin-button {
     margin: 0;
 }
 
-/* Estilo específico para textareas */
 textarea {
     resize: vertical;
     min-height: 120px;
 }
 
-/* Estilo para selects */
 select {
     appearance: none;
     cursor: pointer;
@@ -135,31 +127,30 @@ select::-ms-expand {
     display: none;
 }
 
-/* Contêiner de botões */
 .button-container {
     text-align: center;
-    display: flex; /* Usa flexbox para alinhar os botões */
-    justify-content: center; /* Centraliza os botões horizontalmente */
-    gap: 20px; /* Espaço entre os botões */
+    display: flex;
+    justify-content: center;
+    gap: 20px;
 }
 
 .button-container button {
     background: linear-gradient(90deg, #044255, #031e8a);
     color: white;
     border: none;
-    padding: 14px 0; /* Padding vertical fixo, removemos o padding lateral */
+    padding: 14px 0;
     font-size: 18px;
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
     box-shadow: 0 4px 10px rgba(255, 136, 0, 0.3);
-    margin: 0; /* Remove margens para evitar deslocamentos */
-    width: 200px; /* Largura fixa para os botões */
-    height: 50px; /* Altura fixa para os botões */
-    display: flex; /* Usa flexbox dentro do botão */
-    align-items: center; /* Centraliza verticalmente o conteúdo */
-    justify-content: center; /* Centraliza horizontalmente o conteúdo */
-    box-sizing: border-box; /* Garante que padding e borda não aumentem o tamanho */
+    margin: 0;
+    width: 200px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
 .button-container button:hover {
@@ -168,7 +159,6 @@ select::-ms-expand {
     box-shadow: 0 6px 14px rgba(255, 136, 0, 0.4);
 }
 
-/* Estilo para acordeões */
 .accordion {
     background: linear-gradient(90deg, #05123b, #600232);
     color: white;
@@ -191,7 +181,6 @@ select::-ms-expand {
     box-shadow: 0 6px 14px rgba(0, 191, 165, 0.4);
 }
 
-/* Painéis de conteúdo dos acordeões */
 .panel {
     padding: 15px;
     display: none;
@@ -199,11 +188,10 @@ select::-ms-expand {
     background-color: #f9fcff;
     border-radius: 8px;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-    width: 100%; /* Garante que ocupe toda a largura */
+    width: 100%;
     box-sizing: border-box;
 }
 
-/* Botões de ação (adicionar serviço, equipamento, etc.) */
 #add-service-btn,
 #add-equipment-btn,
 #search-btn {
@@ -235,7 +223,6 @@ select::-ms-expand {
     transform: scale(1.03);
 }
 
-/* Estilo para checkboxes */
 .checkbox-container {
     display: flex;
     align-items: center;
@@ -256,7 +243,6 @@ select::-ms-expand {
     cursor: pointer;
 }
 
-/* Contêiner de busca */
 .search-container {
     display: flex;
     align-items: center;
@@ -268,7 +254,6 @@ select::-ms-expand {
     flex: 1;
 }
 
-/* Estilização das modais */
 .modal {
     display: none;
     position: fixed;
@@ -404,15 +389,14 @@ select::-ms-expand {
     border-radius: 50%;
 }
 
-/* Floating Action Buttons (FAB) */
 .floating-menu {
     position: fixed;
     bottom: 20px;
     left: 20px;
     display: flex;
-    flex-direction: column-reverse; /* Mantém o FAB no topo e opções abaixo */
+    flex-direction: column-reverse;
     align-items: center;
-    gap: 10px; /* Espaço entre o FAB e as opções */
+    gap: 10px;
     z-index: 1000;
 }
 
@@ -430,7 +414,7 @@ select::-ms-expand {
     align-items: center;
     padding: 0 20px;
     gap: 10px;
-    touch-action: manipulation; /* Melhora a interação em touchscreens */
+    touch-action: manipulation;
 }
 
 #main-fab:hover {
@@ -444,9 +428,9 @@ select::-ms-expand {
 }
 
 #fab-options {
-    position: absolute; /* Alinha as opções relative ao .floating-menu */
-    bottom: 60px; /* Posiciona acima do FAB */
-    left: 0; /* Alinha à esquerda com o FAB */
+    position: absolute;
+    bottom: 60px;
+    left: 0;
     display: none;
     flex-direction: column;
     gap: 10px;
@@ -463,9 +447,9 @@ select::-ms-expand {
 }
 
 .fab-option {
-    width: auto; /* Remove a largura fixa para se ajustar ao conteúdo */
-    height: 40px; /* Altura fixa para consistência */
-    border-radius: 25px; /* Torna o botão mais retangular com bordas arredondadas */
+    width: auto;
+    height: 40px;
+    border-radius: 25px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -475,8 +459,8 @@ select::-ms-expand {
     border: none;
     font-size: 18px;
     cursor: pointer;
-    padding: 0 15px; /* Ajusta o padding para o texto e ícone */
-    gap: 8px; /* Espaço entre ícone e texto */
+    padding: 0 15px;
+    gap: 8px;
     touch-action: manipulation;
 }
 
@@ -485,10 +469,10 @@ select::-ms-expand {
     font-size: 20px;
 }
 
-.fab-option:nth-child(1) { background-color: #00aaff; } /* Cliente */
-.fab-option:nth-child(2) { background-color: #0056b3; } /* Empresa */
-.fab-option:nth-child(3) { background-color: #ff9800; } /* Materiais */
-.fab-option:nth-child(4) { background-color: #ffd200; } /* Serviço */
+.fab-option:nth-child(1) { background-color: #00aaff; }
+.fab-option:nth-child(2) { background-color: #0056b3; }
+.fab-option:nth-child(3) { background-color: #ff9800; }
+.fab-option:nth-child(4) { background-color: #ffd200; }
 
 .fab-option:hover {
     transform: scale(1.1);
@@ -500,7 +484,6 @@ select::-ms-expand {
     font-weight: 500;
 }
 
-/* Estilo de tabelas */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -536,12 +519,11 @@ button:hover {
     background-color: #0056b3;
 }
 
-/* Estilo do ícone do menu hambúrguer */
 #menu-hamburger {
     cursor: pointer;
     font-size: 24px;
-    color: #000; /* Cor preta para o ícone */
-    margin-right: 10px; /* Espaço entre o ícone e o texto */
+    color: #000;
+    margin-right: 10px;
 }
 
 #menu-links {
@@ -597,7 +579,7 @@ button:hover {
 }
 
 .edit-btn {
-    background-color: #ffdd02; /* Azul para edição */
+    background-color: #ffdd02;
     color: white;
     border: none;
     padding: 8px;
@@ -607,17 +589,17 @@ button:hover {
 }
 
 .edit-btn:hover {
-    background-color: #9fb929; /* Tom mais escuro ao passar o mouse */
+    background-color: #9fb929;
 }
 
 .delete-btn {
     background-color: #e74c3c;
     color: white;
     border: none;
-    padding: 8px; /* Ajuste o padding para o ícone ficar bem centralizado */
+    padding: 8px;
     cursor: pointer;
     border-radius: 4px;
-    font-size: 14px; /* Tamanho do ícone */
+    font-size: 14px;
 }
 
 .delete-btn:hover {
@@ -625,22 +607,22 @@ button:hover {
 }
 
 .view-btn {
-    background-color: #007bff; /* Azul, como o botão original "Ver Detalhes" */
+    background-color: #007bff;
     color: white;
     border: none;
-    padding: 8px; /* Ajuste para o ícone ficar centralizado */
+    padding: 8px;
     cursor: pointer;
     border-radius: 4px;
-    font-size: 14px; /* Tamanho do ícone */
+    font-size: 14px;
 }
 
 .view-btn:hover {
-    background-color: #0056b3; /* Tom mais escuro ao passar o mouse */
+    background-color: #0056b3;
 }
 
 .view-btn i {
-    font-size: 16px; /* Ajuste o tamanho do ícone, se necessário */
-    vertical-align: middle; /* Centraliza verticalmente o ícone */
+    font-size: 16px;
+    vertical-align: middle;
 }
 
 .fab {
@@ -697,7 +679,7 @@ button:hover {
     }
 
     #fab-options {
-        bottom: 50px; /* Ajusta para ficar mais próximo do FAB em telas pequenas */
+        bottom: 50px;
         left: 0;
         gap: 8px;
     }
@@ -709,7 +691,7 @@ button:hover {
     }
 
     .fab-option i {
-        font-size: 14px; /* Reduz o ícone */
+        font-size: 14px;
     }
 
     .fab-option span {
@@ -739,14 +721,12 @@ button:hover {
         box-sizing: border-box;
     }
 
-    /* Ajusta os painéis para não empurrarem o layout */
     .panel, .client-data-panel, .company-data-panel, .equipments-container, .services-container {
         width: 100%;
         padding: 10px;
         box-sizing: border-box;
     }
 
-    /* Garante que o button-container se ajuste */
     .button-container {
         flex-direction: column;
         gap: 10px;
@@ -782,25 +762,22 @@ button:hover {
     margin-top: 5px;
 }
 
-/* Estilo do botão durante o carregamento */
 button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
-/* Estilo do spinner */
 .spinner {
     display: inline-block;
     width: 16px;
     height: 16px;
-    border: 2px solid #ffffff; /* Cor do spinner (ajuste conforme o fundo do botão) */
-    border-top: 2px solid transparent; /* Cria o efeito de rotação */
+    border: 2px solid #ffffff;
+    border-top: 2px solid transparent;
     border-radius: 50%;
     margin-left: 8px;
     animation: spin 1s linear infinite;
 }
 
-/* Animação de rotação */
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -834,8 +811,8 @@ button:disabled {
 
 .equipment-row {
     display: flex;
-    flex-wrap: wrap; /* Permite que os campos quebrem para a próxima linha se necessário */
-    gap: 10px; /* Espaçamento entre os campos */
+    flex-wrap: wrap;
+    gap: 10px;
     margin-bottom: 10px;
 }
 
@@ -854,34 +831,29 @@ button:disabled {
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
-    width: 100%; /* Garante que o input ocupe toda a largura do container pai */
-    box-sizing: border-box; /* Inclui padding e borda na largura total */
+    width: 100%;
+    box-sizing: border-box;
 }
 
-/* Código e Nome (50% cada na linha) */
 .field-group.code-name {
     flex: 1;
-    min-width: 200px; /* Garante que o campo tenha uma largura mínima */
+    min-width: 200px;
 }
 
-/* Quantidade, Preço Unitário e Subtotal (distribuição ajustada) */
 .field-group.quantity-price-subtotal {
     flex: 1;
     min-width: 150px;
 }
 
-/* Ajuste específico para o campo de Quantidade */
 .field-group.quantity-price-subtotal .quantityEquipment {
-    width: 80px; /* Largura reduzida para o input de Quantidade */
+    width: 80px;
 }
 
-/* Ajuste específico para Preço Unitário e Subtotal */
 .field-group.quantity-price-subtotal .unitPriceEquipment,
 .field-group.quantity-price-subtotal .subtotalEquipment {
-    width: 120px; /* Largura um pouco maior para melhor legibilidade */
+    width: 120px;
 }
 
-/* Ajuste para o campo de Subtotal (readonly) */
 .subtotalEquipment {
     background-color: #f5f5f5;
 }
@@ -961,10 +933,9 @@ button:disabled {
     background-color: #fff;
 }
 
-/* Garante que o botão "Entrar" tenha um tamanho consistente */
 .btn-login {
-    width: 200px; /* Largura fixa, igual aos outros botões no projeto */
-    padding: 12px; /* Mantém o padding para um tamanho confortável */
+    width: 200px;
+    padding: 12px;
     background-color: #007bff;
     border: none;
     border-radius: 5px;
@@ -973,14 +944,14 @@ button:disabled {
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    display: block; /* Necessário para centralizar com margin */
-    margin: 0 auto; /* Centraliza o botão horizontalmente */
+    display: block;
+    margin: 0 auto;
 }
 
 @media (max-width: 480px) {
     .btn-login {
-        width: 100%; /* Volta a ocupar toda a largura em telas menores */
-        max-width: 200px; /* Garante que não exceda 200px */
+        width: 100%;
+        max-width: 200px;
         padding: 10px;
         font-size: 14px;
     }
@@ -988,7 +959,7 @@ button:disabled {
 
 .btn-login:hover {
     background-color: #0056b3;
-    transform: scale(1.02); /* Adiciona um leve efeito de escala ao passar o mouse */
+    transform: scale(1.02);
 }
 
 .btn-login:disabled {
@@ -1028,7 +999,6 @@ button:disabled {
     text-decoration: underline;
 }
 
-/* Animação de entrada */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -1040,7 +1010,6 @@ button:disabled {
     }
 }
 
-/* Responsividade */
 @media (max-width: 480px) {
     .login-box {
         padding: 20px;
@@ -1062,16 +1031,15 @@ button:disabled {
     }
 }
 
-/* Ajuste no espaçamento do link "Cadastre-se" */
 .register-link {
-    margin-top: 20px; /* Aumenta o espaçamento para harmonizar com o formulário */
+    margin-top: 20px;
     font-size: 14px;
 }
 
 .register-link a {
     color: #007bff;
     text-decoration: none;
-    font-weight: 500; /* Adiciona um peso leve para destacar o link */
+    font-weight: 500;
 }
 
 .register-link a:hover {

@@ -18,7 +18,7 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
     const margin = { top: 2, bottom: 2, left: 5, right: 5 }
     const pageWidth = doc.internal.pageSize.getWidth()
 
-    // Função auxiliar para pegar valores com segurança
+    // Funções auxiliares para pegar valores com segurança
     const getValue = (id) => {
         const element = document.getElementById(id)
         return element ? element.value : ''
@@ -63,6 +63,7 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
     }
 
     const observations = getValue('observations')
+    const includeServices = getChecked('includeServices')
     const includeEquipments = getChecked('includeEquipments')
 
     if (uploadedLogo) {
@@ -152,40 +153,49 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
         margin: margin
     })
 
-    doc.autoTable({
-        startY: lastTable = updateLastTablePosition(),
-        head: [
-            [{ content: 'SERVIÇOS QUE SERÃO REALIZADOS', colSpan: 2 }]
-        ],
-        headStyles: HeaderStyles.CellPadding,
-        margin: margin
-    })
+    let totalServices = 0
 
-    const services = []
-    const descriptionServices = getAllValues('.descriptionService')
-    const amountServices = getAllValues('.amountService')
-
-    for (let i = 0; i < descriptionServices.length; i++) {
-        services.push({
-            descriptionService: descriptionServices[i],
-            amountService: amountServices[i] || 'R$ 0,00'
+    if (includeServices) {
+        doc.autoTable({
+            startY: lastTable = updateLastTablePosition(),
+            head: [
+                [{ content: 'SERVIÇOS QUE SERÃO REALIZADOS', colSpan: 2 }]
+            ],
+            headStyles: HeaderStyles.CellPadding,
+            margin: margin
         })
-    }
 
-    doc.autoTable({
-        startY: lastTable = updateLastTablePosition(),
-        head: [['DESCRIÇÃO DO SERVIÇO', 'VALOR DO SERVIÇO']],
-        body: services.map(service => [
-            service.descriptionService,
-            service.amountService
-        ]),
-        headStyles: { fillColor: [0, 0, 6], halign: 'center', lineWidth: 0.5 },
-        columnStyles: {
-            1: { cellWidth: 100, halign: 'center' },
-            2: { cellWidth: 30, halign: 'center' }
-        },
-        margin: { left: 5, right: 5 }
-    })
+        const services = []
+        const descriptionServices = getAllValues('.descriptionService')
+        const amountServices = getAllValues('.amountService')
+
+        for (let i = 0; i < descriptionServices.length; i++) {
+            services.push({
+                descriptionService: descriptionServices[i],
+                amountService: amountServices[i] || 'R$ 0,00'
+            })
+        }
+
+        doc.autoTable({
+            startY: lastTable = updateLastTablePosition(),
+            head: [['DESCRIÇÃO DO SERVIÇO', 'VALOR DO SERVIÇO']],
+            body: services.map(service => [
+                service.descriptionService,
+                service.amountService
+            ]),
+            headStyles: { fillColor: [0, 0, 6], halign: 'center', lineWidth: 0.5 },
+            columnStyles: {
+                1: { cellWidth: 100, halign: 'center' },
+                2: { cellWidth: 30, halign: 'center' }
+            },
+            margin: { left: 5, right: 5 }
+        })
+
+        totalServices = services.reduce((sum, service) => {
+            const value = parseCurrency(service.amountService)
+            return sum + value
+        }, 0)
+    }
 
     let totalEquipments = 0
 
@@ -270,12 +280,7 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
         ) || 0
     }
 
-    const totalServices = services.reduce((sum, service) => {
-        const value = parseCurrency(service.amountService)
-        return sum + value
-    }, 0)
-
-    let totalBudget = includeEquipments ? totalServices + totalEquipments : totalServices
+    const totalBudget = totalServices + totalEquipments
 
     doc.autoTable({
         startY: lastTable = updateLastTablePosition(),

@@ -57,75 +57,79 @@ export async function saveDataToFirestore() {
     try {
         const numericId = await generateNumericId()
 
-        const getElementValue = (id) => {
+        const getValue = (id) => {
             const element = document.getElementById(id)
-            if (!element) {
-                console.warn(`Elemento com ID '${id}' não encontrado. Usando valor padrão vazio.`)
-                return ''
-            }
-            return element.value
+            return element ? element.value : ''
+        }
+
+        const getChecked = (id) => {
+            const element = document.getElementById(id)
+            return element ? element.checked : false
         }
 
         const issuingCompany = {
-            nomeEmpresa: getElementValue('nameBusiness'),
-            fantasyName: getElementValue('fantasyName'),
-            cnpj: getElementValue('cpfCnpj'),
-            endereco: getElementValue('address'),
-            numero: getElementValue('numberAddress'),
-            bairro: getElementValue('neighborhood'),
-            estado: getElementValue('state'),
-            cidade: getElementValue('city'),
-            cep: getElementValue('zipcode'),
-            telefone: getElementValue('phone'),
-            email: getElementValue('email')
+            nomeEmpresa: getValue('nameBusiness'),
+            fantasyName: getValue('fantasyName'),
+            cnpj: getValue('cpfCnpj'),
+            endereco: getValue('address'),
+            numero: getValue('numberAddress'),
+            bairro: getValue('neighborhood'),
+            estado: getValue('state'),
+            cidade: getValue('city'),
+            cep: getValue('zipcode'),
+            telefone: getValue('phone'),
+            email: getValue('email')
         }
 
         const clientFormData = {
-            nameClient: getElementValue('nameClient'),
-            cpfCNPJClient: getElementValue('cpfCNPJClient'),
-            fantasyNameClient: getElementValue('fantasyNameClient'),
-            streetClient: getElementValue('streetClient'),
-            numberAddressClient: getElementValue('numberAddressClient'),
-            stateClient: getElementValue('stateClient'),
-            neighborhoodClient: getElementValue('neighborhoodClient'),
-            cityClient: getElementValue('cityClient'),
-            zipcodeClient: getElementValue('zipcodeClient'),
-            phoneClient: getElementValue('phoneClient'),
-            emailClient: getElementValue('emailClient')
+            nameClient: getValue('nameClient'),
+            cpfCNPJClient: getValue('cpfCNPJClient'),
+            fantasyNameClient: getValue('fantasyNameClient'),
+            streetClient: getValue('streetClient'),
+            numberAddressClient: getValue('numberAddressClient'),
+            stateClient: getValue('stateClient'),
+            neighborhoodClient: getValue('neighborhoodClient'),
+            cityClient: getValue('cityClient'),
+            zipcodeClient: getValue('zipcodeClient'),
+            phoneClient: getValue('phoneClient'),
+            emailClient: getValue('emailClient')
         }
 
-        const serviceData = []
-        const descriptions = document.querySelectorAll('.descriptionService')
-        const amounts = document.querySelectorAll('.amountService')
+        const includeServices = getChecked('includeServices')
+        const includeEquipments = getChecked('includeEquipments')
 
-        const equipmentData = []
-        const codes = document.querySelectorAll('.codeEquipment')
-        const names = document.querySelectorAll('.nameEquipment')
-        const quantities = document.querySelectorAll('.quantityEquipment')
-        const unitPrices = document.querySelectorAll('.unitPriceEquipment')
-        const subtotals = document.querySelectorAll('.subtotalEquipment')
-
-        const observations = document.getElementById('observations').value
-
-        for (let i = 0; i < codes.length; i++) {
-            let unitPrice = unitPrices[i].value.replace(/[^\d,]/g, '').replace(',', '.')
-            unitPrice = parseFloat(unitPrice) || 0
-            let subtotal = subtotals[i].value.replace(/[^\d,]/g, '').replace(',', '.')
-            subtotal = parseFloat(subtotal) || 0
-            equipmentData.push({
-                codeEquipment: codes[i].value,
-                nameEquipment: names[i].value,
-                quantityEquipment: parseInt(quantities[i].value) || 0,
-                unitPriceEquipment: unitPrice,
-                subtotalEquipment: subtotal
-            })
+        let serviceData = []
+        if (includeServices) {
+            const descriptions = document.querySelectorAll('.descriptionService')
+            const amounts = document.querySelectorAll('.amountService')
+            for (let i = 0; i < descriptions.length; i++) {
+                serviceData.push({
+                    descriptionService: descriptions[i].value,
+                    amountService: amounts[i].value
+                })
+            }
         }
 
-        for (let i = 0; i < descriptions.length; i++) {
-            serviceData.push({
-                descriptionService: descriptions[i].value,
-                amountService: amounts[i].value
-            })
+        let equipmentData = []
+        if (includeEquipments) {
+            const codes = document.querySelectorAll('.codeEquipment')
+            const names = document.querySelectorAll('.nameEquipment')
+            const quantities = document.querySelectorAll('.quantityEquipment')
+            const unitPrices = document.querySelectorAll('.unitPriceEquipment')
+            const subtotals = document.querySelectorAll('.subtotalEquipment')
+            for (let i = 0; i < codes.length; i++) {
+                let unitPrice = unitPrices[i].value.replace(/[^\d,]/g, '').replace(',', '.')
+                unitPrice = parseFloat(unitPrice) || 0
+                let subtotal = subtotals[i].value.replace(/[^\d,]/g, '').replace(',', '.')
+                subtotal = parseFloat(subtotal) || 0
+                equipmentData.push({
+                    codeEquipment: codes[i].value,
+                    nameEquipment: names[i].value,
+                    quantityEquipment: parseInt(quantities[i].value) || 0,
+                    unitPriceEquipment: unitPrice,
+                    subtotalEquipment: subtotal
+                })
+            }
         }
 
         const orcamento = {
@@ -133,7 +137,7 @@ export async function saveDataToFirestore() {
             cliente: clientFormData,
             servicos: serviceData,
             equipamentos: equipmentData,
-            observacoes: observations,
+            observacoes: getValue('observations'),
             dataCriacao: new Date(),
             numericId: numericId
         }
@@ -141,7 +145,6 @@ export async function saveDataToFirestore() {
         await setDoc(doc(getUserCollection('orcamentos'), numericId.toString()), orcamento)
 
         alert(`Orçamento salvo com sucesso! ID do orçamento: ${numericId}`)
-
         return numericId
     } catch (e) {
         console.error("Erro ao adicionar documento: ", e)

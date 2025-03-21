@@ -65,6 +65,9 @@ async function init() {
             populateServiceSelect(services)
             setupEquipmentListeners()
 
+            // Inicializar visibilidade dos botões e painéis
+            initializeVisibility()
+
             const urlParams = new URLSearchParams(window.location.search)
             const id = urlParams.get('id')
             const type = urlParams.get('type')
@@ -216,25 +219,47 @@ function setupEquipmentListeners() {
     observer.observe(equipmentsContainer, { childList: true })
 }
 
-const includeEquipmentsCheckbox = document.getElementById('includeEquipments')
-const materialsBtn = document.getElementById('materials-btn')
-const equipmentsPanel = document.getElementById('equipments-panel')
-
-if (includeEquipmentsCheckbox && materialsBtn && equipmentsPanel) {
-    includeEquipmentsCheckbox.addEventListener('change', function() {
-        if (this.checked) {
-            materialsBtn.style.display = 'block'
-            if (!materialsBtn.classList.contains('active')) {
-                materialsBtn.click()
-            }
-        } else {
-            materialsBtn.style.display = 'none'
-            materialsBtn.classList.remove('active')
-            equipmentsPanel.style.display = 'none'
+// Função para atualizar a visibilidade dos botões e painéis
+function updateVisibility(checkbox, btn, panel) {
+    if (checkbox.checked) {
+        btn.style.display = 'block'
+        if (!btn.classList.contains('active')) {
+            btn.click()
         }
-    })
-} else {
-    console.warn('Checkbox de equipamentos ou elementos relacionados não encontrados.')
+    } else {
+        btn.style.display = 'none'
+        btn.classList.remove('active')
+        panel.style.display = 'none'
+    }
+}
+
+// Função para inicializar a visibilidade com base no estado inicial dos checkboxes
+function initializeVisibility() {
+    const includeServicesCheckbox = document.getElementById('includeServices')
+    const servicesBtn = document.getElementById('services-btn')
+    const servicesPanel = document.getElementById('services-panel')
+
+    const includeEquipmentsCheckbox = document.getElementById('includeEquipments')
+    const materialsBtn = document.getElementById('materials-btn')
+    const equipmentsPanel = document.getElementById('equipments-panel')
+
+    if (includeServicesCheckbox && servicesBtn && servicesPanel) {
+        updateVisibility(includeServicesCheckbox, servicesBtn, servicesPanel)
+        includeServicesCheckbox.addEventListener('change', () => {
+            updateVisibility(includeServicesCheckbox, servicesBtn, servicesPanel)
+        })
+    } else {
+        console.warn('Checkbox de serviços ou elementos relacionados não encontrados.')
+    }
+
+    if (includeEquipmentsCheckbox && materialsBtn && equipmentsPanel) {
+        updateVisibility(includeEquipmentsCheckbox, materialsBtn, equipmentsPanel)
+        includeEquipmentsCheckbox.addEventListener('change', () => {
+            updateVisibility(includeEquipmentsCheckbox, materialsBtn, equipmentsPanel)
+        })
+    } else {
+        console.warn('Checkbox de equipamentos ou elementos relacionados não encontrados.')
+    }
 }
 
 window.onload = init

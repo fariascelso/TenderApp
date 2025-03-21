@@ -25,7 +25,7 @@
             Criar Orçamento
         </h1>
 
-        <!-- Link para a página de listagem (inicialmente oculto) -->
+        <!-- Menu lateral -->
         <div id="menu-links" class="hidden">
             <a href="pages/listorders.html">Listar Orçamentos</a>
             <a href="pages/listclients.html">Listar Clientes</a>
@@ -34,6 +34,7 @@
             </button>
         </div>  
 
+        <!-- Botão flutuante -->
         <div class="floating-menu">
             <button id="main-fab">
                 <i class="fas fa-plus"></i>
@@ -92,6 +93,7 @@
             </div>
         </div>
 
+        <!-- Seção de Logo -->
         <button class="accordion" data-group="logo-panel">Logo da Empresa</button>
         <div class="panel" id="logo-panel">
             <label for="logoUpload">Carregar Logo da Empresa:</label>
@@ -100,8 +102,8 @@
             <img id="logoPreview" src="" alt="Pré-visualização do Logo" style="max-width: 200px; max-height: 200px; display: none;">
         </div>
 
+        <!-- Seção de Dados da Empresa -->
         <button class="accordion" data-group="company-data-panel">Dados da Empresa</button>
-
         <div class="panel" id="company-data-panel">
             <label for="companySelect">Selecione uma Empresa:</label>
             <select id="companySelect" onchange="App.fillCompanyData()">
@@ -144,8 +146,8 @@
             </form>
         </div>
 
+        <!-- Seção de Dados do Cliente -->
         <button class="accordion" data-group="client-data-panel">Dados do Cliente</button>
-
         <div class="panel" id="client-data-panel">
             <label for="clientSelect">Selecione um Cliente:</label>
             <select id="clientSelect" onchange="App.fillClientData()">
@@ -156,7 +158,7 @@
                 <label for="nameClient">Nome do Cliente:</label>
                 <input type="text" id="nameClient" value="">
 
-                <label for="cpfCNPJClient">CNPJ do cliente:</label>
+                <label for="cpfCNPJClient">CNPJ/CPF do cliente:</label>
                 <input type="text" id="cpfCNPJClient" value="">
 
                 <label for="fantasyNameClient">Nome fantasia do cliente:</label>
@@ -188,48 +190,56 @@
             </form>
         </div>
 
-        <button class="accordion" data-group="services-container">Serviços que serão realizados</button>
-        <div class="panel" id="services-container">
-            <!-- Campo de seleção de serviços -->
+        <!-- Checkboxes para Serviços e Equipamentos -->
+        <div class="checkbox-container">
+            <div class="checkbox-group">
+                <input type="checkbox" id="includeServices">
+                <label for="includeServices">Incluir Serviços</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="includeEquipments">
+                <label for="includeEquipments">Incluir Equipamentos</label>
+            </div>
+        </div>
+
+        <!-- Seção de Serviços -->
+        <button id="services-btn" class="accordion" data-group="services-panel">Serviços que serão realizados</button>
+        <div class="panel" id="services-panel">
             <label for="serviceSelect">Selecione um Serviço:</label>
             <select id="serviceSelect" onchange="App.fillServiceData()">
                 <option value="">Carregando serviços...</option>
             </select>
-
-            <!-- Botão de adicionar serviço integrado ao painel de serviços -->
             <button id="add-service-btn">
                 <i class="fas fa-plus"></i> Adicionar Serviço
             </button>
+            <div id="services-container">
+                <!-- Serviços adicionados dinamicamente aqui -->
+            </div>
         </div>
 
-        <div class="checkbox-container">
-            <input type="checkbox" id="includeEquipments" />
-            <label for="includeEquipments">Incluir equipamentos no orçamento?</label>
-        </div>
-
-        <button id="materials-btn" style="display: none;" class="accordion" data-group="equipments-panel">Materiais
-            necessários</button>
+        <!-- Seção de Equipamentos -->
+        <button id="materials-btn" class="accordion" data-group="equipments-panel">Materiais necessários</button>
         <div class="panel" id="equipments-panel">
-            <!-- Campo de seleção de equipamentos -->
             <label for="equipmentSelect">Selecione um Equipamento:</label>
             <select id="equipmentSelect" onchange="App.fillEquipmentData()">
                 <option value="">Carregando equipamentos...</option>
             </select>
-
             <button id="add-equipment-btn">
                 <i class="fas fa-plus"></i> Cadastrar Material / Equipamento
             </button>
             <div id="equipments-container">
+                <!-- Equipamentos adicionados dinamicamente aqui -->
             </div>
         </div>
 
+        <!-- Seção de Observações -->
         <button class="accordion" data-group="observations-data-panel">Observações</button>
-
         <div class="panel" id="observations-data-panel">
             <label for="observations">Informações para serem destacadas no orçamento:</label>
             <textarea id="observations" placeholder="Insira as informações aqui..."></textarea>
         </div>
 
+        <!-- Botões de Ação -->
         <div class="button-container">
             <button onclick="App.saveDataToFirestore()" id="save-budget-btn">
                 Salvar Orçamento
@@ -241,6 +251,7 @@
             </button>
         </div>
     </div>
+
     <script type="module" src="./scripts/modals/modalHandlers.js"></script>
     <script type="module" src="./scripts/main.js"></script>
 </body>

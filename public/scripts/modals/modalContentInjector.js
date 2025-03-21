@@ -1,3 +1,4 @@
+// modalContentInjector.js
 import { applyInputMasks } from '../utils/inputMasks.js'
 import { saveClientToFirestore, saveCompanyToFirestore, saveEquipmentToFirestore, saveServiceToFirestore } from '../firebase/firestoreOperations.js'
 
@@ -6,54 +7,78 @@ export function injectModalContent(sourceId, targetId) {
     const targetElement = document.getElementById(targetId)
 
     console.log(`Tentando injetar conteúdo de ${sourceId} para ${targetId}`)
-    if (sourceElement && targetElement) {
-        console.log(`Elementos encontrados: ${sourceId} e ${targetId}`)
-        const clonedContent = sourceElement.cloneNode(true)
-        console.log('Conteúdo clonado:', clonedContent.innerHTML)
+    if (!sourceElement || !targetElement) {
+        console.error(`Elemento ${sourceId} ou ${targetId} não encontrado.`)
+        return
+    }
 
-        clonedContent.classList.remove('panel')
-        clonedContent.id = ''
+    let contentToInject
+
+    if (targetId === 'equipmentModalContent') {
+        // Formulário fixo para cadastrar materiais
+        contentToInject = document.createElement('div')
+        contentToInject.innerHTML = `
+            <div class="equipment-item">
+                <div class="field-group code-name">
+                    <label for="codeEquipment">Código:</label>
+                    <input type="text" class="codeEquipment" placeholder="Código do equipamento">
+                </div>
+                <div class="field-group code-name">
+                    <label for="nameEquipment">Descrição:</label>
+                    <input type="text" class="nameEquipment" placeholder="Nome do equipamento">
+                </div>
+                <div class="field-group quantity-price-subtotal">
+                    <label for="unitPriceEquipment">Valor Unitário:</label>
+                    <input type="text" class="unitPriceEquipment" placeholder="Preço unitário">
+                </div>
+            </div>
+        `
+    } else if (targetId === 'serviceModalContent') {
+        // Formulário fixo para cadastrar serviços
+        contentToInject = document.createElement('div')
+        contentToInject.innerHTML = `
+            <div class="service-item">
+                <div class="field-group">
+                    <label for="descriptionService">Descrição do Serviço:</label>
+                    <input type="text" class="descriptionService" placeholder="Descrição do serviço">
+                </div>
+                <div class="field-group">
+                    <label for="amountService">Valor:</label>
+                    <input type="text" class="amountService" placeholder="Valor do serviço">
+                </div>
+            </div>
+        `
+    } else {
+        // Para outros casos (clientes, empresas), usa o conteúdo clonado
+        contentToInject = sourceElement.cloneNode(true)
+        contentToInject.classList.remove('panel')
+        contentToInject.id = ''
 
         if (targetId === 'clientModalContent') {
-            const clientSelectLabel = clonedContent.querySelector('label[for="clientSelect"]')
-            const clientSelect = clonedContent.querySelector('#clientSelect')
+            const clientSelectLabel = contentToInject.querySelector('label[for="clientSelect"]')
+            const clientSelect = contentToInject.querySelector('#clientSelect')
             if (clientSelectLabel) clientSelectLabel.remove()
             if (clientSelect) clientSelect.remove()
         } else if (targetId === 'companyModalContent') {
-            const companySelectLabel = clonedContent.querySelector('label[for="companySelect"]')
-            const companySelect = clonedContent.querySelector('#companySelect')
+            const companySelectLabel = contentToInject.querySelector('label[for="companySelect"]')
+            const companySelect = contentToInject.querySelector('#companySelect')
             if (companySelectLabel) companySelectLabel.remove()
             if (companySelect) companySelect.remove()
-        } else if (targetId === 'equipmentModalContent') {
-            const addEquipmentBtn = clonedContent.querySelector('#add-equipment-btn')
-            if (addEquipmentBtn) addEquipmentBtn.remove()
-            const quantityLabel = clonedContent.querySelector('label[for="quantityEquipment"]')
-            const quantityInput = clonedContent.querySelector('.quantityEquipment')
-            if (quantityLabel) quantityLabel.remove()
-            if (quantityInput) quantityInput.remove()
-            const subtotalLabel = clonedContent.querySelector('label[for="subtotalEquipment"]')
-            const subtotalInput = clonedContent.querySelector('.subtotalEquipment')
-            if (subtotalLabel) subtotalLabel.remove()
-            if (subtotalInput) subtotalInput.remove()
-        } else if (targetId === 'serviceModalContent') {
-            const addServiceBtn = clonedContent.querySelector('#add-service-btn')
-            if (addServiceBtn) addServiceBtn.remove()
         }
-
-        targetElement.innerHTML = ''
-        targetElement.appendChild(clonedContent)
-
-        applyInputMasks(targetElement)
-
-        const saveButton = document.createElement('button')
-        saveButton.textContent = 'Salvar'
-        saveButton.className = 'modal-save-btn'
-        saveButton.addEventListener('click', () => saveModalData(targetId))
-        targetElement.appendChild(saveButton)
-        console.log('Conteúdo após injeção:', targetElement.innerHTML)
-    } else {
-        console.error(`Elemento ${sourceId} ou ${targetId} não encontrado.`)
     }
+
+    targetElement.innerHTML = ''
+    targetElement.appendChild(contentToInject)
+
+    applyInputMasks(targetElement)
+
+    const saveButton = document.createElement('button')
+    saveButton.textContent = 'Salvar'
+    saveButton.className = 'modal-save-btn'
+    saveButton.addEventListener('click', () => saveModalData(targetId))
+    targetElement.appendChild(saveButton)
+
+    console.log('Conteúdo após injeção:', targetElement.innerHTML)
 }
 
 async function saveModalData(targetId) {

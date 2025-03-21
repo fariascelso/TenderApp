@@ -57,32 +57,41 @@ export async function saveDataToFirestore() {
     try {
         const numericId = await generateNumericId()
 
+        const getElementValue = (id) => {
+            const element = document.getElementById(id)
+            if (!element) {
+                console.warn(`Elemento com ID '${id}' não encontrado. Usando valor padrão vazio.`)
+                return ''
+            }
+            return element.value
+        }
+
         const issuingCompany = {
-            nomeEmpresa: document.getElementById('nameBusiness').value,
-            fantasyName: document.getElementById('fantasyName').value,
-            cnpj: document.getElementById('cpfCnpj').value,
-            endereco: document.getElementById('address').value,
-            numero: document.getElementById('numberAddress').value,
-            bairro: document.getElementById('neighborhood').value,
-            estado: document.getElementById('state').value,
-            cidade: document.getElementById('city').value,
-            cep: document.getElementById('zipcode').value,
-            telefone: document.getElementById('phone').value,
-            email: document.getElementById('email').value
+            nomeEmpresa: getElementValue('nameBusiness'),
+            fantasyName: getElementValue('fantasyName'),
+            cnpj: getElementValue('cpfCnpj'),
+            endereco: getElementValue('address'),
+            numero: getElementValue('numberAddress'),
+            bairro: getElementValue('neighborhood'),
+            estado: getElementValue('state'),
+            cidade: getElementValue('city'),
+            cep: getElementValue('zipcode'),
+            telefone: getElementValue('phone'),
+            email: getElementValue('email')
         }
 
         const clientFormData = {
-            nameClient: document.getElementById('nameClient').value,
-            cpfCNPJClient: document.getElementById('cpfCNPJClient').value,
-            fantasyNameClient: document.getElementById('fantasyNameClient').value,
-            streetClient: document.getElementById('streetClient').value,
-            numberAddressClient: document.getElementById('numberAddressClient').value,
-            stateClient: document.getElementById('stateClient').value,
-            neighborhoodClient: document.getElementById('neighborhoodClient').value,
-            cityClient: document.getElementById('cityClient').value,
-            zipcodeClient: document.getElementById('zipcodeClient').value,
-            phoneClient: document.getElementById('phoneClient').value,
-            emailClient: document.getElementById('emailClient').value,
+            nameClient: getElementValue('nameClient'),
+            cpfCNPJClient: getElementValue('cpfCNPJClient'),
+            fantasyNameClient: getElementValue('fantasyNameClient'),
+            streetClient: getElementValue('streetClient'),
+            numberAddressClient: getElementValue('numberAddressClient'),
+            stateClient: getElementValue('stateClient'),
+            neighborhoodClient: getElementValue('neighborhoodClient'),
+            cityClient: getElementValue('cityClient'),
+            zipcodeClient: getElementValue('zipcodeClient'),
+            phoneClient: getElementValue('phoneClient'),
+            emailClient: getElementValue('emailClient')
         }
 
         const serviceData = []

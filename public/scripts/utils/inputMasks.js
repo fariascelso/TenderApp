@@ -4,17 +4,6 @@ export function applyInputMasks(container) {
         return
     }
 
-    const inputs = container.querySelectorAll('input')
-    inputs.forEach(input => {
-        if (input.classList.contains('unitPriceEquipment')) {
-            input.addEventListener('input', () => {
-                let value = input.value.replace(/\D/g, '')
-                value = (value / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-                input.value = value
-            })
-        }
-    })
-
     const phoneInputs = container.querySelectorAll('#phone, #phoneClient')
     phoneInputs.forEach(input => {
         IMask(input, {

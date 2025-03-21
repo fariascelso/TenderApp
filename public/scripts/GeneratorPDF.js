@@ -18,36 +18,52 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
     const margin = { top: 2, bottom: 2, left: 5, right: 5 }
     const pageWidth = doc.internal.pageSize.getWidth()
 
+    // Função auxiliar para pegar valores com segurança
+    const getValue = (id) => {
+        const element = document.getElementById(id)
+        return element ? element.value : ''
+    }
+
+    const getChecked = (id) => {
+        const element = document.getElementById(id)
+        return element ? element.checked : false
+    }
+
+    const getAllValues = (selector) => {
+        const elements = document.querySelectorAll(selector)
+        return Array.from(elements).map(el => el.value || '')
+    }
+
     const issuingCompany = {
-        nameBusiness: document.getElementById("nameBusiness").value,
-        fantasyName: document.getElementById("fantasyName").value,
-        cpfCnpj: document.getElementById("cpfCnpj").value,
-        street: document.getElementById("address").value,
-        numberAddress: document.getElementById("numberAddress").value,
-        state: document.getElementById("state").value,
-        neighborhood: document.getElementById("neighborhood").value,
-        city: document.getElementById("city").value,
-        zipcode: document.getElementById("zipcode").value,
-        phone: document.getElementById("phone").value,
-        email: document.getElementById("email").value,
+        nameBusiness: getValue("nameBusiness"),
+        fantasyName: getValue("fantasyName"),
+        cpfCnpj: getValue("cpfCnpj"),
+        street: getValue("address"),
+        numberAddress: getValue("numberAddress"),
+        state: getValue("state"),
+        neighborhood: getValue("neighborhood"),
+        city: getValue("city"),
+        zipcode: getValue("zipcode"),
+        phone: getValue("phone"),
+        email: getValue("email")
     }
 
     const client = {
-        nameClient: document.getElementById('nameClient').value,
-        cpfCNPJClient: document.getElementById('cpfCNPJClient').value,
-        fantasyNameClient: document.getElementById('fantasyNameClient').value,
-        streetClient: document.getElementById("streetClient").value,
-        numberAddressClient: document.getElementById("numberAddressClient").value,
-        stateClient: document.getElementById("stateClient").value,
-        neighborhoodClient: document.getElementById("neighborhoodClient").value,
-        cityClient: document.getElementById("cityClient").value,
-        zipcodeClient: document.getElementById("zipcodeClient").value,
-        phoneClient: document.getElementById("phoneClient").value,
-        emailClient: document.getElementById("emailClient").value,
+        nameClient: getValue('nameClient'),
+        cpfCNPJClient: getValue('cpfCNPJClient'),
+        fantasyNameClient: getValue('fantasyNameClient'),
+        streetClient: getValue("streetClient"),
+        numberAddressClient: getValue("numberAddressClient"),
+        stateClient: getValue("stateClient"),
+        neighborhoodClient: getValue("neighborhoodClient"),
+        cityClient: getValue("cityClient"),
+        zipcodeClient: getValue("zipcodeClient"),
+        phoneClient: getValue("phoneClient"),
+        emailClient: getValue("emailClient")
     }
 
-    const observations = document.getElementById('observations').value
-    const includeEquipments = document.getElementById('includeEquipments').checked
+    const observations = getValue('observations')
+    const includeEquipments = getChecked('includeEquipments')
 
     if (uploadedLogo) {
         const logoWidth = 25
@@ -82,7 +98,7 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
 
     doc.setFontSize(10)
 
-    const nameOrder = issuingCompany.fantasyName || issuingCompany.nameBusiness
+    const nameOrder = issuingCompany.fantasyName || issuingCompany.nameBusiness || 'N/A'
 
     doc.autoTable({
         startY: lastTable,
@@ -90,7 +106,7 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
             [{ content: 'EMPRESA RESPONSÁVEL', colSpan: 2 }]
         ],
         headStyles: HeaderStyles.CellPadding,
-        margin: margin,
+        margin: margin
     })
 
     let header = {
@@ -122,15 +138,15 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
             ]
         ],
         columnStyles: ColumnStyles.Left,
-        margin: margin,
+        margin: margin
     })
 
     doc.autoTable({
         startY: lastTable = updateLastTablePosition() - 1,
         body: [
             [
-                `Endereço: ${client.streetClient}, ${client.numberAddressClient}, ${client.neighborhoodClient} ${client.zipcodeClient}\n ${client.cityClient} - ${client.stateClient}  `
-            ],
+                `Endereço: ${client.streetClient}, ${client.numberAddressClient}, ${client.neighborhoodClient} ${client.zipcodeClient}\n ${client.cityClient} - ${client.stateClient}`
+            ]
         ],
         columnStyles: ColumnStyles.Left,
         margin: margin
@@ -142,18 +158,17 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
             [{ content: 'SERVIÇOS QUE SERÃO REALIZADOS', colSpan: 2 }]
         ],
         headStyles: HeaderStyles.CellPadding,
-        margin: margin,
+        margin: margin
     })
 
     const services = []
-
-    const descriptionServices = document.querySelectorAll('.descriptionService')
-    const amountServices = document.querySelectorAll('.amountService')
+    const descriptionServices = getAllValues('.descriptionService')
+    const amountServices = getAllValues('.amountService')
 
     for (let i = 0; i < descriptionServices.length; i++) {
         services.push({
-            descriptionService: descriptionServices[i].value,
-            amountService: amountServices[i].value
+            descriptionService: descriptionServices[i],
+            amountService: amountServices[i] || 'R$ 0,00'
         })
     }
 
@@ -164,10 +179,10 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
             service.descriptionService,
             service.amountService
         ]),
-        headStyles: { fillColor: [0, 0, 6], halign: 'center', lineWidth: 0.5, },
+        headStyles: { fillColor: [0, 0, 6], halign: 'center', lineWidth: 0.5 },
         columnStyles: {
             1: { cellWidth: 100, halign: 'center' },
-            2: { cellWidth: 30, halign: 'center' },
+            2: { cellWidth: 30, halign: 'center' }
         },
         margin: { left: 5, right: 5 }
     })
@@ -175,30 +190,29 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
     let totalEquipments = 0
 
     if (includeEquipments) {
-
         doc.autoTable({
             startY: lastTable = updateLastTablePosition(),
             head: [
                 [{ content: 'EQUIPAMENTOS NECESSÁRIOS', colSpan: 2 }]
             ],
             headStyles: HeaderStyles.CellPadding,
-            margin: margin,
+            margin: margin
         })
 
         const equipments = []
-        const codes = document.querySelectorAll('.codeEquipment')
-        const names = document.querySelectorAll('.nameEquipment')
-        const quantities = document.querySelectorAll('.quantityEquipment')
-        const unitPrices = document.querySelectorAll('.unitPriceEquipment')
-        const subtotals = document.querySelectorAll('.subtotalEquipment')
+        const codes = getAllValues('.codeEquipment')
+        const names = getAllValues('.nameEquipment')
+        const quantities = getAllValues('.quantityEquipment')
+        const unitPrices = getAllValues('.unitPriceEquipment')
+        const subtotals = getAllValues('.subtotalEquipment')
 
         for (let i = 0; i < codes.length; i++) {
             equipments.push({
-                code: codes[i].value,
-                name: names[i].value,
-                quantity: quantities[i].value,
-                unitPrice: unitPrices[i].value,
-                subtotal: subtotals[i].value
+                code: codes[i],
+                name: names[i],
+                quantity: quantities[i] || '0',
+                unitPrice: unitPrices[i] || 'R$ 0,00',
+                subtotal: subtotals[i] || 'R$ 0,00'
             })
         }
 
@@ -207,7 +221,7 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
             equipment.name,
             equipment.quantity,
             equipment.unitPrice,
-            equipment.subtotal,
+            equipment.subtotal
         ])
 
         doc.autoTable({
@@ -217,16 +231,16 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
             headStyles: HeaderStyles.Materials,
             columnStyles: ColumnStyles.Materials,
             styles: {
-                overflow: "linebreak", // Permite quebra de texto
-                cellPadding: 4, // Aumentado para melhor legibilidade
-                fontSize: 7,
+                overflow: "linebreak",
+                cellPadding: 4,
+                fontSize: 7
             },
             didParseCell: (data) => {
                 if (data.section === "head") {
-                    data.cell.styles.textColor = COLORS.WHITE // Garante texto branco no cabeçalho
+                    data.cell.styles.textColor = COLORS.WHITE
                 }
             },
-            margin: margin,
+            margin: margin
         })
 
         totalEquipments = equipments.reduce((sum, equipment) => {
@@ -243,7 +257,7 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
             [{ content: 'VALOR TOTAL DO ORÇAMENTO', colSpan: 2 }]
         ],
         headStyles: HeaderStyles.CellPadding,
-        margin: margin,
+        margin: margin
     })
 
     function parseCurrency(value) {
@@ -261,13 +275,7 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
         return sum + value
     }, 0)
 
-    let totalBudget
-
-    if (includeEquipments) {
-        totalBudget = totalServices + totalEquipments
-    } else {
-        totalBudget = totalServices
-    }
+    let totalBudget = includeEquipments ? totalServices + totalEquipments : totalServices
 
     doc.autoTable({
         startY: lastTable = updateLastTablePosition(),
@@ -277,7 +285,7 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
                 { content: formatCurrency(totalBudget), styles: { halign: 'left', fontStyle: 'bold', fontSize: 15 } }
             ]
         ],
-        margin: { left: 5, right: 5 },
+        margin: { left: 5, right: 5 }
     })
 
     doc.autoTable({
@@ -286,7 +294,7 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
             [{ content: 'OBSERVAÇÕES GERAIS', colSpan: 2 }]
         ],
         headStyles: HeaderStyles.CellPadding,
-        margin: margin,
+        margin: margin
     })
 
     function getValidityDate() {
@@ -301,7 +309,7 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
         startY: lastTable = updateLastTablePosition() - 1,
         body: [
             [
-                `Orçamento válido até ${validityDate}\n\n${observations}`,
+                `Orçamento válido até ${validityDate}\n\n${observations}`
             ]
         ],
         columnStyles: ColumnStyles.Left,
@@ -314,7 +322,7 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
             [{ content: 'ASSINATURAS', colSpan: 2 }]
         ],
         headStyles: HeaderStyles.CellPadding,
-        margin: margin,
+        margin: margin
     })
 
     doc.autoTable({

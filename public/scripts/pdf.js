@@ -1,14 +1,28 @@
-import { generateNumericId } from './firebase/firestoreOperations.js'
 import { toggleButtonLoading } from './utils/helpers.js'
 import { generatorPDF } from './GeneratorPDF.js'
 
 let uploadedLogo = null
 
-export async function generatePDFWithLogo() {
+const getLocalCounter = () => {
+    const storedValue = localStorage.getItem('localNumericIdCounter')
+    return storedValue ? parseInt(storedValue) : 0
+}
+
+const updateLocalCounter = (value) => {
+    localStorage.setItem('localNumericIdCounter', value.toString())
+}
+
+export async function generatePDFWithLogo(numericId) {
     toggleButtonLoading('generate-pdf-btn', true)
     try {
-        const numericId = await generateNumericId()
-        await generatorPDF(uploadedLogo, numericId)
+        if (!numericId) {
+            let localCounter = getLocalCounter()
+            localCounter += 1
+            updateLocalCounter(localCounter)
+            await generatorPDF(uploadedLogo, localCounter)
+        }else {
+            await generatorPDF(uploadedLogo, numericId)
+        }
     } catch (error) {
         console.error("Erro ao gerar PDF:", error)
         alert("Erro ao gerar PDF. Veja o console para mais detalhes.")

@@ -132,9 +132,12 @@ export async function saveDataToFirestore() {
         await setDoc(doc(getUserCollection('orcamentos'), numericId.toString()), orcamento)
 
         alert(`Orçamento salvo com sucesso! ID do orçamento: ${numericId}`)
+
+        return numericId
     } catch (e) {
         console.error("Erro ao adicionar documento: ", e)
         alert("Erro ao salvar orçamento.")
+        throw e
     } finally {
         toggleButtonLoading('save-budget-btn', false)
     }
@@ -398,6 +401,7 @@ export async function loadOrcamentoForEdit(id) {
         const orcamentoDoc = await getDoc(getUserDoc('orcamentos', id))
         if (orcamentoDoc.exists()) {
             const data = orcamentoDoc.data()
+            currentNumericId = data.numericId
 
             document.getElementById('nameBusiness').value = data.empresa.nomeEmpresa || ""
             document.getElementById('fantasyName').value = data.empresa.fantasyName || ""

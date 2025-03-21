@@ -18,9 +18,18 @@ import { fillEquipmentData, fillServiceData } from './equipmentsAndServices.js'
 import { fillCompanyData, fillClientData } from './formHandlers.js'
 import { navigateToListarOrcamentos, navigateToCriarOrcamento } from './navigation.js'
 
+let currentNumericId = null
+
 const App = {
-    saveDataToFirestore,
-    generatePDFWithLogo,
+    saveDataToFirestore: async () => {
+        const numericId = await saveDataToFirestore()
+        currentNumericId = numericId
+        generatePDFWithLogo(currentNumericId)
+        return numericId
+    },
+    generatePDFWithLogo: () => {
+        generatePDFWithLogo(currentNumericId)
+    },
     handleLogoUpload,
     loadEquipments,
     loadServices,

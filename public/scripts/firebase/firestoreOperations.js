@@ -377,7 +377,7 @@ export async function saveModalData(targetId) {
     }
 }
 
-export async function loadClientForEdit(id) {
+export async function loadClientForEdit(id, mode = 'edit') {
     try {
         const clientDoc = await getDoc(getUserDoc('clientes', id))
         if (clientDoc.exists()) {
@@ -526,7 +526,7 @@ export async function updateClientToFirestore(id) {
     try {
         await updateDoc(getUserDoc('clientes', id), clientData)
         alert("Cliente atualizado com sucesso!")
-        window.location.href = "listclients.html"
+        window.location.href = "pages/listclients.html"
     } catch (error) {
         console.error("Erro ao atualizar cliente:", error)
         alert("Erro ao atualizar cliente.")

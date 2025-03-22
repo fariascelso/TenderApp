@@ -69,11 +69,11 @@ async function loadClients() {
 }
 
 function viewClient(id) {
-    window.location.href = `../index.html?id=${id}&view=true&type=client`
+    window.location.href = `../index.html?id=${id}&mode=view&type=client`;
 }
 
 function editClient(id) {
-    window.location.href = `../index.html?id=${id}&type=client`
+    window.location.href = `../index.html?id=${id}&mode=edit&type=client`;
 }
 
 async function deleteClient(id) {

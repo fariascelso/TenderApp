@@ -65,33 +65,51 @@ async function init() {
             populateServiceSelect(services)
             setupEquipmentListeners()
 
-            // Inicializar visibilidade dos botões e painéis
             initializeVisibility()
 
             const urlParams = new URLSearchParams(window.location.search)
             const id = urlParams.get('id')
             const type = urlParams.get('type')
-            const viewMode = urlParams.get('view') === 'true'
+            const mode = urlParams.get('mode')
 
-            if (id && type === 'client') {
-                await loadClientForEdit(id)
-                if (viewMode) {
-                    const inputs = document.querySelectorAll('input, textarea, select')
-                    inputs.forEach(input => {
-                        input.disabled = true
-                    })
-                    const saveButton = document.querySelector('.button-container button:first-child')
-                    if (saveButton) saveButton.style.display = 'none'
-                }
-            } else if (id && type === 'orcamento') {
-                await loadOrcamentoForEdit(id)
-                if (viewMode) {
-                    const inputs = document.querySelectorAll('input, textarea, select')
-                    inputs.forEach(input => {
-                        input.disabled = true
-                    })
-                    const saveButton = document.querySelector('.button-container button:first-child')
-                    if (saveButton) saveButton.style.display = 'none'
+            if (id && type) {
+                if (type === 'client') {
+                    await loadClientForEdit(id, mode || 'edit')
+                    const logoPanel = document.querySelector('#logo-panel')
+                    const companyPanel = document.querySelector('#company-data-panel')
+                    const servicesPanel = document.querySelector('#services-container')
+                    const equipmentsPanel = document.querySelector('#equipments-container')
+                    const observationsPanel = document.querySelector('#observations-data-panel')
+                    const pdfButton = document.querySelector('#generate-pdf-btn')
+
+                    if (logoPanel) logoPanel.style.display = 'none'
+                    else console.warn('Elemento #logoPanel não encontrado')
+                    if (companyPanel) companyPanel.style.display = 'none'
+                    else console.warn('Elemento #company-data-panel não encontrado')
+                    if (servicesPanel) servicesPanel.style.display = 'none'
+                    else console.warn('Elemento #services-container não encontrado')
+                    if (equipmentsPanel) equipmentsPanel.style.display = 'none'
+                    else console.warn('Elemento #equipments-container não encontrado')
+                    if (observationsPanel) observationsPanel.style.display = 'none'
+                    else console.warn('Elemento #observations-data-panel não encontrado')
+                    if (pdfButton) pdfButton.style.display = 'none'
+                    else console.warn('Elemento #generate-pdf-btn não encontrado')
+                    
+                    // Esconder os botões accordion e checkboxes
+                    document.querySelector('.accordion[data-group="logo-panel"]').style.display = 'none'
+                    document.querySelector('.accordion[data-group="company-data-panel"]').style.display = 'none'
+                    document.querySelector('#services-btn').style.display = 'none'
+                    document.querySelector('#materials-btn').style.display = 'none'
+                    document.querySelector('.accordion[data-group="observations-data-panel"]').style.display = 'none'
+                    document.querySelector('.checkbox-container').style.display = 'none'
+                } else if (type === 'orcamento') {
+                    await loadOrcamentoForEdit(id)
+                    if (mode === 'view') {
+                        const inputs = document.querySelectorAll('input, textarea, select')
+                        inputs.forEach(input => input.disabled = true)
+                        const saveButton = document.querySelector('.button-container button:first-child')
+                        if (saveButton) saveButton.style.display = 'none'
+                    }
                 }
             }
 
@@ -219,7 +237,6 @@ function setupEquipmentListeners() {
     observer.observe(equipmentsContainer, { childList: true })
 }
 
-// Função para atualizar a visibilidade dos botões e painéis
 function updateVisibility(checkbox, btn, panel) {
     if (checkbox.checked) {
         btn.style.display = 'block'
@@ -233,7 +250,6 @@ function updateVisibility(checkbox, btn, panel) {
     }
 }
 
-// Função para inicializar a visibilidade com base no estado inicial dos checkboxes
 function initializeVisibility() {
     const includeServicesCheckbox = document.getElementById('includeServices')
     const servicesBtn = document.getElementById('services-btn')

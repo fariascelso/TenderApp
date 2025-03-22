@@ -1,4 +1,4 @@
-import { HeaderStyles, ColumnStyles, COLORS } from "./TableStyles.js"
+import { HeaderStyles, ColumnStyles, COLORS, SIZES } from "./TableStyles.js"
 
 export async function generatorPDF(uploadedLogo, orderNumber) {
     const { jsPDF } = window.jspdf
@@ -18,7 +18,6 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
     const margin = { top: 2, bottom: 2, left: 5, right: 5 }
     const pageWidth = doc.internal.pageSize.getWidth()
 
-    // Funções auxiliares para pegar valores com segurança
     const getValue = (id) => {
         const element = document.getElementById(id)
         return element ? element.value : ''
@@ -154,17 +153,7 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
     })
 
     let totalServices = 0
-
     if (includeServices) {
-        doc.autoTable({
-            startY: lastTable = updateLastTablePosition(),
-            head: [
-                [{ content: 'SERVIÇOS QUE SERÃO REALIZADOS', colSpan: 2 }]
-            ],
-            headStyles: HeaderStyles.CellPadding,
-            margin: margin
-        })
-
         const services = []
         const descriptionServices = getAllValues('.descriptionService')
         const amountServices = getAllValues('.amountService')
@@ -176,6 +165,20 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
             })
         }
 
+        totalServices = services.reduce((sum, service) => {
+            const value = parseCurrency(service.amountService)
+            return sum + value
+        }, 0)
+
+        doc.autoTable({
+            startY: lastTable = updateLastTablePosition(),
+            head: [
+                [{ content: 'SERVIÇOS QUE SERÃO REALIZADOS', colSpan: 2 }]
+            ],
+            headStyles: HeaderStyles.CellPadding,
+            margin: margin
+        })
+
         doc.autoTable({
             startY: lastTable = updateLastTablePosition(),
             head: [['DESCRIÇÃO DO SERVIÇO', 'VALOR DO SERVIÇO']],
@@ -183,32 +186,23 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
                 service.descriptionService,
                 service.amountService
             ]),
-            headStyles: { fillColor: [0, 0, 6], halign: 'center', lineWidth: 0.5 },
+            foot: [
+                [
+                    { content: 'Total dos Serviços', styles: { fillColor: [255, 255, 255], halign: 'right', fontStyle: 'bold', textColor: COLORS.BLACK } },
+                    { content: formatCurrency(totalServices), styles: { ...ColumnStyles.BaseColumn, fillColor: [144, 238, 144], halign: 'center', fontStyle: 'bold' } }
+                ]
+            ],
+            headStyles: { fillColor: COLORS.BLACK, halign: 'center', lineWidth: 0.5 },
             columnStyles: {
-                1: { cellWidth: 100, halign: 'center' },
-                2: { cellWidth: 30, halign: 'center' }
+                0: { cellWidth: 'auto', halign: 'left' },
+                1: { cellWidth: 50, halign: 'center' }
             },
             margin: { left: 5, right: 5 }
         })
-
-        totalServices = services.reduce((sum, service) => {
-            const value = parseCurrency(service.amountService)
-            return sum + value
-        }, 0)
     }
 
     let totalEquipments = 0
-
     if (includeEquipments) {
-        doc.autoTable({
-            startY: lastTable = updateLastTablePosition(),
-            head: [
-                [{ content: 'EQUIPAMENTOS NECESSÁRIOS', colSpan: 2 }]
-            ],
-            headStyles: HeaderStyles.CellPadding,
-            margin: margin
-        })
-
         const equipments = []
         const codes = getAllValues('.codeEquipment')
         const names = getAllValues('.nameEquipment')
@@ -226,24 +220,47 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
             })
         }
 
-        const equipmentData = equipments.map((equipment) => [
-            equipment.code,
-            equipment.name,
-            equipment.quantity,
-            equipment.unitPrice,
-            equipment.subtotal
-        ])
+        totalEquipments = equipments.reduce((sum, equipment) => {
+            const quantity = parseFloat(equipment.quantity) || 0
+            const unitPrice = parseCurrency(equipment.unitPrice)
+            const subtotal = quantity * unitPrice
+            return sum + subtotal
+        }, 0)
 
         doc.autoTable({
-            startY: (lastTable = updateLastTablePosition()),
+            startY: lastTable = updateLastTablePosition(),
+            head: [
+                [{ content: 'EQUIPAMENTOS NECESSÁRIOS', colSpan: 5 }]
+            ],
+            headStyles: HeaderStyles.CellPadding,
+            margin: margin
+        })
+
+        doc.autoTable({
+            startY: lastTable = updateLastTablePosition(),
             head: [["Código", "Nome", "Quantidade", "Preço unitário", "Subtotal"]],
-            body: equipmentData,
+            body: equipments.map((equipment) => [
+                equipment.code,
+                equipment.name,
+                equipment.quantity,
+                equipment.unitPrice,
+                equipment.subtotal
+            ]),
+            foot: [
+                [
+                    { content: '', styles: { fillColor: [255, 255, 255], halign: 'right', fontStyle: 'bold' } },
+                    { content: '', styles: { fillColor: [255, 255, 255], halign: 'right', fontStyle: 'bold' } },
+                    { content: '', styles: { fillColor: [255, 255, 255], halign: 'right', fontStyle: 'bold' } },
+                    { content: 'Total dos Materiais', styles: { fillColor: [255, 255, 255], halign: 'right', fontStyle: 'bold', textColor: COLORS.BLACK } },
+                    { content: formatCurrency(totalEquipments), styles: { ...ColumnStyles.BaseColumn, fillColor: [255, 245, 157], halign: 'center', fontStyle: 'bold' } }
+                ]
+            ],
             headStyles: HeaderStyles.Materials,
             columnStyles: ColumnStyles.Materials,
             styles: {
                 overflow: "linebreak",
-                cellPadding: 4,
-                fontSize: 7
+                cellPadding: SIZES.CELL_PADDING,
+                fontSize: SIZES.COLUMN_FONT
             },
             didParseCell: (data) => {
                 if (data.section === "head") {
@@ -252,46 +269,30 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
             },
             margin: margin
         })
-
-        totalEquipments = equipments.reduce((sum, equipment) => {
-            const quantity = parseFloat(equipment.quantity) || 0
-            const unitPrice = parseCurrency(equipment.unitPrice)
-            const subtotal = quantity * unitPrice
-            return sum + subtotal
-        }, 0)
-    }
-
-    doc.autoTable({
-        startY: lastTable = updateLastTablePosition(),
-        head: [
-            [{ content: 'VALOR TOTAL DO ORÇAMENTO', colSpan: 2 }]
-        ],
-        headStyles: HeaderStyles.CellPadding,
-        margin: margin
-    })
-
-    function parseCurrency(value) {
-        if (!value) return 0
-        return parseFloat(
-            value.replace('R$', '')
-                .replace(/\./g, '')
-                .replace(',', '.')
-                .trim()
-        ) || 0
     }
 
     const totalBudget = totalServices + totalEquipments
+    if (totalBudget > 0) {
+        doc.autoTable({
+            startY: lastTable = updateLastTablePosition(),
+            head: [
+                [{ content: 'VALOR TOTAL DO ORÇAMENTO', colSpan: 2 }]
+            ],
+            headStyles: HeaderStyles.CellPadding,
+            margin: margin
+        })
 
-    doc.autoTable({
-        startY: lastTable = updateLastTablePosition(),
-        columnStyles: ColumnStyles.Left,
-        body: [
-            [
-                { content: formatCurrency(totalBudget), styles: { halign: 'left', fontStyle: 'bold', fontSize: 15 } }
-            ]
-        ],
-        margin: { left: 5, right: 5 }
-    })
+        doc.autoTable({
+            startY: lastTable = updateLastTablePosition(),
+            columnStyles: ColumnStyles.Left,
+            body: [
+                [
+                    { content: formatCurrency(totalBudget), styles: { halign: 'left', fontStyle: 'bold', fontSize: 15 } }
+                ]
+            ],
+            margin: { left: 5, right: 5 }
+        })
+    }
 
     doc.autoTable({
         startY: lastTable = updateLastTablePosition(),
@@ -341,6 +342,16 @@ export async function generatorPDF(uploadedLogo, orderNumber) {
         columnStyles: ColumnStyles.Center,
         margin: margin
     })
+
+    function parseCurrency(value) {
+        if (!value) return 0
+        return parseFloat(
+            value.replace('R$', '')
+                .replace(/\./g, '')
+                .replace(',', '.')
+                .trim()
+        ) || 0
+    }
 
     function formatCurrency(value) {
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)

@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 createdAt: new Date()
             })
 
-            window.location.href = 'login.html'
+            window.location.href = '../index.html'
         } catch (error) {
             errorMessage.textContent = error.message || 'Erro ao criar usuário.'
             console.error('Erro ao criar usuário:', error)

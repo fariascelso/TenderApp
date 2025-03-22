@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            window.location.href = 'index.html'
+            window.location.href = '../index.html'
         } else {
             console.log('Usuário não autenticado, mostrando página de login')
         }

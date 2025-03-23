@@ -439,6 +439,28 @@ export async function loadCompanyForEdit(id, mode = 'edit') {
     }
 }
 
+export async function loadServiceForEdit(id, mode = 'edit') {
+    try {
+        const serviceDoc = await getDoc(getUserDoc('servicos', id))
+        if (serviceDoc.exists()) {
+            const data = serviceDoc.data()
+
+            document.getElementById('descriptionService').value = data.descriptionService || ""
+            document.getElementById('amountService').value = data.amountService || ""
+
+            const saveButton = document.querySelector('.button-container button:first-child')
+            saveButton.textContent = "Salvar Alterações"
+            saveButton.onclick = () => updateServiceToFirestore(id)
+        } else {
+            console.error(`Serviço com ID ${id} não encontrado.`)
+            alert("Serviço não encontrado.")
+        }
+    } catch (error) {
+        console.error("Erro ao carregar Serviço para edição:", error)
+        alert("Erro ao carregar Serviço para edição.")
+    }
+}
+
 export async function loadOrcamentoForEdit(id) {
     try {
         const orcamentoDoc = await getDoc(getUserDoc('orcamentos', id))
@@ -586,6 +608,22 @@ export async function updateCompanyToFirestore(id) {
     } catch (error) {
         console.error("Erro ao atualizar Empresa:", error)
         alert("Erro ao atualizar Empresa.")
+    }
+}
+
+export async function updateServiceToFirestore(id) {
+    const serviceData = {
+        descriptionService: document.querySelector('#serviceModalContent .descriptionService').value,
+        amountService: document.querySelector('#serviceModalContent .amountService').value
+    }
+
+    try {
+        await updateDoc(getUserDoc('servicos', id), serviceData)
+        alert("Serviço atualizado com sucesso!")
+        // O reload já é feito em saveModalData, então não precisa redirecionar aqui
+    } catch (error) {
+        console.error("Erro ao atualizar Serviço:", error)
+        alert("Erro ao atualizar Serviço.")
     }
 }
 

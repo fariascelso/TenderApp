@@ -9,7 +9,7 @@ import {
     deleteOrcamento, 
     loadOrcamentoForEdit, 
     loadClientForEdit, 
-    loadCompanyForEdit, 
+    loadCompanyForEdit,
     updateClientToFirestore 
 } from './firebase/firestoreOperations.js'
 import { applyInputMasks } from './utils/inputMasks.js'

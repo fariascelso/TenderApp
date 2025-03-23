@@ -9,6 +9,7 @@ import {
     deleteOrcamento, 
     loadOrcamentoForEdit, 
     loadClientForEdit, 
+    loadCompanyForEdit, 
     updateClientToFirestore 
 } from './firebase/firestoreOperations.js'
 import { applyInputMasks } from './utils/inputMasks.js'
@@ -102,7 +103,9 @@ async function init() {
                     document.querySelector('#materials-btn').style.display = 'none'
                     document.querySelector('.accordion[data-group="observations-data-panel"]').style.display = 'none'
                     document.querySelector('.checkbox-container').style.display = 'none'
-                } else if (type === 'orcamento') {
+                }
+                
+                if (type === 'orcamento') {
                     await loadOrcamentoForEdit(id)
                     if (mode === 'view') {
                         const inputs = document.querySelectorAll('input, textarea, select')
@@ -111,6 +114,37 @@ async function init() {
                         if (saveButton) saveButton.style.display = 'none'
                     }
                 }
+
+                if (type === 'company') {
+                    await loadCompanyForEdit(id, mode || 'edit')
+                    const logoPanel = document.querySelector('#logo-panel')
+                    const clientPanel = document.querySelector('#client-data-panel')
+                    const servicesPanel = document.querySelector('#services-container')
+                    const equipmentsPanel = document.querySelector('#equipments-container')
+                    const observationsPanel = document.querySelector('#observations-data-panel')
+                    const pdfButton = document.querySelector('#generate-pdf-btn')
+
+                    if (logoPanel) logoPanel.style.display = 'none'
+                    else console.warn('Elemento #logoPanel não encontrado')
+                    if (clientPanel) clientPanel.style.display = 'none'
+                    else console.warn('Elemento #clientPanel não encontrado')
+                    if (servicesPanel) servicesPanel.style.display = 'none'
+                    else console.warn('Elemento #services-container não encontrado')
+                    if (equipmentsPanel) equipmentsPanel.style.display = 'none'
+                    else console.warn('Elemento #equipments-container não encontrado')
+                    if (observationsPanel) observationsPanel.style.display = 'none'
+                    else console.warn('Elemento #observations-data-panel não encontrado')
+                    if (pdfButton) pdfButton.style.display = 'none'
+                    else console.warn('Elemento #generate-pdf-btn não encontrado')
+                    
+                    // Esconder os botões accordion e checkboxes
+                    document.querySelector('.accordion[data-group="logo-panel"]').style.display = 'none'
+                    document.querySelector('.accordion[data-group="client-data-panel"]').style.display = 'none'
+                    document.querySelector('#services-btn').style.display = 'none'
+                    document.querySelector('#materials-btn').style.display = 'none'
+                    document.querySelector('.accordion[data-group="observations-data-panel"]').style.display = 'none'
+                    document.querySelector('.checkbox-container').style.display = 'none'
+                } 
             }
 
             const logoutBtn = document.getElementById('logout-btn')

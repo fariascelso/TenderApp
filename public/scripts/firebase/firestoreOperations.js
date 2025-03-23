@@ -408,6 +408,37 @@ export async function loadClientForEdit(id, mode = 'edit') {
     }
 }
 
+export async function loadCompanyForEdit(id, mode = 'edit') {
+    try {
+        const companyDoc = await getDoc(getUserDoc('empresas', id))
+        if (companyDoc.exists()) {
+            const data = companyDoc.data()
+
+            document.getElementById('nameBusiness').value = data.nomeEmpresa || ""
+            document.getElementById('fantasyName').value = data.fantasyName || ""
+            document.getElementById('cpfCnpj').value = data.cnpj || ""
+            document.getElementById('address').value = data.endereco || ""
+            document.getElementById('numberAddress').value = data.numero || ""
+            document.getElementById('neighborhood').value = data.bairro || ""
+            document.getElementById('city').value = data.cidade || ""
+            document.getElementById('zipcode').value = data.cep || ""
+            document.getElementById('state').value = data.estado || ""
+            document.getElementById('phone').value = data.telefone || ""
+            document.getElementById('email').value = data.email || ""
+
+            const saveButton = document.querySelector('.button-container button:first-child')
+            saveButton.textContent = "Salvar Alterações"
+            saveButton.onclick = () => updateCompanyToFirestore(id)
+        } else {
+            console.error(`Empresa com ID ${id} não encontrado.`)
+            alert("Empresa não encontrado.")
+        }
+    } catch (error) {
+        console.error("Erro ao carregar Empresa para edição:", error)
+        alert("Erro ao carregar Empresa para edição.")
+    }
+}
+
 export async function loadOrcamentoForEdit(id) {
     try {
         const orcamentoDoc = await getDoc(getUserDoc('orcamentos', id))
@@ -530,6 +561,31 @@ export async function updateClientToFirestore(id) {
     } catch (error) {
         console.error("Erro ao atualizar cliente:", error)
         alert("Erro ao atualizar cliente.")
+    }
+}
+
+export async function updateCompanyToFirestore(id) {
+    const empresaData = {
+        nomeEmpresa: document.getElementById('nameBusiness').value,
+        cnpj: document.getElementById('cpfCnpj').value,
+        fantasyName: document.getElementById('fantasyName').value,
+        endereco: document.getElementById('address').value,
+        numero: document.getElementById('neighborhood').value,
+        bairro: document.getElementById('state').value,
+        cidade: document.getElementById('city').value,
+        cep: document.getElementById('zipcode').value,
+        estado: document.getElementById('state').value,
+        telefone: document.getElementById('phone').value,
+        email: document.getElementById('email').value
+    }
+
+    try {
+        await updateDoc(getUserDoc('empresas', id), empresaData)
+        alert("Empresa atualizado com sucesso!")
+        window.location.href = "pages/listcompanies.html"
+    } catch (error) {
+        console.error("Erro ao atualizar Empresa:", error)
+        alert("Erro ao atualizar Empresa.")
     }
 }
 

@@ -54,26 +54,26 @@ async function loadCompanies() {
         })
 
         document.querySelectorAll('.view-btn').forEach(btn => {
-            btn.addEventListener('click', () => viewClient(btn.dataset.id))
+            btn.addEventListener('click', () => viewCompany(btn.dataset.id))
         })
         document.querySelectorAll('.edit-btn').forEach(btn => {
-            btn.addEventListener('click', () => editClient(btn.dataset.id))
+            btn.addEventListener('click', () => editCompany(btn.dataset.id))
         })
         document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', () => deleteClient(btn.dataset.id))
+            btn.addEventListener('click', () => deleteCompany(btn.dataset.id))
         })
     } catch (error) {
-        console.error('Erro ao carregar clientes:', error);
-        alert('Erro ao carregar clientes. Veja o console para mais detalhes.')
+        console.error('Erro ao carregar empresas:', error);
+        alert('Erro ao carregar empresas. Veja o console para mais detalhes.')
     }
 }
 
 function viewCompany(id) {
-    window.location.href = `../index.html?id=${id}&mode=view&type=client`;
+    window.location.href = `../index.html?id=${id}&mode=view&type=company`;
 }
 
 function editCompany(id) {
-    window.location.href = `../index.html?id=${id}&mode=edit&type=client`;
+    window.location.href = `../index.html?id=${id}&mode=edit&type=company`;
 }
 
 async function deleteCompany(id) {
@@ -81,7 +81,7 @@ async function deleteCompany(id) {
         try {
             await deleteDoc(getUserDoc('empresas', id))
             alert('Empresa excluído com sucesso!')
-            loadClients()
+            loadCompanies()
         } catch (error) {
             console.error('Erro ao excluir empresa:', error)
             alert('Erro ao excluir empresa. Veja o console para mais detalhes.')

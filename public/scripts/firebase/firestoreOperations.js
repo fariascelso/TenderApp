@@ -461,6 +461,29 @@ export async function loadServiceForEdit(id, mode = 'edit') {
     }
 }
 
+export async function loadMaterialForEdit(id, mode = 'edit') {
+    try {
+        const materialDoc = await getDoc(getUserDoc('equipamentos', id))
+        if (materialDoc.exists()) {
+            const data = materialDoc.data()
+
+            document.getElementById('codeEquipment').value = data.codeEquipment || ""
+            document.getElementById('nameEquipment').value = data.nameEquipment || ""
+            document.getElementById('unitPriceEquipment').value = data.unitPriceEquipment || ""
+
+            const saveButton = document.querySelector('.button-container button:first-child')
+            saveButton.textContent = "Salvar Alterações"
+            saveButton.onclick = () => updateMaterialToFirestore(id)
+        } else {
+            console.error(`Material com ID ${id} não encontrado.`)
+            alert("Material não encontrado.")
+        }
+    } catch (error) {
+        console.error("Erro ao carregar Material para edição:", error)
+        alert("Erro ao carregar Material para edição.")
+    }
+}
+
 export async function loadOrcamentoForEdit(id) {
     try {
         const orcamentoDoc = await getDoc(getUserDoc('orcamentos', id))
@@ -619,6 +642,23 @@ export async function updateServiceToFirestore(id) {
 
     try {
         await updateDoc(getUserDoc('servicos', id), serviceData)
+        alert("Serviço atualizado com sucesso!")
+        // O reload já é feito em saveModalData, então não precisa redirecionar aqui
+    } catch (error) {
+        console.error("Erro ao atualizar Serviço:", error)
+        alert("Erro ao atualizar Serviço.")
+    }
+}
+
+export async function updateMaterialToFirestore(id) {
+    const materialData = {
+        codeEquipment: document.querySelector('#equipmentModalContent .codeEquipment').value,
+        nameEquipment: document.querySelector('#equipmentModalContent .nameEquipment').value,
+        unitPriceEquipment: document.querySelector('#equipmentModalContent .unitPriceEquipment').value
+    }
+
+    try {
+        await updateDoc(getUserDoc('equipamentos', id), materialData)
         alert("Serviço atualizado com sucesso!")
         // O reload já é feito em saveModalData, então não precisa redirecionar aqui
     } catch (error) {
